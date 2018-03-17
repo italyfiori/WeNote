@@ -46,9 +46,19 @@ $(document).ready(function() {
 
     // 绑定编辑区内容变化事件
     $('#editor').bind("DOMSubtreeModified",function(){
-    	// console.log('here')
+        setTimeout(function() {
+            adjustEditor()    
+        }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
 	});
 
+    // 调整编辑区的内容格式
+    function adjustEditor() {
+        // 编辑区内容被全部删除时，增加一个段落标签
+        var childNodes = editor.childNodes
+        if (childNodes.length == 0) {
+            editor.innerHTML = '<p><br/></p>'
+        }
+    }
     
     // 标题标签markdown触发条件
     var titleTagMap = {
@@ -83,6 +93,7 @@ $(document).ready(function() {
                 $(parentNode).after(html)
                 setCursorAfterNode(parentNode)
                 $(parentNode).remove()
+                return
             }
 
             // 触发引用块markdown语法
@@ -90,7 +101,18 @@ $(document).ready(function() {
                 event.preventDefault()
                 $(parentNode).remove()
                 insertQuote()
+                return
             }
+
+            // 触发列表块markdown语法
+            if (typeof(curNode.tagName) == 'undefined' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*') ) {
+                event.preventDefault()
+                var html = innerHTML == '1.' ? '<ol><li><br/></li></ol>' : '<ul><li><br/></li></ul>'
+                $(parentNode).after(html)
+                setCursorAfterNode(parentNode)
+                $(parentNode).remove()
+            }
+
         }
 
         if (event.key == 'Enter') {
@@ -110,6 +132,15 @@ $(document).ready(function() {
                 setCursorAfterNode(parentNode)
                 return
             }    
+
+            // 在列表最后一个空行后键入回车键，退出列表
+            if (curNode.tagName == 'LI' && (parentNode.tagName == 'OL' || parentNode.tagName == 'UL') && parentNode.lastChild == curNode && range.startOffset == 0) {
+                event.preventDefault()
+                parentNode.removeChild(curNode)
+                $(parentNode).after('<p><br></p>')
+                setCursorAfterNode(parentNode)
+                return
+            } 
         }
 
     })
