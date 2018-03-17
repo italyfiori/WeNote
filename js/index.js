@@ -1,4 +1,30 @@
+// 阻止按键和光标缩放
+// TODO 需要添加阻止触控板操作
+document.addEventListener('DOMContentLoaded', function (event) {
+    // chrome 浏览器直接加上下面这个样式就行了，但是ff不识别
+    document.body.style.zoom = 'reset';
+    document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey === true || event.metaKey === true)
+        && (event.which === 61 || event.which === 107
+            || event.which === 173 || event.which === 109
+            || event.which === 187  || event.which === 189))
+            {
+               event.preventDefault();
+            }
+    }, false);
+    document.addEventListener('mousewheel DOMMouseScroll', function (event) {
+        if (event.ctrlKey === true || event.metaKey) {
+            event.preventDefault();
+        }
+    }, false);
+}, false);
+
 $(document).ready(function() {
+    $('#title-bar .btn').click(function(event) {
+        var command = this.getAttribute('data-role')
+        document.execCommand(command, false, false)
+
+    })
 
     // 标题输入框获取光标
 	$('#title-input').focus()
@@ -9,6 +35,10 @@ $(document).ready(function() {
             editor.focus()
         }
     })
+
+    function clearFormat() {
+        document.execCommand("removeFormat", false, "foreColor");
+    }
 
     // 将光标移动到当前节点之后
     function setCursorAfterNode(node) {
@@ -33,21 +63,22 @@ $(document).ready(function() {
         return range.startContainer
     }
 
-    // 插入标题h1-h6
-    function insertTitle(tag) {
-        document.execCommand('formatBlock', false, '<' + tag + '>');
-    }
-
-    // 插入引用块
-    function insertQuote() {    
-        var html = '<blockquote><p><br></p></blockquote>'
-        document.execCommand('insertHTML', false, html)
+    // 获取第一个块节点
+    var blockTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'LI']
+    function getBlockContainer() {
+        var curNode = getCurNode()
+        var tagName = curNode.tagName
+        while(curNode != editor && blockTags.indexOf(tagName) < 0) {
+            curNode = curNode.parentNode
+            tagName = curNode.tagName
+        }
+        return blockTags.indexOf(tagName) >= 0 ? curNode : undefined
     }
 
     // 绑定编辑区内容变化事件
     $('#editor').bind("DOMSubtreeModified",function(){
         setTimeout(function() {
-            adjustEditor()    
+            adjustEditor()
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
 	});
 
@@ -57,6 +88,15 @@ $(document).ready(function() {
         var childNodes = editor.childNodes
         if (childNodes.length == 0) {
             editor.innerHTML = '<p><br/></p>'
+            return
+        }
+
+        // 编辑区下的div标签转换成p标签
+        var divs = editor.querySelectorAll("div");
+        for (var i = 0; i < divs.length; i++) {
+            var div = divs[i]; 
+            $(div).before('<p>' + div.innerHTML + '</p>')
+            div.remove()    
         }
     }
     
@@ -79,10 +119,11 @@ $(document).ready(function() {
         var range = sel.getRangeAt(0)
         var curNode = getCurNode()
         var parentNode = curNode.parentNode
+        var blockNode = getBlockContainer()
         var innerHTML = $(parentNode).html()
 
-        // console.log(curNode)
-        // console.log(parentNode.tagName)
+        // console.log(curNode.tagName)
+        // console.log(blockNode.tagName)
         
         if (event.key == ' ') {
             // 触发标题块markdown语法
@@ -99,8 +140,10 @@ $(document).ready(function() {
             // 触发引用块markdown语法
             if (typeof(curNode.tagName) == 'undefined' && parentNode.tagName == 'P' && innerHTML == '&gt;') {
                 event.preventDefault()
+                var html = '<blockquote><p><br></p></blockquote>'
+                $(parentNode).after(html)
+                setCursorAfterNode(parentNode)
                 $(parentNode).remove()
-                insertQuote()
                 return
             }
 
@@ -141,6 +184,22 @@ $(document).ready(function() {
                 setCursorAfterNode(parentNode)
                 return
             } 
+
+
+            // 换行时清除字体格式(粗体、下划线、斜体)
+            var parents = $(curNode).parentsUntil(blockNode)
+            var fontTags = {
+                'U' : 'underline',
+                'I' : 'italic',
+                'B' : 'bold',
+            }
+            for (var i = 0; i < parents.length; i++) {
+                parent = parents[i]
+                if (parent.tagName in fontTags) {
+                    document.execCommand(fontTags[parent.tagName], false, false)
+                }
+            }
+            
         }
 
     })
