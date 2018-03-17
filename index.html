@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>my wiki</title>
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script>
+            if (typeof module === 'object') {
+                window.jQuery = window.$ = module.exports;
+            };
+        </script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css">
+	</head>
+	<body>
+		<div id="title-bar">
+			<div class="dropdown" style="display: inline-block; vertical-align: bottom;">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+				正文
+				<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a href="#">正文</a></li>
+					<li><a href="#">标题1</a></li>
+					<li><a href="#">标题2</a></li>
+					<li><a href="#">标题3</a></li>
+				</ul>
+			</div>
+			<div class='btn-group' role='group'>
+				<a class='btn btn-default' type='button' data-role='font' href='#'><i class='fa fa-font'></i></a>
+				<a class='btn btn-default' type='button' data-role='bold' href='#'><b>B</b></a>
+				<a class='btn btn-default' type='button' data-role='italic' href='#' style="" ="width: 34px;"><em>I</em></a>
+				<a class='btn btn-default' type='button' data-role='underline' href='#'><u>U</u></a>
+			</div>
+			<div class='btn-group' role='group'>
+				<a class='btn btn-default' type='button' data-role='justLeft' href='#'><i class='fa fa-align-left'></i></a>
+				<a class='btn btn-default' type='button' data-role='justCenter' href='#'><i class='fa fa-align-center'></i></a>
+				<a class='btn btn-default' type='button' data-role='justRight' href='#'><i class='fa fa-align-right'></i></a>
+			</div>
+			<div class='btn-group' role='group'>
+				<a class='btn btn-default' type='button' data-role='insertUnorderedList' href='#'><i class='fa fa-list-ul'></i></a>
+				<a class='btn btn-default' type='button' data-role='insertOrderedList' href='#'><i class='fa fa-list-ol'></i></a>
+			</div>
+			<div class='btn-group' role='group'>
+				<a class='btn btn-default' type='button' data-role='insertQuote' href='#'><i class='fa fa-quote-left'></i></a>
+				<a class='btn btn-default' type='button' data-role='insertCode' href='#'><i class='fa fa-code'></i></a>
+				<a class='btn btn-default' type='button' data-role='inserTable' href='#'><i class='fa fa-table'></i></a>
+			</div>
+			<div class='btn-group' role='group'>
+				<a class='btn btn-default' type='button' data-role='insertimage' href='#'><i class='fa fa-image'></i></a>
+				<a class='btn btn-default' type='button' data-role='insertfile' href='#'><i class='fa fa-file-text-o'></i></a>
+				<a class='btn btn-default' type='button' data-role='createlink' href='#'><i class='fa fa-link'></i></a>
+			</div>
+			<div class='btn-group' role='group' >
+				<a class='btn btn-default' type='button' data-role='undo' href='#'><i class='fa fa-undo'></i></a>
+				<a class='btn btn-default' type='button' data-role='redo' href='#'><i class='fa fa-repeat'></i></a>
+			</div>
+			<div class="dropdown" style="display: inline-block; vertical-align: bottom;">
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+				工具
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					<li><a href="#"></a></li>
+					<li><a href="#">大纲</a></li>
+					<li><a href="#">附件</a></li>
+					<li><a href="#">加密</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="editor-container" >
+			<input id="title-input" type="text" placeholder="请输入标题">
+			<div id="editor" contenteditable="true">
+				<p><br/></p>
+			</div>
+		</div>
+	</body>
+</html>
