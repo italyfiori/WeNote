@@ -103,10 +103,10 @@ $(document).ready(function() {
             }
 
             // 标题块换行后进入段落块
-            if (parentNode.tagName && titleTagName.indexOf(parentNode.tagName) >= 0) {
+            if (blockNode && titleTagName.indexOf(blockNode.tagName) >= 0) {
                 event.preventDefault()
-                $(parentNode).after('<p><br></p>')
-                setCursorAfterNode(parentNode)
+                $(blockNode).after('<p><br></p>')
+                setCursorAfterNode(blockNode)
                 return
             }
 
