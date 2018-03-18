@@ -1,4 +1,4 @@
-// 获取随机数
+// 获取随机数 0到max
 function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
@@ -10,6 +10,15 @@ function setCursorAfterNode(node) {
     let range = document.createRange();
     range.setStartAfter(node)
     range.setEndAfter(node)
+    selection.addRange(range)
+}
+
+function setCursor(node) {
+    let selection = window.getSelection();
+    selection.removeAllRanges();
+    let range = document.createRange();
+    range.setStart(node, 0)
+    range.setEnd(node, 0)
     selection.addRange(range)
 }
 
@@ -30,31 +39,6 @@ function getBlockContainer() {
         tagName = curNode.tagName
     }
     return blockTags.indexOf(tagName) >= 0 ? curNode : undefined
-}
-
-// 绑定编辑区内容变化事件
-$('#editor').bind("DOMSubtreeModified",function(){
-    setTimeout(function() {
-        adjustEditor()
-    }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
-});
-
-// 调整编辑区的内容格式
-function adjustEditor() {
-    // 编辑区内容被全部删除时，增加一个段落标签
-    var childNodes = editor.childNodes
-    if (childNodes.length == 0) {
-        editor.innerHTML = '<p><br/></p>'
-        return
-    }
-
-    // 编辑区下的div标签转换成p标签
-    var divs = editor.querySelectorAll("div");
-    for (var i = 0; i < divs.length; i++) {
-        var div = divs[i]; 
-        $(div).before('<p>' + div.innerHTML + '</p>')
-        div.remove()    
-    }
 }
 
 // 标题标签markdown触发条件

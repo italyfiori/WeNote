@@ -22,6 +22,7 @@ $(document).ready(function() {
         var childNodes = editor.childNodes
         if (childNodes.length == 0) {
             editor.innerHTML = '<p><br/></p>'
+            setCursor(editor.children[0])
             return
         }
 
@@ -30,7 +31,7 @@ $(document).ready(function() {
         for (var i = 0; i < divs.length; i++) {
             var div = divs[i]; 
             $(div).before('<p>' + div.innerHTML + '</p>')
-            div.remove()    
+            div.remove() 
         }
     }
 
@@ -50,12 +51,12 @@ $(document).ready(function() {
         var blockNode = getBlockContainer()
         var innerHTML = $(parentNode).html()
 
-        // console.log(curNode.tagName)
-        // console.log(blockNode.tagName)
+        // console.log(curNode.nodeName);
+        // console.log(parentNode.nodeName);
         
         if (event.key == ' ') {
             // 触发标题块markdown语法
-            if (typeof(curNode.tagName) == 'undefined' && parentNode.tagName == 'P' && innerHTML in titleTagMap) {
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML in titleTagMap) {
                 event.preventDefault()  
                 var tag = 'h' + innerHTML.length
                 var html = '<' + tag + '>' + '<br/></' + tag + '>'
@@ -66,7 +67,7 @@ $(document).ready(function() {
             }
 
             // 触发引用块markdown语法
-            if (typeof(curNode.tagName) == 'undefined' && parentNode.tagName == 'P' && innerHTML == '&gt;') {
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '&gt;') {
                 event.preventDefault()
                 var html = '<blockquote><p><br></p></blockquote>'
                 $(parentNode).after(html)
@@ -76,7 +77,7 @@ $(document).ready(function() {
             }
 
             // 触发列表块markdown语法
-            if (typeof(curNode.tagName) == 'undefined' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*') ) {
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*') ) {
                 event.preventDefault()
                 var html = innerHTML == '1.' ? '<ol><li><br/></li></ol>' : '<ul><li><br/></li></ul>'
                 $(parentNode).after(html)

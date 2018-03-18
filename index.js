@@ -58,8 +58,7 @@ app.on('activate', () => {
 })
 
 var crypto = require('crypto');
-
-function md5(file_path) {
+function getFileMd5(file_path) {
   var buffer = fs.readFileSync(file_path);
   var fsHash = crypto.createHash('md5');
   fsHash.update(buffer);
@@ -77,28 +76,33 @@ const {
 } = require('electron')
 
 let fs = require('fs')
-ipcMain.on('send_file', (event, data) => {
-    if (Buffer.isBuffer(data.data)) {
-        var image_dir = path.join(__dirname, 'data', 'images')
-        if (!fs.existsSync(image_dir)) {
-            fs.mkdirSync(image_dir, 755);
-        }
 
-        var buffer = data.data
-        var buffer_md5 = getBufferMd5(buffer)
-        file_name = buffer_md5 + '.png'
-        file_path = path.join(image_dir, file_name)
-        fs.writeFile(file_path, buffer, {}, (err, res) => {
-            if(err) {
-                console.log('err:' + err);
-                return
-            }
-            payload = {
-                'code': 0,
-                'message_id': data.message_id,
-                'image_url': path.join('data', 'images', file_name),
-            }
-            event.sender.send('send_file', payload)
-        })
+// 接收文件数据
+ipcMain.on('send_file', (event, data) => {
+    if (!Buffer.isBuffer(data.data)) {
+        console.log('data is not buffer, ' + data.message_id)
+        return
     }
+
+    var image_dir = path.join(__dirname, 'data', 'images')
+    if (!fs.existsSync(image_dir)) {
+        fs.mkdirSync(image_dir, 755);
+    }
+
+    var buffer = data.data
+    var buffer_md5 = getBufferMd5(buffer)
+    file_name = buffer_md5 + '.png'
+    file_path = path.join(image_dir, file_name)
+    fs.writeFile(file_path, buffer, {}, (err, res) => {
+        if(err) {
+            console.log('write file error:' + err);
+            return
+        }
+        payload = {
+            'code': 0,
+            'message_id': data.message_id,
+            'image_url': path.join('data', 'images', file_name),
+        }
+        event.sender.send('send_file', payload)
+    })
 })
