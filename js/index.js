@@ -19,7 +19,86 @@ document.addEventListener('DOMContentLoaded', function (event) {
     }, false);
 }, false);
 
+
+const {ipcRenderer} = require('electron')
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+var EventEmitter  = require('events').EventEmitter; 
+var event_emitter = new EventEmitter(); 
+
+// 上传文件
+function sendFile(file_data, func) {
+    // 发送文件提
+    var message_id = 'message' + getRandomInt(1000000)
+    var payload = {'message_id': message_id, 'data': file_data}
+    ipcRenderer.send('send_file', payload)
+
+    // 接收回调
+    var event_id = 'send_file:' + message_id
+    event_emitter.once(event_id, function(data) {
+        func(data)
+    })
+
+    // 超时处理
+    setTimeout(function() {
+        event_emitter.removeAllListeners(event_id)
+        // console.log('send file timeout, id:' + message_id)
+    }, 5000);
+}
+
+// 监听上传文件回调
+ipcRenderer.on('send_file', (event, data) => {
+    if (data.code == 0 && data.message_id) {
+        var event_id = 'send_file:' + data.message_id
+        // 触发回调
+        event_emitter.emit(event_id, data)
+        return
+    }
+    console.log('send file error:' + data.msg)
+})
+
+const path = require('path')
+var app_path = __dirname
+var img_path = path.join(app_path, 'data/images')
+
 $(document).ready(function() {
+    // 复制图像
+    editor.addEventListener('paste', function (event) { 
+        
+        var clipboardData = (event.clipboardData || event.originalEvent.clipboardData)
+        if (clipboardData.items) {
+            var items = clipboardData.items
+            var len = items.length
+            var blob = null
+        }
+        
+        for (var i = 0; i < len; i++) {        
+            if (items[i].type.indexOf("image") !== -1) {
+                blob = items[i].getAsFile();
+            }      
+        }
+
+        if (blob !== null) {        
+            // 图像读取完成，执行回调     
+            var reader = new FileReader();
+            reader.onload = function(event) {           
+                var buffer = new Buffer(reader.result)
+                sendFile(buffer, function(data) {
+                    if (data.code == 0 && data.file_name) {
+                        var image_path = path.join(img_path, data.file_name)
+                        document.execCommand('insertimage', false, image_path);
+                    }
+                })
+            }
+
+            // 开始读取图像数据
+            reader.readAsArrayBuffer(blob);
+        }
+    })
+
     $('#title-bar .btn').click(function(event) {
         var command = this.getAttribute('data-role')
         document.execCommand(command, false, false)
@@ -159,34 +238,7 @@ $(document).ready(function() {
         }
 
         if (event.key == 'Enter') {
-            // 标题块后键入回车，换行进入段落块
-            if (parentNode.tagName && titleTagName.indexOf(parentNode.tagName) >= 0) {
-                event.preventDefault()
-                $(parentNode).after('<p><br></p>')
-                setCursorAfterNode(parentNode)
-                return
-            }
-
-            // 在引用块最后一个空行后键入回车键，退出引用块
-            if (curNode.tagName == 'P' && parentNode.tagName == 'BLOCKQUOTE' && parentNode.lastChild == curNode && range.startOffset == 0) {
-                event.preventDefault()
-                parentNode.removeChild(curNode)
-                $(parentNode).after('<p><br></p>')
-                setCursorAfterNode(parentNode)
-                return
-            }    
-
-            // 在列表最后一个空行后键入回车键，退出列表
-            if (curNode.tagName == 'LI' && (parentNode.tagName == 'OL' || parentNode.tagName == 'UL') && parentNode.lastChild == curNode && range.startOffset == 0) {
-                event.preventDefault()
-                parentNode.removeChild(curNode)
-                $(parentNode).after('<p><br></p>')
-                setCursorAfterNode(parentNode)
-                return
-            } 
-
-
-            // 换行时清除字体格式(粗体、下划线、斜体)
+             // 换行时清除字体格式(粗体、下划线、斜体)
             var parents = $(curNode).parentsUntil(blockNode)
             var fontTags = {
                 'U' : 'underline',
@@ -199,6 +251,34 @@ $(document).ready(function() {
                     document.execCommand(fontTags[parent.tagName], false, false)
                 }
             }
+
+            // 标题块换行后进入段落块
+            if (parentNode.tagName && titleTagName.indexOf(parentNode.tagName) >= 0) {
+                event.preventDefault()
+                $(parentNode).after('<p><br></p>')
+                setCursorAfterNode(parentNode)
+                return
+            }
+
+            // 在引用块最后一个空行后换行，退出引用块
+            if (curNode.tagName == 'P' && parentNode.tagName == 'BLOCKQUOTE' && parentNode.lastChild == curNode && range.startOffset == 0) {
+                event.preventDefault()
+                parentNode.removeChild(curNode)
+                $(parentNode).after('<p><br></p>')
+                setCursorAfterNode(parentNode)
+                return
+            }    
+
+            // 在列表最后一个空行后换行，退出列表
+            if (curNode.tagName == 'LI' && (parentNode.tagName == 'OL' || parentNode.tagName == 'UL') && parentNode.lastChild == curNode && range.startOffset == 0) {
+                event.preventDefault()
+                parentNode.removeChild(curNode)
+                $(parentNode).after('<p><br></p>')
+                setCursorAfterNode(parentNode)
+                return
+            } 
+
+           
             
         }
 

@@ -22,16 +22,14 @@ body {
 }
 
 #editor {
-
 	height: 1000px;
 	border: none;
 	outline: none;
 }
 
-/*button {
-    float: left;
+#editor img {
+    vertical-align: bottom;
 }
-*/
 .clear {
     clear: both
 }
@@ -40,8 +38,6 @@ table {
     border: 1;
     border-collapse: collapse;
 }
-
-
 
 table td {
     width: 100px;

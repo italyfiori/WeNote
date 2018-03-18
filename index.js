@@ -1,4 +1,7 @@
-const {app, BrowserWindow} = require('electron')
+const {
+  app,
+  BrowserWindow
+} = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -6,9 +9,12 @@ const url = require('url')
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
 let win
 
-function createWindow () {
+function createWindow() {
   // 创建浏览器窗口。
-  win = new BrowserWindow({width: 1600, height: 1000})
+  win = new BrowserWindow({
+    width: 1600,
+    height: 1000
+  })
 
   // 然后加载应用的 index.html。
   win.loadURL(url.format({
@@ -51,3 +57,50 @@ app.on('activate', () => {
   }
 })
 
+var crypto = require('crypto');
+
+function md5(file_path) {
+  var buffer = fs.readFileSync(file_path);
+  var fsHash = crypto.createHash('md5');
+  fsHash.update(buffer);
+  return fsHash.digest('hex');
+}
+
+function getBufferMd5(buffer) {
+  var hash = crypto.createHash('md5');
+  hash.update(buffer);
+  return hash.digest('hex');
+}
+
+const {
+  ipcMain
+} = require('electron')
+
+let fs = require('fs')
+ipcMain.on('send_file', (event, data) => {
+    if (Buffer.isBuffer(data.data)) {
+        var image_dir = path.join(__dirname, 'data/images')
+        if (!fs.existsSync(image_dir)) {
+            fs.mkdirSync(image_dir, 755);
+        }
+
+        var buffer = data.data
+        var buffer_md5 = getBufferMd5(buffer)
+        file_name = buffer_md5 + '.png'
+        file_path = path.join(image_dir, file_name)
+        fs.writeFile(file_path, buffer, {}, (err, res) => {
+            if(err) {
+                console.log('err:' + err);
+                return
+            }
+            payload = {
+                'code': 0,
+                'message_id': data.message_id,
+                'image_url': 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1344093591,3281014071&fm=27&gp=0.jpg',
+                'file_path': file_path,
+                'file_name': file_name
+            }
+            event.sender.send('send_file', payload)
+        })
+    }
+})
