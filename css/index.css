@@ -29,6 +29,11 @@ body {
 	outline: none;
 }
 
+.modal-dialog label {
+    color: #707070;
+    font-weight: normal;
+}
+
 #editor img {
     vertical-align: bottom;
 }

@@ -55,7 +55,39 @@
 			<div class='btn-group' role='group'>
 				<a class='btn btn-default' type='button' data-role='insertimage' href='#'><i class='fa fa-image'></i></a>
 				<a class='btn btn-default' type='button' data-role='insertfile' href='#'><i class='fa fa-file-text-o'></i></a>
-				<a class='btn btn-default' type='button' data-role='createlink' href='#'><i class='fa fa-link'></i></a>
+				<a class='btn btn-default' type='button' data-role='createlink' href='#' data-toggle="modal" data-target="#linkModal" ><i class='fa fa-link'></i></a>
+				
+				<div style="position: fixed; top:200px" class="modal fade" id="linkModal" tabindex="-1" role="dialog" aria-labelledby="linkModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="linkModalLabel">插入链接</h4>
+				      </div>
+				      <div class="modal-body">
+				        <form class="form-horizontal">
+						  <div class="form-group">
+						    <label for="link_url" class="col-sm-2 control-label">地址</label>
+						    <div class="col-sm-10">
+						      <input type="text" class="form-control" id="link_url">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="link_text" class="col-sm-2 control-label">链接文字</label>
+						    <div class="col-sm-10">
+						      <input type="text" class="form-control" id="link_text">
+						    </div>
+						  </div>
+						</form>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-primary" id="insert_link">插入</button>
+				        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
 			</div>
 			<div class='btn-group' role='group' >
 				<a class='btn btn-default' type='button' data-role='undo' href='#'><i class='fa fa-undo'></i></a>

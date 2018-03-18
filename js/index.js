@@ -1,10 +1,9 @@
 $(document).ready(function() {
     // 功能按钮
-    $('#title-bar .btn').click(function(event) {
-        var command = this.getAttribute('data-role')
-        document.execCommand(command, false, false)
-
-    })
+    // $('#title-bar .btn').click(function(event) {
+    //     var command = this.getAttribute('data-role')
+    //     document.execCommand(command, false, false)
+    // })
 
     // 标题输入框获取光标
 	$('#title-input').focus()
@@ -13,6 +12,45 @@ $(document).ready(function() {
     $('#title-input').keypress(function(event) {
         if (event.key == "Enter") {
             editor.focus()
+        }
+    })
+
+    // 失去焦点时记录光标位置
+    var lastRange = null
+    $('#editor').blur(function(){
+        var range = getRange()
+        if (range) {
+            lastRange = range.cloneRange()
+        }
+    })
+
+    // 恢复光标位置
+    function recoverRange() {
+        if (lastRange) {
+            console.log('recover')
+            let selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(lastRange)
+        }
+        return lastRange
+    }
+
+    // 插入链接
+    $('#insert_link').click(function() {
+        var url  = link_url.value
+        var text = link_text.value
+        if (text == '') {
+            text = url
+        }
+        $('#linkModal').modal('hide')
+        var range = recoverRange()
+        if (range) {
+            var link = document.createElement("a")
+            link.href = url
+            link.appendChild(document.createTextNode(text))
+            range.insertNode(link)
+            setCursorAfterNode(link)
+            link
         }
     })
 
