@@ -8,17 +8,19 @@ body {
 	margin-right: 10px;
 }
 
-
 #editor-container {
 	margin-top: 30px;
-    /*border: 1px solid black;*/
-    /*padding: 20px;*/
 }
 
 #title-input {
 	border: none;
 	outline: none;
-	font-size: 2.5em;
+	font-size: 28px;
+    margin-bottom: 20px;
+}
+
+#editor :first-child {
+    margin-top: 0;
 }
 
 #editor {
@@ -30,22 +32,35 @@ body {
 #editor img {
     vertical-align: bottom;
 }
-.clear {
+#editor .clear {
     clear: both
 }
 
-table {
+#editor table {
     border: 1;
     border-collapse: collapse;
 }
 
-table td {
+#editor table td {
     width: 100px;
 }
 
-blockquote {
+#editor h1{
+    font-size: 24px;
+}
+
+#editor h2{
+    font-size: 20px;
+}
+
+#editor h3, h4, h5, h6{
+    font-size: 16px;
+}
+
+#editor blockquote {
     border-left: 5px solid rgb(238, 238, 238);
     padding: 10px 20px;
+    font-size: 1em;
 }
 
 blockquote p {

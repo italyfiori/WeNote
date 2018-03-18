@@ -13,6 +13,11 @@ function setCursorAfterNode(node) {
     selection.addRange(range)
 }
 
+function getRange() {
+    var sel = window.getSelection()
+    return sel.getRangeAt(0)
+}
+
 function setCursor(node) {
     let selection = window.getSelection();
     selection.removeAllRanges();
