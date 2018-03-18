@@ -45,7 +45,6 @@ function sendFile(file_data, func) {
     // 超时处理
     setTimeout(function() {
         event_emitter.removeAllListeners(event_id)
-        // console.log('send file timeout, id:' + message_id)
     }, 5000);
 }
 
@@ -87,9 +86,8 @@ $(document).ready(function() {
             reader.onload = function(event) {           
                 var buffer = new Buffer(reader.result)
                 sendFile(buffer, function(data) {
-                    if (data.code == 0 && data.file_name) {
-                        var image_path = path.join(img_path, data.file_name)
-                        document.execCommand('insertimage', false, image_path);
+                    if (data.code == 0 && data.image_url) {
+                        document.execCommand('insertimage', false, data.image_url);
                     }
                 })
             }

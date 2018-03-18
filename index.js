@@ -79,7 +79,7 @@ const {
 let fs = require('fs')
 ipcMain.on('send_file', (event, data) => {
     if (Buffer.isBuffer(data.data)) {
-        var image_dir = path.join(__dirname, 'data/images')
+        var image_dir = path.join(__dirname, 'data', 'images')
         if (!fs.existsSync(image_dir)) {
             fs.mkdirSync(image_dir, 755);
         }
@@ -96,9 +96,7 @@ ipcMain.on('send_file', (event, data) => {
             payload = {
                 'code': 0,
                 'message_id': data.message_id,
-                'image_url': 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1344093591,3281014071&fm=27&gp=0.jpg',
-                'file_path': file_path,
-                'file_name': file_name
+                'image_url': path.join('data', 'images', file_name),
             }
             event.sender.send('send_file', payload)
         })
