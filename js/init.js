@@ -22,5 +22,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
     }, false);
 }, false);
 
-
-
+$(document).ready(function() {
+    // 阻止tab键
+    $(editor).keydown(function(event) {
+        if (event.key == 'Tab') {
+            event.preventDefault()
+        }
+    })
+})

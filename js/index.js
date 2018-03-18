@@ -42,14 +42,6 @@ $(document).ready(function() {
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
 
-    
-    $('#editor').keyup(function(event) {
-        if (event.key == 'Tab') {
-            event.preventDefault()
-
-        }
-    })
-
     $('#editor').keypress(function(event) {
         // 获取当前节点信息和range范围
         var sel = window.getSelection()
