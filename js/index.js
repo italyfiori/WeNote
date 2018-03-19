@@ -15,45 +15,6 @@ $(document).ready(function() {
         }
     })
 
-    // 失去焦点时记录光标位置
-    var lastRange = null
-    $('#editor').blur(function(){
-        var range = getRange()
-        if (range) {
-            lastRange = range.cloneRange()
-        }
-    })
-
-    // 恢复光标位置
-    function recoverRange() {
-        if (lastRange) {
-            console.log('recover')
-            let selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(lastRange)
-        }
-        return lastRange
-    }
-
-    // 插入链接
-    $('#insert_link').click(function() {
-        var url  = link_url.value
-        var text = link_text.value
-        if (text == '') {
-            text = url
-        }
-        $('#linkModal').modal('hide')
-        var range = recoverRange()
-        if (range) {
-            var link = document.createElement("a")
-            link.href = url
-            link.appendChild(document.createTextNode(text))
-            range.insertNode(link)
-            setCursorAfterNode(link)
-            link
-        }
-    })
-
     // 调整编辑区的内容格式
     function adjustEditor() {
         // 编辑区内容被全部删除时，增加一个段落标签
@@ -71,6 +32,16 @@ $(document).ready(function() {
             $(div).before('<p>' + div.innerHTML + '</p>')
             div.remove() 
         }
+
+        // 节点调整
+        var nodes = editor.childNodes
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i]
+            if (node.nodeName == '#text') {
+                // console.log($(node))
+            }
+        }
+
     }
 
     // 绑定编辑区内容变化事件
@@ -91,6 +62,7 @@ $(document).ready(function() {
 
         // console.log(curNode.nodeName);
         // console.log(parentNode.nodeName);
+
         if (event.key == ' ') {
             // 触发标题块markdown语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML in titleTagMap) {
@@ -122,10 +94,26 @@ $(document).ready(function() {
                 $(parentNode).remove()
             }
 
+            // 触发水平线markdown语法
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '--')) {
+                event.preventDefault()
+                var html = '<hr /><p><br><p>'
+                $(parentNode).after(html)
+                setCursorAfterNode(parentNode.nextSibling)
+                $(parentNode).remove()
+                // var html = '<a class="file_link" contenteditable="false" href="www.baidu.com">百度中国</a>'
+                // var range = getRange()
+                // range.insertNode()
+                // $(parentNode).after(html)
+                // setCursorAfterNode(parentNode.nextSibling)
+                // $(parentNode).remove()
+                return
+            }
+
         }
 
         if (event.key == 'Enter') {
-             // 换行时清除字体格式(粗体、下划线、斜体)
+            // 换行时清除字体格式(粗体、下划线、斜体)
             var parents = $(curNode).parentsUntil(blockNode)
             var fontTags = {
                 'U' : 'underline',

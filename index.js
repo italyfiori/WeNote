@@ -106,3 +106,10 @@ ipcMain.on('send_file', (event, data) => {
         event.sender.send('send_file', payload)
     })
 })
+
+// var child_process = require('child_process')
+// var file_name = '/Users/baidu/Downloads/JavaScript高级程序设计（第3版）非扫描版.pdf'
+// setTimeout(function() {
+//   child_process.exec('open ' + file_name)
+// }, 3000)
+
