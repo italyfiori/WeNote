@@ -15,6 +15,57 @@ $(document).ready(function() {
         }
     })
 
+     // 失去焦点时记录光标位置
+    var lastRange = null
+    $('#editor').blur(function(){
+        var range = getRange()
+        if (range) {
+            lastRange = range.cloneRange()
+        }
+    })
+
+    // 恢复光标位置
+    function recoverRange() {
+        if (lastRange) {
+            console.log('recover')
+            let selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(lastRange)
+        }
+        return lastRange
+    }
+
+    // 插入链接
+    $('#insert_link').click(function() {
+        var url  = link_url.value
+        var text = link_text.value
+        if (text == '') {
+            text = url
+        }
+        $('#linkModal').modal('hide')
+        var range = recoverRange()
+        if (range) {
+            var link = document.createElement("a")
+            link.href = url
+            link.appendChild(document.createTextNode(text))
+            range.insertNode(link)
+            setCursorAfterNode(link)
+            document.getElementById("link_url").value = ''
+            document.getElementById("link_text").value = ''
+        }
+    })
+
+    const ipc = require('electron').ipcRenderer
+    $('#insertfile').click(function() {
+        console.log('insert file')
+        ipc.send('open-file-dialog')
+    })
+
+    ipc.on('selected-directory', function (event, path) {
+        console.log(path)
+        // document.getElementById('selected-file').innerHTML = `You selected: ${path}`
+    })
+
     // 调整编辑区的内容格式
     function adjustEditor() {
         // 编辑区内容被全部删除时，增加一个段落标签
@@ -97,7 +148,7 @@ $(document).ready(function() {
             // 触发水平线markdown语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '--')) {
                 event.preventDefault()
-                var html = '<hr /><p><br><p>'
+                var html = '<hr contenteditable="false" /><p><br><p>'
                 $(parentNode).after(html)
                 setCursorAfterNode(parentNode.nextSibling)
                 $(parentNode).remove()
