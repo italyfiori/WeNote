@@ -79,9 +79,9 @@ $(document).ready(function() {
         // 编辑区下的div标签转换成p标签
         var divs = editor.querySelectorAll("div");
         for (var i = 0; i < divs.length; i++) {
-            var div = divs[i]; 
-            $(div).before('<p>' + div.innerHTML + '</p>')
-            div.remove() 
+            // var div = divs[i]; 
+            // $(div).before('<p>' + div.innerHTML + '</p>')
+            // div.remove() 
         }
 
         // 节点调整
@@ -175,6 +175,38 @@ $(document).ready(function() {
                 setCursor(parentNode.nextSibling.firstChild.firstChild.nextSibling)
                 console.log(parentNode.nextSibling.firstChild.firstChild.nextSibling)
                 $(parentNode).remove()
+
+                Array.prototype.forEach.call(
+                  document.querySelectorAll("table td"),
+                  function (th) {
+                    th.style.position = 'relative';
+
+                    var grip = document.createElement('div');
+                    grip.innerHTML = "&nbsp;";
+                    grip.contentEditable = "false";
+                    grip.style.top = 0;
+                    grip.style.right = 0;
+                    grip.style.bottom = 0;
+                    grip.style.width = '5px';
+                    grip.style.position = 'absolute';
+                    grip.style.cursor = 'col-resize';
+                    grip.addEventListener('mousedown', function (e) {
+                        thElm = th;
+                        startOffset = th.offsetWidth - e.pageX;
+                    });
+
+                    th.appendChild(grip);
+                  });
+
+                document.addEventListener('mousemove', function (e) {
+                  if (thElm) {
+                    thElm.style.width = startOffset + e.pageX + 'px';
+                  }
+                });
+
+                document.addEventListener('mouseup', function () {
+                    thElm = undefined;
+                });
                 return
             }
         }
@@ -186,7 +218,7 @@ $(document).ready(function() {
             // 插入首行
             html += '<tr>'
             for (var i = 0; i < col; i++) {
-                html += '<td><p>' + titles[i] + '</p></td>'
+                html += '<td class="head"><p>' + titles[i] + '</p></td>'
             }
             html += '</tr>'
 
@@ -202,6 +234,20 @@ $(document).ready(function() {
             html += '</table>'
             return html
         }
+
+        var thElm;
+    var startOffset;
+
+
+    document.addEventListener('mousemove', function (e) {
+      if (thElm) {
+        thElm.style.width = startOffset + e.pageX + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', function () {
+        thElm = undefined;
+    });
 
         if (event.key == 'Enter') {
             // 换行时清除字体格式(粗体、下划线、斜体)

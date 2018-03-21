@@ -59,9 +59,15 @@ body {
 }
 
 #editor table td {
-    width: 100px;
+    width: 60px;
     border: 1px solid rgb(221, 221, 221);
     padding: 7px 10px;
+    vertical-align: top;
+    text-align: left;
+}
+
+#editor table td.head {
+    background-color: rgb(240, 240, 240);
 }
 
 #editor td p {
