@@ -143,6 +143,7 @@ $(document).ready(function() {
                 $(parentNode).after(html)
                 setCursorAfterNode(parentNode)
                 $(parentNode).remove()
+                return
             }
 
             // 触发水平线markdown语法
@@ -160,7 +161,46 @@ $(document).ready(function() {
                 // $(parentNode).remove()
                 return
             }
+        }
 
+        if (event.key == 'Enter') {
+            var pat = /^\|(([^\|]+)\|)+$/
+            if (pat.test(innerHTML)) {
+                event.preventDefault()
+                var titles = innerHTML.substr(1, innerHTML.length - 2)
+                var titles = titles.split('|')
+                var html = createTableHtml(titles)
+                console.log(html)
+                $(parentNode).after(html)
+                setCursor(parentNode.nextSibling.firstChild.firstChild.nextSibling)
+                console.log(parentNode.nextSibling.firstChild.firstChild.nextSibling)
+                $(parentNode).remove()
+                return
+            }
+        }
+
+        function createTableHtml(titles) {
+            var html  = '<table border="1">'
+            var col = titles.length
+
+            // 插入首行
+            html += '<tr>'
+            for (var i = 0; i < col; i++) {
+                html += '<td><p>' + titles[i] + '</p></td>'
+            }
+            html += '</tr>'
+
+            // 首行后插入2行
+            for (var i = 0; i < 2; i++) {
+                html += '<tr>'
+                for (var i = 0; i < col; i++) {
+                    html += '<td><p><br/></p></td>'
+                }
+                html += '</tr>'
+            }
+
+            html += '</table>'
+            return html
         }
 
         if (event.key == 'Enter') {

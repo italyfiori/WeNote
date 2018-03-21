@@ -54,8 +54,23 @@ body {
     border-collapse: collapse;
 }
 
+#editor table tr{
+    height: 21px;
+}
+
 #editor table td {
     width: 100px;
+    border: 1px solid rgb(221, 221, 221);
+    padding: 7px 10px;
+}
+
+#editor td p {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+#editor td p:first-child {
+    margin: 0;
 }
 
 #editor h1{
