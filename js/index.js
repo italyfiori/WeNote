@@ -92,7 +92,6 @@ $(document).ready(function() {
                 // console.log($(node))
             }
         }
-
     }
 
     // 绑定编辑区内容变化事件
@@ -153,104 +152,36 @@ $(document).ready(function() {
                 $(parentNode).after(html)
                 setCursorAfterNode(parentNode.nextSibling)
                 $(parentNode).remove()
-                // var html = '<a class="file_link" contenteditable="false" href="www.baidu.com">百度中国</a>'
-                // var range = getRange()
-                // range.insertNode()
-                // $(parentNode).after(html)
-                // setCursorAfterNode(parentNode.nextSibling)
-                // $(parentNode).remove()
                 return
             }
         }
 
         if (event.key == 'Enter') {
+            // 触发表格markdown语法
             var pat = /^\|(([^\|]+)\|)+$/
             if (pat.test(innerHTML)) {
                 event.preventDefault()
                 var titles = innerHTML.substr(1, innerHTML.length - 2)
                 var titles = titles.split('|')
                 var html = createTableHtml(titles)
-                console.log(html)
                 $(parentNode).after(html)
+                makeTableResizeable(parentNode.nextSibling)
                 setCursor(parentNode.nextSibling.firstChild.firstChild.nextSibling)
-                console.log(parentNode.nextSibling.firstChild.firstChild.nextSibling)
                 $(parentNode).remove()
-
-                Array.prototype.forEach.call(
-                  document.querySelectorAll("table td"),
-                  function (th) {
-                    th.style.position = 'relative';
-
-                    var grip = document.createElement('div');
-                    grip.innerHTML = "&nbsp;";
-                    grip.contentEditable = "false";
-                    grip.style.top = 0;
-                    grip.style.right = 0;
-                    grip.style.bottom = 0;
-                    grip.style.width = '5px';
-                    grip.style.position = 'absolute';
-                    grip.style.cursor = 'col-resize';
-                    grip.addEventListener('mousedown', function (e) {
-                        thElm = th;
-                        startOffset = th.offsetWidth - e.pageX;
-                    });
-
-                    th.appendChild(grip);
-                  });
-
-                document.addEventListener('mousemove', function (e) {
-                  if (thElm) {
-                    thElm.style.width = startOffset + e.pageX + 'px';
-                  }
-                });
-
-                document.addEventListener('mouseup', function () {
-                    thElm = undefined;
-                });
                 return
             }
-        }
 
-        function createTableHtml(titles) {
-            var html  = '<table border="1">'
-            var col = titles.length
-
-            // 插入首行
-            html += '<tr>'
-            for (var i = 0; i < col; i++) {
-                html += '<td class="head"><p>' + titles[i] + '</p></td>'
-            }
-            html += '</tr>'
-
-            // 首行后插入2行
-            for (var i = 0; i < 2; i++) {
-                html += '<tr>'
-                for (var i = 0; i < col; i++) {
-                    html += '<td><p><br/></p></td>'
-                }
-                html += '</tr>'
+            // 表格换行时，进入下一个段落
+            if (curNode == editor) {
+                event.preventDefault()
+                var p = document.createElement("p")
+                p.appendChild(document.createElement('br'))
+                range.insertNode(p)
+                setCursor(p)
+                return
             }
 
-            html += '</table>'
-            return html
-        }
-
-        var thElm;
-    var startOffset;
-
-
-    document.addEventListener('mousemove', function (e) {
-      if (thElm) {
-        thElm.style.width = startOffset + e.pageX + 'px';
-      }
-    });
-
-    document.addEventListener('mouseup', function () {
-        thElm = undefined;
-    });
-
-        if (event.key == 'Enter') {
-            // 换行时清除字体格式(粗体、下划线、斜体)
+            // 换行时先清除字体格式(粗体、下划线、斜体)
             var parents = $(curNode).parentsUntil(blockNode)
             var fontTags = {
                 'U' : 'underline',
@@ -289,6 +220,7 @@ $(document).ready(function() {
                 setCursorAfterNode(parentNode)
                 return
             } 
+
         }
     })
 })

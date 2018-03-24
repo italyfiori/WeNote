@@ -52,6 +52,7 @@ body {
 #editor table {
     border: 1;
     border-collapse: collapse;
+    margin-bottom: 10px;
 }
 
 #editor table tr{
@@ -64,6 +65,7 @@ body {
     padding: 7px 10px;
     vertical-align: top;
     text-align: left;
+    position: relative;
 }
 
 #editor table td.head {
