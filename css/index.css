@@ -67,7 +67,9 @@ body {
     outline: none;
 }
 
-
+img:hover {
+    cursor: move;
+}
 
 #editor :first-child {
     margin-top: 20px;

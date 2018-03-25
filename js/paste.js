@@ -31,6 +31,10 @@ $(document).ready(function() {
                             width = width / 2
                             var html = '<img width=' + width + ' src="' + data.image_url + '">'
                             document.execCommand('insertHTML', false, html)
+                            // 点击后选中当前图像
+                            $('img').click(function() {
+                                selectNode(this)
+                            })
                         }
                     })
                 }
