@@ -3,10 +3,14 @@ body {
 	margin: 0;
 }
 
+#main-container {
+    white-space: nowrap;
+    height: 1000px;
+}
+
 #main-container > div {
     vertical-align: top;
-    height: 1000px;
-    white-space: normal;
+    
 }
 
 #side-menu {
@@ -27,7 +31,7 @@ body {
 
 #main-content {
     display: inline-block;
-    width: 800px;
+    width: 870px;
 }
 
 #title-bar {
@@ -43,6 +47,7 @@ body {
 
 #editor {    
     padding-left: 20px;
+    padding-right: 20px;
     border: none;
     outline: none;
 }
