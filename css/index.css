@@ -10,7 +10,6 @@ body {
 
 #main-container > div {
     vertical-align: top;
-    
 }
 
 #side-menu {
@@ -32,6 +31,11 @@ body {
 #main-content {
     display: inline-block;
     width: 870px;
+    height: 100%;
+}
+
+#editor-container {
+    height: 100%;
 }
 
 #title-bar {
@@ -43,6 +47,7 @@ body {
     outline: none;
     font-size: 28px;
     padding-left: 20px;
+    line-height: 60px;
 }
 
 #editor {    
@@ -50,6 +55,7 @@ body {
     padding-right: 20px;
     border: none;
     outline: none;
+    height: 100%;
 }
 
 #title-bar .btn-group, #title-bar .dropdown{
@@ -64,7 +70,7 @@ body {
 
 
 #editor :first-child {
-    margin-top: 0;
+    margin-top: 20px;
 }
 
 .modal-dialog label {

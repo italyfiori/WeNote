@@ -15,7 +15,7 @@ $(document).ready(function() {
         }
     })
 
-     // 失去焦点时记录光标位置
+    // 失去焦点时记录光标位置
     var lastRange = null
     $('#editor').blur(function(){
         var range = getRange()
