@@ -103,7 +103,10 @@ function makeTableResizeable(table) {
 
     document.addEventListener('mousemove', function (e) {
       if (tdElm) {
-        tdElm.style.width = startOffset + e.pageX + 'px';
+        var col = tdElm.cellIndex + 1
+        var width = startOffset + e.pageX + 'px';
+        $(tdElm.parentNode).siblings().find('td:nth-child(' + col + ')').css('width', width)
+        tdElm.style.width = width
       }
     });
 
