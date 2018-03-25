@@ -4,10 +4,10 @@
 		<title>my wiki</title>
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 		<script>
-            if (typeof module === 'object') {
-                window.jQuery = window.$ = module.exports;
-            };
-        </script>
+		if (typeof module === 'object') {
+		window.jQuery = window.$ = module.exports;
+		};
+		</script>
 		<script type="text/javascript" src="js/bootstrap.js"></script>
 		<script type="text/javascript" src="js/init.js"></script>
 		<script type="text/javascript" src="js/common.js"></script>
@@ -19,97 +19,103 @@
 		<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css">
 	</head>
 	<body>
-		<div id="title-bar">
-			<div class="dropdown" style="display: inline-block; vertical-align: bottom;">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
-				正文
-				<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-					<li><a href="#">正文</a></li>
-					<li><a href="#">标题1</a></li>
-					<li><a href="#">标题2</a></li>
-					<li><a href="#">标题3</a></li>
-				</ul>
-			</div>
-			<div class='btn-group' role='group'>
-				<a class='btn btn-default' type='button' data-role='font' href='#'><i class='fa fa-font'></i></a>
-				<a class='btn btn-default' type='button' data-role='bold' href='#'><b>B</b></a>
-				<a class='btn btn-default' type='button' data-role='italic' href='#' style="" ="width: 34px;"><em>I</em></a>
-				<a class='btn btn-default' type='button' data-role='underline' href='#'><u>U</u></a>
-			</div>
-			<div class='btn-group' role='group'>
-				<a class='btn btn-default' type='button' data-role='justifyLeft' href='#'><i class='fa fa-align-left'></i></a>
-				<a class='btn btn-default' type='button' data-role='justifyCenter' href='#'><i class='fa fa-align-center'></i></a>
-				<a class='btn btn-default' type='button' data-role='justifyRight' href='#'><i class='fa fa-align-right'></i></a>
-			</div>
-			<div class='btn-group' role='group'>
-				<a class='btn btn-default' type='button' data-role='insertUnorderedList' href='#'><i class='fa fa-list-ul'></i></a>
-				<a class='btn btn-default' type='button' data-role='insertOrderedList' href='#'><i class='fa fa-list-ol'></i></a>
-			</div>
-			<div class='btn-group' role='group'>
-				<a class='btn btn-default' type='button' data-role='insertQuote' href='#'><i class='fa fa-quote-left'></i></a>
-				<a class='btn btn-default' type='button' data-role='insertCode' href='#'><i class='fa fa-code'></i></a>
-				<a class='btn btn-default' type='button' data-role='inserTable' href='#'><i class='fa fa-table'></i></a>
-			</div>
-			<div class='btn-group' role='group'>
-				<a class='btn btn-default' type='button' data-role='insertimage' href='#'><i class='fa fa-image'></i></a>
-				<a class='btn btn-default' type='button' data-role='insertfile' href='#'><i class='fa fa-file-text-o'></i></a>
-				<a class='btn btn-default' type='button' data-role='createlink' href='#' data-toggle="modal" data-target="#linkModal" ><i class='fa fa-link'></i></a>
-				
-				<div style="position: fixed; top:200px" class="modal fade" id="linkModal" tabindex="-1" role="dialog" aria-labelledby="linkModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-title" id="linkModalLabel">插入链接</h4>
-				      </div>
-				      <div class="modal-body">
-				        <form class="form-horizontal">
-						  <div class="form-group">
-						    <label for="link_url" class="col-sm-2 control-label">地址</label>
-						    <div class="col-sm-10">
-						      <input type="text" class="form-control" id="link_url">
-						    </div>
-						  </div>
-						  <div class="form-group">
-						    <label for="link_text" class="col-sm-2 control-label">链接文字</label>
-						    <div class="col-sm-10">
-						      <input type="text" class="form-control" id="link_text">
-						    </div>
-						  </div>
-						</form>
-				      </div>
-				      <div class="modal-footer">
-				        <button type="button" class="btn btn-primary" id="insert_link">插入</button>
-				        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				      </div>
-				    </div>
-				  </div>
+		<div id="main-container">
+			<div id="side-menu">menu</div>
+			<div id="side-list">list</div>
+			<div id="main-content">
+				<div id="title-bar">
+					<div class="dropdown" style="display: inline-block; vertical-align: bottom;">
+						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+						正文
+						<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+							<li><a href="#">正文</a></li>
+							<li><a href="#">标题1</a></li>
+							<li><a href="#">标题2</a></li>
+							<li><a href="#">标题3</a></li>
+						</ul>
+					</div>
+					<div class='btn-group' role='group'>
+						<a class='btn btn-default' type='button' data-role='font' href='#'><i class='fa fa-font'></i></a>
+						<a class='btn btn-default' type='button' data-role='bold' href='#'><b>B</b></a>
+						<a class='btn btn-default' type='button' data-role='italic' href='#' style="" ="width: 34px;"><em>I</em></a>
+						<a class='btn btn-default' type='button' data-role='underline' href='#'><u>U</u></a>
+					</div>
+					<div class='btn-group' role='group'>
+						<a class='btn btn-default' type='button' data-role='justifyLeft' href='#'><i class='fa fa-align-left'></i></a>
+						<a class='btn btn-default' type='button' data-role='justifyCenter' href='#'><i class='fa fa-align-center'></i></a>
+						<a class='btn btn-default' type='button' data-role='justifyRight' href='#'><i class='fa fa-align-right'></i></a>
+					</div>
+					<div class='btn-group' role='group'>
+						<a class='btn btn-default' type='button' data-role='insertUnorderedList' href='#'><i class='fa fa-list-ul'></i></a>
+						<a class='btn btn-default' type='button' data-role='insertOrderedList' href='#'><i class='fa fa-list-ol'></i></a>
+					</div>
+					<div class='btn-group' role='group'>
+						<a class='btn btn-default' type='button' data-role='insertQuote' href='#'><i class='fa fa-quote-left'></i></a>
+						<a class='btn btn-default' type='button' data-role='insertCode' href='#'><i class='fa fa-code'></i></a>
+						<a class='btn btn-default' type='button' data-role='inserTable' href='#'><i class='fa fa-table'></i></a>
+					</div>
+					<div class='btn-group' role='group'>
+						<a class='btn btn-default' type='button' data-role='insertimage' href='#'><i class='fa fa-image'></i></a>
+						<a class='btn btn-default' type='button' data-role='insertfile' href='#'><i class='fa fa-file-text-o'></i></a>
+						<a class='btn btn-default' type='button' data-role='createlink' href='#' data-toggle="modal" data-target="#linkModal" ><i class='fa fa-link'></i></a>
+						
+						<div style="position: fixed; top:200px" class="modal fade" id="linkModal" tabindex="-1" role="dialog" aria-labelledby="linkModalLabel">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="linkModalLabel">插入链接</h4>
+									</div>
+									<div class="modal-body">
+										<form class="form-horizontal">
+											<div class="form-group">
+												<label for="link_url" class="col-sm-2 control-label">地址</label>
+												<div class="col-sm-10">
+													<input type="text" class="form-control" id="link_url">
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="link_text" class="col-sm-2 control-label">链接文字</label>
+												<div class="col-sm-10">
+													<input type="text" class="form-control" id="link_text">
+												</div>
+											</div>
+										</form>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-primary" id="insert_link">插入</button>
+										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class='btn-group' role='group' >
+						<a class='btn btn-default' type='button' data-role='undo' href='#'><i class='fa fa-undo'></i></a>
+						<a class='btn btn-default' type='button' data-role='redo' href='#'><i class='fa fa-repeat'></i></a>
+					</div>
+					<div class="dropdown" style="display: inline-block; vertical-align: bottom;">
+						<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+						工具
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+							<li><a href="#"></a></li>
+							<li><a href="#">大纲</a></li>
+							<li><a href="#">附件</a></li>
+							<li><a href="#">加密</a></li>
+						</ul>
+					</div>
 				</div>
-
-			</div>
-			<div class='btn-group' role='group' >
-				<a class='btn btn-default' type='button' data-role='undo' href='#'><i class='fa fa-undo'></i></a>
-				<a class='btn btn-default' type='button' data-role='redo' href='#'><i class='fa fa-repeat'></i></a>
-			</div>
-			<div class="dropdown" style="display: inline-block; vertical-align: bottom;">
-				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
-				工具
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-					<li><a href="#"></a></li>
-					<li><a href="#">大纲</a></li>
-					<li><a href="#">附件</a></li>
-					<li><a href="#">加密</a></li>
-				</ul>
+				<div id="editor-container" >
+					<input id="title-input" type="text" placeholder="请输入标题">
+					<div id="editor" contenteditable="true">
+						<p><br/></p>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div id="editor-container" >
-			<input id="title-input" type="text" placeholder="请输入标题">
-			<div id="editor" contenteditable="true">
-				<p><br/></p>
-			</div>
-		</div>
+		
 	</body>
 </html>
