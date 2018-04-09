@@ -3,32 +3,56 @@ const {ipcRenderer} = require('electron')
 var EventEmitter  = require('events').EventEmitter; 
 var event_emitter = new EventEmitter(); 
 
-// 上传文件
-function sendFile(file_data, func) {
-    // 发送文件提
-    var message_id = 'message' + getRandomInt(1000000)
-    var payload = {'message_id': message_id, 'data': file_data}
-    ipcRenderer.send('send_file', payload)
+// 发送消息到主进程
+function sendMessage(message, data, func) {
+    // 发送消息的主进程
+    var message_id = message + ':' +  getRandomInt(1000000)
+    var payload    = {'message_id': message_id, 'data': data}
+    ipcRenderer.send(message, payload)
 
-    // 接收回调
-    var event_id = 'send_file:' + message_id
-    event_emitter.once(event_id, function(data) {
+    // 接受event回调
+    event_emitter.once(message_id, function(data) {
         func(data)
     })
 
     // 超时处理
     setTimeout(function() {
-        event_emitter.removeAllListeners(event_id)
+        event_emitter.removeAllListeners(message_id)
     }, 5000);
 }
 
-// 监听上传文件回调
-ipcRenderer.on('send_file', (event, data) => {
-    if (data.code == 0 && data.message_id) {
-        var event_id = 'send_file:' + data.message_id
-        // 触发回调
-        event_emitter.emit(event_id, data)
-        return
-    }
-    console.log('send file error:' + data.msg)
-})
+function sendFile(data, func) {
+    sendMessage('send_file', data, func)
+}
+
+function getMenu(func) {
+    sendMessage('get_menu', {}, func)
+}
+
+function createDir(parent_id, func) {
+    sendMessage('create_dir', {'parent_id': parent_id}, func)
+}
+
+// 监听主进程消息
+function listenIpc(message) {
+    ipcRenderer.on(message, (event, data) => {
+        if (data.code == 0 && data.message_id) {
+            event_emitter.emit(data.message_id, data)
+            return
+        }
+        console.error('get message error:' + data.msg)
+    })
+}
+
+// 监听回调
+var messages = ['send_file', 'get_menu', 'create_dir']
+for (var i = 0; i < messages.length; i++) {
+    var message = messages[i]
+    listenIpc(message)
+}
+
+
+
+
+
+

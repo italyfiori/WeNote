@@ -2,10 +2,10 @@
 <html>
 	<head>
 		<title>my wiki</title>
-		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 		<script>
 		if (typeof module === 'object') {
-		window.jQuery = window.$ = module.exports;
+			window.jquery = window.jQuery = window.$ = module.exports;
 		};
 		</script>
 		<script type="text/javascript" src="js/bootstrap.js"></script>
@@ -17,10 +17,29 @@
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/index.css">
 		<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css">
+
+		<link rel="stylesheet" href="jstree/dist/themes/default/style.min.css">
+		<script src="jstree/dist/jstree.js"></script>
 	</head>
 	<body>
 		<div id="main-container">
-			<div id="side-menu">menu</div>
+			<!-- 侧边栏 -->
+			<div id="side-menu">
+				<div id="actions">
+					<div class="dropdown" style="display: inline-block;">
+					  <button class="btn btn-default dropdown-toggle" type="button" id="menu-actions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    新建
+					    <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu" aria-labelledby="menu-actions">
+					    <li id="create-note"><a href="#">笔记</a></li>
+					    <li id="create-directory"><a href="#">文件夹</a></li>
+					  </ul>
+					</div>
+					<button id="save-note" type="button" class="btn btn-default">保存</button>
+				</div>
+				<div id="menu-tree" style="margin-top:10px;"></div>
+			</div>
 			<div id="side-list">list</div>
 			<div id="main-content">
 				<div id="title-bar">

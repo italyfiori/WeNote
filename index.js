@@ -107,9 +107,63 @@ ipcMain.on('send_file', (event, data) => {
     })
 })
 
-// var child_process = require('child_process')
-// var file_name = '/Users/baidu/Downloads/JavaScript高级程序设计（第3版）非扫描版.pdf'
-// setTimeout(function() {
-//   child_process.exec('open ' + file_name)
-// }, 3000)
+function getMenu() {
+  var menu = {
+      'data': [
+        {'text': '最新文档', 'id': 'new'},
+        {'text': '我的文档', 'id': '0'},
+        {'text': '回收站', 'id': 'recycle'},
+      ]
+  }
+  return menu
+}
+
+
+ipcMain.on('get_menu', (event, data) => {
+  var menu = getMenu()
+  var payload = {
+    'code': 0,
+    'message_id': data.message_id,
+    'menu': menu,
+  }
+  event.sender.send('get_menu', payload)
+})
+
+
+var sqlite3 = require('sqlite3-offline').verbose();
+var db_file = path.join(__dirname, 'data/db/wiki.db')
+console.log(db_file)
+var db = new sqlite3.Database(db_file);
+
+
+// 创建目录
+ipcMain.on('create_dir', (event, ret) => {
+  console.log(ret)
+  if(ret.data.parent_id >= 0) {
+    var sql = "insert into note(title, is_del, note_type, create_time, update_time) values('新建目录', 1, 1, 0, 0)"
+    db.run(sql, function(err, res) {
+      // console.log(err)
+      // console.log(res)
+      // return
+      // // console.log(this.changes);
+      // // console.log(this.lastId);
+      if(this.changes > 0 && this.lastID) {
+        var payload = {
+          code: 0,
+          message_id: ret.message_id,
+          msg: 'success',
+          note_id: this.lastID
+        }
+        event.sender.send('create_dir', payload)
+      } else {
+        var payload = {
+          code: -1,
+          message_id: ret.message_id,
+          msg: 'fail',
+        }
+        event.sender.send('create_dir', payload)
+      }
+    })
+  }  
+})
 

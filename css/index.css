@@ -67,12 +67,31 @@ body {
     outline: none;
 }
 
+#actions {
+    padding: 10px 0 10px 20px; 
+    border-bottom: 1px solid #eee;
+}
+
+#save-note {
+    margin-left: 10px;
+}
+
+#actions .btn, #actions .btn:hover, #actions .btn:focus {
+    /*background-color: white;*/
+    /*outline: none;*/
+    /*border: none;*/
+}
+
+#editor p {
+    /*margin-bottom: 10px;*/
+}
+
 img:hover {
     cursor: move;
 }
 
-#editor :first-child {
-    margin-top: 20px;
+#editor > :first-child {
+    margin-top: 10px;
 }
 
 .modal-dialog label {
@@ -88,12 +107,14 @@ img:hover {
     clear: both
 }
 
-
+#editor ol, #editor ul {
+    margin-top: 10px;
+}
 
 #editor table {
     border: 1;
     border-collapse: collapse;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 #editor table tr{

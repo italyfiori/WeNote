@@ -1,9 +1,64 @@
 $(document).ready(function() {
-    // 功能按钮
-    // $('#title-bar .btn').click(function(event) {
-    //     var command = this.getAttribute('data-role')
-    //     document.execCommand(command, false, false)
-    // })
+    
+    var menu_tree = $('#menu-tree').jstree(true)
+
+    // 获取菜单
+    getMenu(function(data) {
+        var menu = {
+            "core": {
+                'check_callback': true,
+                'multiple': false,
+            },
+            "plugins" : ["dnd","contextmenu"]
+        }
+        menu.core.data = data.menu.data
+        $('#menu-tree').jstree(menu)
+        // setTimeout(function() {
+        //     $('#menu-tree').jstree(true).select_node('root')
+        // }, 100)
+        
+
+    })
+
+    function create_node() {
+        var ref = $('#menu-tree').jstree(true)
+        var sel = ref.get_selected();
+        if(!sel.length) { return false; }
+        sel = sel[0];
+        sel = ref.create_node(sel, {"type":"file", "id": 100});
+        if(sel) {
+            ref.edit(sel);
+            ref.select_node('100')
+        }
+    };
+
+
+    // 创建目录
+    $('#create-directory').click(function() {
+        var ref = $('#menu-tree').jstree(true)
+        var sel = ref.get_selected();
+        if(!sel.length) { return false; }
+        
+        console.log(sel)
+        var parent_id = sel[0];
+        var node = {
+          "id": "p3",
+          "text": "Parent-3"
+        }
+        createDir(parent_id, function(data) {
+            var node_id = data.note_id
+            $('#menu-tree').jstree("create_node", parent_id, node, "last")
+            console.log(data)
+        })
+        // createDir()
+        // create_node()
+        // var node = {
+        //   "id": "p3",
+        //   "text": "Parent-3"
+        // }
+        // $('#menu-tree').jstree("create_node", "root", node, "last")
+        // $('#menu-tree').jstree(true).select_node('p3')
+    })
 
     // 标题输入框获取光标
 	$('#title-input').focus()
@@ -136,7 +191,7 @@ $(document).ready(function() {
             }
 
             // 触发列表块markdown语法
-            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*') ) {
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*' || innerHTML == '-') ) {
                 event.preventDefault()
                 var html = innerHTML == '1.' ? '<ol><li><br/></li></ol>' : '<ul><li><br/></li></ul>'
                 $(parentNode).after(html)
@@ -172,7 +227,8 @@ $(document).ready(function() {
             }
 
             // 表格换行时，进入下一个段落
-            if (curNode == editor) {
+            console.log(curNode.nodeName)
+            if (curNode == editor || curNode.nodeName == 'TD') {
                 event.preventDefault()
                 var p = document.createElement("p")
                 p.appendChild(document.createElement('br'))
