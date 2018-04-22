@@ -43,7 +43,7 @@ function getCurNode() {
 }
 
 // 获取第一个块节点
-var blockTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'LI']
+var blockTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'LI', 'PRE', 'DIV']
 function getBlockContainer() {
     var curNode = getCurNode()
     var tagName = curNode.tagName

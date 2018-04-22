@@ -7,11 +7,18 @@ $(document).ready(function() {
             var len = items.length
             var blob = null
         }
+
+        // 点击后选中当前图像
+        setTimeout(function() {
+            $('img').click(function() {
+                selectNode(this)
+            })
+        }, 100)
         
         for (var i = 0; i < len; i++) {        
             if (items[i].type.indexOf("image") !== -1) {
                 blob = items[i].getAsFile();
-            }      
+            }
         }
 
         if (blob !== null) {
@@ -24,17 +31,13 @@ $(document).ready(function() {
 
                 // 图像读取完成，执行回调     
                 var bufferReader = new FileReader();
-                bufferReader.onload = function(event) {           
+                bufferReader.onload = function(event) {       
                     var buffer = new Buffer(bufferReader.result)
                     sendFile(buffer, function(data) {
                         if (data.code == 0 && data.image_url) {
                             width = width / 2
                             var html = '<img width=' + width + ' src="' + data.image_url + '">'
                             document.execCommand('insertHTML', false, html)
-                            // 点击后选中当前图像
-                            $('img').click(function() {
-                                selectNode(this)
-                            })
                         }
                     })
                 }

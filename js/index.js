@@ -1,32 +1,34 @@
-$(document).ready(function() {
-    
+$(document).ready(function () {
+
     var menu_tree = $('#menu-tree').jstree(true)
 
     // 获取菜单
-    getMenu(function(data) {
+    getMenu(function (data) {
         var menu = {
             "core": {
                 'check_callback': true,
                 'multiple': false,
             },
-            "plugins" : ["dnd","contextmenu"]
+            "plugins": ["dnd", "contextmenu"]
         }
         menu.core.data = data.menu.data
         $('#menu-tree').jstree(menu)
         // setTimeout(function() {
         //     $('#menu-tree').jstree(true).select_node('root')
         // }, 100)
-        
+
 
     })
 
     function create_node() {
         var ref = $('#menu-tree').jstree(true)
         var sel = ref.get_selected();
-        if(!sel.length) { return false; }
+        if (!sel.length) {
+            return false;
+        }
         sel = sel[0];
-        sel = ref.create_node(sel, {"type":"file", "id": 100});
-        if(sel) {
+        sel = ref.create_node(sel, {"type": "file", "id": 100});
+        if (sel) {
             ref.edit(sel);
             ref.select_node('100')
         }
@@ -34,22 +36,25 @@ $(document).ready(function() {
 
 
     // 创建目录
-    $('#create-directory').click(function() {
+    $('#create-directory').click(function () {
         var ref = $('#menu-tree').jstree(true)
         var sel = ref.get_selected();
-        if(!sel.length) { return false; }
-        
+        if (!sel.length) {
+            return false;
+        }
+
         console.log(sel)
         var parent_id = sel[0];
         var node = {
-          "id": "p3",
-          "text": "Parent-3"
+            "id": "p3",
+            "text": "Parent-3"
         }
-        createDir(parent_id, function(data) {
+        createDir(parent_id, function (data) {
             var node_id = data.note_id
             $('#menu-tree').jstree("create_node", parent_id, node, "last")
             console.log(data)
         })
+        return 0
         // createDir()
         // create_node()
         // var node = {
@@ -61,10 +66,10 @@ $(document).ready(function() {
     })
 
     // 标题输入框获取光标
-	$('#title-input').focus()
+    $('#title-input').focus()
 
     // 在标题输入框中键入回车键跳到编辑器中
-    $('#title-input').keypress(function(event) {
+    $('#title-input').keypress(function (event) {
         if (event.key == "Enter") {
             editor.focus()
         }
@@ -72,7 +77,7 @@ $(document).ready(function() {
 
     // 失去焦点时记录光标位置
     var lastRange = null
-    $('#editor').blur(function(){
+    $('#editor').blur(function () {
         var range = getRange()
         if (range) {
             lastRange = range.cloneRange()
@@ -91,8 +96,8 @@ $(document).ready(function() {
     }
 
     // 插入链接
-    $('#insert_link').click(function() {
-        var url  = link_url.value
+    $('#insert_link').click(function () {
+        var url = link_url.value
         var text = link_text.value
         if (text == '') {
             text = url
@@ -111,7 +116,7 @@ $(document).ready(function() {
     })
 
     const ipc = require('electron').ipcRenderer
-    $('#insertfile').click(function() {
+    $('#insertfile').click(function () {
         console.log('insert file')
         ipc.send('open-file-dialog')
     })
@@ -150,13 +155,29 @@ $(document).ready(function() {
     }
 
     // 绑定编辑区内容变化事件
-    $('#editor').bind("DOMSubtreeModified",function(){
-        setTimeout(function() {
+    $('#editor').bind("DOMSubtreeModified", function () {
+        setTimeout(function () {
             adjustEditor()
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
 
-    $('#editor').keypress(function(event) {
+    $('#editor').keydown(function(event) {
+        var sel = window.getSelection()
+        var range = sel.getRangeAt(0)
+        var blockNode = getBlockContainer()
+
+        if (event.key == 'Backspace') {
+            // 引用块回退删除
+            if (range.startOffset == 0 && range.endOffset == 0) {
+                if (blockNode.nodeName == 'P' && blockNode.parentNode.nodeName == 'BLOCKQUOTE') {
+                    $(blockNode.parentNode).remove()
+                    return false
+                }
+            }
+        }
+    })
+
+    $('#editor').keypress(function (event) {
         // 获取当前节点信息和range范围
         var sel = window.getSelection()
         var range = sel.getRangeAt(0)
@@ -165,13 +186,15 @@ $(document).ready(function() {
         var blockNode = getBlockContainer()
         var innerHTML = $(parentNode).html()
 
-        // console.log(curNode.nodeName);
-        // console.log(parentNode.nodeName);
+        // console.debug(curNode);
+        // console.debug(parentNode);
+        // console.debug(blockNode);
+        // console.debug(range);
 
         if (event.key == ' ') {
             // 触发标题块markdown语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML in titleTagMap) {
-                event.preventDefault()  
+                event.preventDefault()
                 var tag = 'h' + innerHTML.length
                 var html = '<' + tag + '>' + '<br/></' + tag + '>'
                 $(parentNode).after(html)
@@ -191,7 +214,7 @@ $(document).ready(function() {
             }
 
             // 触发列表块markdown语法
-            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*' || innerHTML == '-') ) {
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*' || innerHTML == '-')) {
                 event.preventDefault()
                 var html = innerHTML == '1.' ? '<ol><li><br/></li></ol>' : '<ul><li><br/></li></ul>'
                 $(parentNode).after(html)
@@ -212,6 +235,16 @@ $(document).ready(function() {
         }
 
         if (event.key == 'Enter') {
+            if (blockNode && blockNode.nodeName == 'PRE') {
+                event.preventDefault()
+                var html = '<br/>'
+                document.execCommand('insertHTML', false, html)
+                var br = document.createElement("br")
+                range.insertNode(br)
+                setCursorAfterNode(br)
+                return false
+            }
+
             // 触发表格markdown语法
             var pat = /^\|(([^\|]+)\|)+$/
             if (pat.test(innerHTML)) {
@@ -227,8 +260,8 @@ $(document).ready(function() {
             }
 
             // 表格换行时，进入下一个段落
-            console.log(curNode.nodeName)
             if (curNode == editor || curNode.nodeName == 'TD') {
+                console.log('come here')
                 event.preventDefault()
                 var p = document.createElement("p")
                 p.appendChild(document.createElement('br'))
@@ -240,9 +273,9 @@ $(document).ready(function() {
             // 换行时先清除字体格式(粗体、下划线、斜体)
             var parents = $(curNode).parentsUntil(blockNode)
             var fontTags = {
-                'U' : 'underline',
-                'I' : 'italic',
-                'B' : 'bold',
+                'U': 'underline',
+                'I': 'italic',
+                'B': 'bold',
             }
             for (var i = 0; i < parents.length; i++) {
                 parent = parents[i]
@@ -266,7 +299,7 @@ $(document).ready(function() {
                 $(parentNode).after('<p><br></p>')
                 setCursorAfterNode(parentNode)
                 return
-            }    
+            }
 
             // 在列表最后一个空行后换行，退出列表
             if (curNode.tagName == 'LI' && (parentNode.tagName == 'OL' || parentNode.tagName == 'UL') && parentNode.lastChild == curNode && range.startOffset == 0) {
@@ -275,7 +308,7 @@ $(document).ready(function() {
                 $(parentNode).after('<p><br></p>')
                 setCursorAfterNode(parentNode)
                 return
-            } 
+            }
 
         }
     })

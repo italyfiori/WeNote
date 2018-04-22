@@ -121,6 +121,10 @@ img:hover {
     height: 21px;
 }
 
+#editor table ol, #editor table ul {
+    padding-left: 22px;
+}
+
 #editor table td {
     width: 60px;
     border: 1px solid rgb(221, 221, 221);
@@ -168,9 +172,14 @@ img:hover {
     border-left: 5px solid rgb(238, 238, 238);
     padding: 10px 20px;
     font-size: 1em;
+    background-color: rgb(247, 247, 247);
 }
 
-blockquote p {
+#editor p {
+    margin: 10px 0 0;
+}
+
+#editor blockquote p {
     margin: 0;
     padding: 0;
 }
