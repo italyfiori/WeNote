@@ -19,7 +19,7 @@ $(document).ready(function () {
                 'title': data.node.text,
             }
             sendMessage('create_node', node, function (data) {
-                console.log( 'create')
+                console.log('create')
             })
         })
 
@@ -33,16 +33,33 @@ $(document).ready(function () {
 
         // 获取节点
         $('#menu-tree').on('select_node.jstree', function (e, data) {
-            sendMessage('get_node', {'id': data.node.id}, function (data) {
-                $('#main-container').setAttribute('note_id', data.node.id)
-                // $('#editor').html(data.content)
+            var note_id = data.node.id
+            sendMessage('get_node', {'id': note_id}, function (data) {
+                var container = document.getElementById('main-container')
+                var editor = document.getElementById('editor')
+                var title = document.getElementById('title-input')
+                var content = data.content ? data.content : '<p><br/></p>'
+                container.setAttribute('note_id', note_id)
+                editor.innerHTML = content
+                title.value = data.title
             })
         })
 
     })
 
-    ipcRenderer.on('save', function() {
-
+    // 保存笔记
+    ipcRenderer.on('save', function () {
+        console.log('save')
+        var container = document.getElementById('main-container')
+        var editor = document.getElementById('editor')
+        var note_id = container.getAttribute('note_id')
+        var title = $('#title-input').val()
+        var content = editor.innerHTML
+        var payload = {'id': note_id, 'title': title, 'content': content}
+        console.log(payload)
+        sendMessage('save_node', payload, function (data) {
+            console.log(data)
+        })
     })
 
     // 标题输入框获取光标

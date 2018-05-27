@@ -21,15 +21,6 @@ function sendMessage(message, data, func) {
     }, 5000);
 }
 
-function sendImage(data, func) {
-    sendMessage('send_image', data, func)
-}
-
-
-function createDir(parent_id, func) {
-    sendMessage('create_dir', {'parent_id': parent_id}, func)
-}
-
 // 监听主进程消息
 function listenIpc(message) {
     ipcRenderer.on(message, (event, data) => {

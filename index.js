@@ -7,6 +7,7 @@ const {
 const electron = require('electron')
 const path = require('path')
 const url = require('url')
+let fs = require('fs')
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
@@ -48,7 +49,7 @@ var template = [
             label: 'Save',
             accelerator: 'CmdOrCtrl+S',
             click: function () {
-                win.webContents.send('save_file');
+                win.webContents.send('save');
             }
         }]
     },
@@ -88,37 +89,56 @@ if (process.platform === 'darwin') {
     const name = electron.app.getName()
     template.unshift({
         label: name,
-        submenu: [{
-            label: `About ${name}`,
-            role: 'about'
-        }, {
-            type: 'separator'
-        }, {
-            label: 'Services',
-            role: 'services',
-            submenu: []
-        }, {
-            type: 'separator'
-        }, {
-            label: `Hide ${name}`,
-            accelerator: 'Command+H',
-            role: 'hide'
-        }, {
-            label: 'Hide Others',
-            accelerator: 'Command+Alt+H',
-            role: 'hideothers'
-        }, {
-            label: 'Show All',
-            role: 'unhide'
-        }, {
-            type: 'separator'
-        }, {
-            label: 'Quit',
-            accelerator: 'Command+Q',
-            click: function () {
-                app.quit()
-            }
-        }]
+        submenu: [
+            {
+                label: 'Reload',
+                accelerator: 'CmdOrCtrl+R',
+                click: function (item, focusedWindow) {
+                    if (focusedWindow) {
+                        // on reload, start fresh and close any old
+                        // open secondary windows
+                        if (focusedWindow.id === 1) {
+                            BrowserWindow.getAllWindows().forEach(function (win) {
+                                if (win.id > 1) {
+                                    win.close()
+                                }
+                            })
+                        }
+                        focusedWindow.reload()
+                    }
+                }
+            },
+            {
+                label: `About ${name}`,
+                role: 'about'
+            }, {
+                type: 'separator'
+            }, {
+                label: 'Services',
+                role: 'services',
+                submenu: []
+            }, {
+                type: 'separator'
+            }, {
+                label: `Hide ${name}`,
+                accelerator: 'Command+H',
+                role: 'hide'
+            }, {
+                label: 'Hide Others',
+                accelerator: 'Command+Alt+H',
+                role: 'hideothers'
+            }, {
+                label: 'Show All',
+                role: 'unhide'
+            }, {
+                type: 'separator'
+            }, {
+                label: 'Quit',
+                accelerator: 'Command+Q',
+                click: function () {
+                    app.quit()
+                }
+            }]
     })
 }
 
@@ -160,8 +180,6 @@ function getBufferMd5(buffer) {
     return hash.digest('hex');
 }
 
-
-let fs = require('fs')
 
 // 接收文件数据
 ipcMain.on('send_image', (event, data) => {
@@ -248,15 +266,20 @@ ipcMain.on('delete_node', (event, ret) => {
 // 获取节点
 ipcMain.on('get_node', (event, ret) => {
     if (ret.data.id >= 0) {
-        var sql = "select id, parent_id as parent, title as text from note where id = " + ret.data.id + ";"
-        var file_path = path.join(__dirname, ret.data.id + 'html')
+        var sql = "select id, title from note where id = " + ret.data.id + ";"
+        var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
         db.get(sql, function (err, res) {
+            var cont = ''
+            if (fs.existsSync(file_path)) {
+                cont = fs.readFileSync(file_path)
+            }
             var payload = {
                 code: 0,
                 message_id: ret.message_id,
                 msg: 'success',
+                content: cont,
+                title: res.title,
             }
-            console.log(payload)
             event.sender.send('get_node', payload)
         })
     }
@@ -264,10 +287,10 @@ ipcMain.on('get_node', (event, ret) => {
 
 // 保存节点
 ipcMain.on('save_node', (event, ret) => {
+
     if (ret.data.id >= 0) {
         var sql = "update note set title = '" + ret.data.title + "'  where id = " + ret.data.id + ";"
-        console.log(sql)
-        // var file_path = path.join(__dirname, ret.data.id + 'html')
+        var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
         db.get(sql, function (err, res) {
             var payload = {
                 code: 0,
@@ -275,7 +298,11 @@ ipcMain.on('save_node', (event, ret) => {
                 msg: 'success',
             }
 
-            event.sender.send('get_node', payload)
+            event.sender.send('save_node', payload)
+        })
+
+        fs.writeFile(file_path, ret.data.content, function (err) {
+            console.log('write to ' + file_path)
         })
     }
 })
