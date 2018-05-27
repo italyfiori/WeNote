@@ -5,7 +5,7 @@ body {
 
 #main-container {
     white-space: nowrap;
-    height: 1000px;
+    height: 1600px;
 }
 
 #main-container > div {
@@ -30,7 +30,7 @@ body {
 
 #main-content {
     display: inline-block;
-    width: 870px;
+    width: 100%;
     height: 100%;
 }
 
@@ -76,12 +76,6 @@ body {
     margin-left: 10px;
 }
 
-#actions .btn, #actions .btn:hover, #actions .btn:focus {
-    /*background-color: white;*/
-    /*outline: none;*/
-    /*border: none;*/
-}
-
 #editor p {
     /*margin-bottom: 10px;*/
 }
@@ -121,6 +115,10 @@ img:hover {
     height: 21px;
 }
 
+#editor table th {
+    font: bold;
+}
+
 #editor table ol, #editor table ul {
     padding-left: 22px;
 }
@@ -144,6 +142,7 @@ img:hover {
 }
 
 #editor table td.head {
+    font-weight: bold;
     background-color: rgb(240, 240, 240);
 }
 
@@ -172,11 +171,16 @@ img:hover {
     border-left: 5px solid rgb(238, 238, 238);
     padding: 10px 20px;
     font-size: 1em;
+    margin-top: 10px;
     background-color: rgb(247, 247, 247);
 }
 
 #editor p {
-    margin: 10px 0 0;
+    /*margin: 10px 0 0;*/
+}
+
+#editor td p {
+    margin: 0;
 }
 
 #editor blockquote p {
