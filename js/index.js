@@ -10,35 +10,37 @@ $(document).ready(function () {
             },
             "plugins": ["dnd", "contextmenu"]
         };
-        console.log(data)
-
-
         $('#menu-tree').jstree(menu)
+
+        // 创建节点
         $('#menu-tree').on('create_node.jstree', function (e, data) {
+            console.log(data)
             var node = {
                 'parent_id': data.node.id == '#' ? 0 : data.node.parent,
                 'title': data.node.text,
             }
-            sendMessage('create_note', node, function (data) {
+            sendMessage('create_node', node, function (data) {
+                console.log(data)
+            })
+        })
+
+        // 删除节点
+        $('#menu-tree').on('delete_node.jstree', function (e, data) {
+
+            sendMessage('delete_node', {'id': data.node.id}, function (data) {
+                console.log(data)
+            })
+        })
+
+        // 获取节点
+        $('#menu-tree').on('activate_node.jstree', function (e, data) {
+            console.log(data)
+            sendMessage('get_node', {'id': data.node.id}, function (data) {
                 console.log(data)
             })
         })
 
     })
-
-    function create_node() {
-        var ref = $('#menu-tree').jstree(true)
-        var sel = ref.get_selected();
-        if (!sel.length) {
-            return false;
-        }
-        sel = sel[0];
-        sel = ref.create_node(sel, {"type": "file", "id": 100});
-        if (sel) {
-            ref.edit(sel);
-            ref.select_node('100')
-        }
-    }
 
 
     // 标题输入框获取光标
@@ -209,7 +211,7 @@ $(document).ready(function () {
             }
 
             // 表格换行时，进入下一个段落
-            if (curNode == editor || curNode.nodeName == 'TD') {
+            if (curNode.nodeName == 'TD') {
                 console.log('come here')
                 event.preventDefault()
                 var p = document.createElement("p")

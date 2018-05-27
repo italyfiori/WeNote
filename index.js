@@ -1,7 +1,10 @@
 const {
     app,
-    BrowserWindow
+    BrowserWindow,
+    Menu,
+    ipcMain
 } = require('electron')
+const electron = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -38,7 +41,62 @@ function createWindow() {
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', createWindow)
+var template = [
+    {
+        label: 'Edit',
+        submenu: [{
+            label: 'File',
+            accelerator: 'CmdOrCtrl+S',
+            click: function (item, focusedWindow) {
+                ipcMain.send('save_node')
+            }
+        }]
+    }
+]
+
+if (process.platform === 'darwin') {
+    const name = electron.app.getName()
+    template.unshift({
+        label: name,
+        submenu: [{
+            label: `About ${name}`,
+            role: 'about'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Services',
+            role: 'services',
+            submenu: []
+        }, {
+            type: 'separator'
+        }, {
+            label: `Hide ${name}`,
+            accelerator: 'Command+H',
+            role: 'hide'
+        }, {
+            label: 'Hide Others',
+            accelerator: 'Command+Alt+H',
+            role: 'hideothers'
+        }, {
+            label: 'Show All',
+            role: 'unhide'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Quit',
+            accelerator: 'Command+Q',
+            click: function () {
+                app.quit()
+            }
+        }]
+    })
+}
+
+app.on('ready', function() {
+    createWindow()
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+})
 
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
@@ -72,9 +130,7 @@ function getBufferMd5(buffer) {
     return hash.digest('hex');
 }
 
-const {
-    ipcMain
-} = require('electron')
+
 
 let fs = require('fs')
 
@@ -108,22 +164,12 @@ ipcMain.on('send_image', (event, data) => {
     })
 })
 
-function getMenu() {
-    var menu = {
-        'data': [
-            {'text': '最新文档', 'id': 'new'},
-            {'text': '我的文档', 'id': 'root'},
-        ]
-    }
-    return menu
-}
-
-
 // 获取笔记列表
 var sqlite3 = require('sqlite3-offline').verbose();
 var db_file = path.join(__dirname, 'data/db/wiki.db')
 var db = new sqlite3.Database(db_file);
 
+// 获取列表
 ipcMain.on('get_menu', (event, data) => {
     var sql = "select title as text, id, case parent_id when 0 then '#' else parent_id end as parent from note;"
     db.all(sql, function (err, rows) {
@@ -137,29 +183,72 @@ ipcMain.on('get_menu', (event, data) => {
 })
 
 
-// 创建笔记
-ipcMain.on('create_note', (event, ret) => {
+// 创建节点
+ipcMain.on('create_node', (event, ret) => {
+    console.log(ret)
     if (ret.data.parent_id >= 0) {
-        var sql = "insert into note(title, parent_id) values('" + ret.data.title + "',"  + ret.data.parent_id + ")"
+        var sql = "insert into note(title, parent_id) values('" + ret.data.title + "'," + ret.data.parent_id + ")"
         console.log(sql)
         db.run(sql, function (err, res) {
-            if (this.changes > 0 && this.lastID) {
-                var payload = {
-                    code: 0,
-                    message_id: ret.message_id,
-                    msg: 'success',
-                    note_id: this.lastID
-                }
-            } else {
-                var payload = {
-                    code: -1,
-                    message_id: ret.message_id,
-                    msg: 'fail',
-                }
+            var payload = {
+                code: 0,
+                message_id: ret.message_id,
+                msg: 'success',
+                note_id: this.lastID
             }
             event.sender.send('create_note', payload)
         })
     }
 })
 
+// 删除节点
+ipcMain.on('delete_node', (event, ret) => {
+    if (ret.data.id >= 0) {
+        var sql = "delete from note where id = " + ret.data.id + ";"
+        db.run(sql, function (err, res) {
+            var payload = {
+                code: 0,
+                message_id: ret.message_id,
+                msg: 'success',
+            }
+            event.sender.send('delete_node', payload)
+        })
+    }
+})
+
+// 获取节点
+ipcMain.on('get_node', (event, ret) => {
+    if (ret.data.id >= 0) {
+        var sql = "select id, parent_id as parent, title as text from note where id = " + ret.data.id + ";"
+        var file_path = path.join(__dirname, ret.data.id + 'html')
+        db.get(sql, function (err, res) {
+            // if (os.path.exists(file_path))
+            var payload = {
+                code: 0,
+                message_id: ret.message_id,
+                msg: 'success',
+            }
+
+            event.sender.send('get_node', payload)
+        })
+    }
+})
+
+// 保存节点
+ipcMain.on('save_node', (event, ret) => {
+    if (ret.data.id >= 0) {
+        var sql = "update note set title = '" + ret.data.title + "'  where id = " + ret.data.id + ";"
+        console.log(sql)
+        // var file_path = path.join(__dirname, ret.data.id + 'html')
+        db.get(sql, function (err, res) {
+            var payload = {
+                code: 0,
+                message_id: ret.message_id,
+                msg: 'success',
+            }
+
+            event.sender.send('get_node', payload)
+        })
+    }
+})
 
