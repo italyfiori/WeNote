@@ -10,9 +10,9 @@ $(document).ready(function() {
 
         // 点击后选中当前图像
         setTimeout(function() {
-            $('img').click(function() {
-                selectNode(this)
-            })
+            // $('img').click(function() {
+            //     selectNode(this)
+            // })
         }, 100)
         
         for (var i = 0; i < len; i++) {        
@@ -33,7 +33,7 @@ $(document).ready(function() {
                 var bufferReader = new FileReader();
                 bufferReader.onload = function(event) {       
                     var buffer = new Buffer(bufferReader.result)
-                    sendFile(buffer, function(data) {
+                    sendImage(buffer, function(data) {
                         if (data.code == 0 && data.image_url) {
                             width = width / 2
                             var html = '<img width=' + width + ' src="' + data.image_url + '">'

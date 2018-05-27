@@ -1,22 +1,28 @@
 $(document).ready(function () {
 
-    var menu_tree = $('#menu-tree').jstree(true)
-
     // 获取菜单
-    getMenu(function (data) {
+    sendMessage('get_menu', {}, function (data) {
         var menu = {
             "core": {
                 'check_callback': true,
                 'multiple': false,
+                'data': data.menu
             },
             "plugins": ["dnd", "contextmenu"]
-        }
-        menu.core.data = data.menu.data
-        $('#menu-tree').jstree(menu)
-        // setTimeout(function() {
-        //     $('#menu-tree').jstree(true).select_node('root')
-        // }, 100)
+        };
+        console.log(data)
 
+
+        $('#menu-tree').jstree(menu)
+        $('#menu-tree').on('create_node.jstree', function (e, data) {
+            var node = {
+                'parent_id': data.node.id == '#' ? 0 : data.node.parent,
+                'title': data.node.text,
+            }
+            sendMessage('create_note', node, function (data) {
+                console.log(data)
+            })
+        })
 
     })
 
@@ -32,38 +38,8 @@ $(document).ready(function () {
             ref.edit(sel);
             ref.select_node('100')
         }
-    };
+    }
 
-
-    // 创建目录
-    $('#create-directory').click(function () {
-        var ref = $('#menu-tree').jstree(true)
-        var sel = ref.get_selected();
-        if (!sel.length) {
-            return false;
-        }
-
-        console.log(sel)
-        var parent_id = sel[0];
-        var node = {
-            "id": "p3",
-            "text": "Parent-3"
-        }
-        createDir(parent_id, function (data) {
-            var node_id = data.note_id
-            $('#menu-tree').jstree("create_node", parent_id, node, "last")
-            console.log(data)
-        })
-        return 0
-        // createDir()
-        // create_node()
-        // var node = {
-        //   "id": "p3",
-        //   "text": "Parent-3"
-        // }
-        // $('#menu-tree').jstree("create_node", "root", node, "last")
-        // $('#menu-tree').jstree(true).select_node('p3')
-    })
 
     // 标题输入框获取光标
     $('#title-input').focus()
@@ -95,39 +71,12 @@ $(document).ready(function () {
         return lastRange
     }
 
-    // 插入链接
-    $('#insert_link').click(function () {
-        var url = link_url.value
-        var text = link_text.value
-        if (text == '') {
-            text = url
-        }
-        $('#linkModal').modal('hide')
-        var range = recoverRange()
-        if (range) {
-            var link = document.createElement("a")
-            link.href = url
-            link.appendChild(document.createTextNode(text))
-            range.insertNode(link)
-            setCursorAfterNode(link)
-            document.getElementById("link_url").value = ''
-            document.getElementById("link_text").value = ''
-        }
-    })
-
-    const ipc = require('electron').ipcRenderer
-    $('#insertfile').click(function () {
-        console.log('insert file')
-        ipc.send('open-file-dialog')
-    })
-
-    ipc.on('selected-directory', function (event, path) {
-        console.log(path)
-        // document.getElementById('selected-file').innerHTML = `You selected: ${path}`
-    })
-
     // 调整编辑区的内容格式
     function adjustEditor() {
+        $('img').click(function () {
+            selectNode(this)
+        })
+
         // 编辑区内容被全部删除时，增加一个段落标签
         var childNodes = editor.childNodes
         if (childNodes.length == 0) {
@@ -161,7 +110,7 @@ $(document).ready(function () {
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
 
-    $('#editor').keydown(function(event) {
+    $('#editor').keydown(function (event) {
         var sel = window.getSelection()
         var range = sel.getRangeAt(0)
         var blockNode = getBlockContainer()

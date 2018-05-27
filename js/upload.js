@@ -22,7 +22,7 @@ function sendMessage(message, data, func) {
 }
 
 function sendFile(data, func) {
-    sendMessage('send_file', data, func)
+    sendMessage('send_image', data, func)
 }
 
 function getMenu(func) {
@@ -45,7 +45,7 @@ function listenIpc(message) {
 }
 
 // 监听回调
-var messages = ['send_file', 'get_menu', 'create_dir']
+var messages = ['send_image', 'get_menu', 'create_dir']
 for (var i = 0; i < messages.length; i++) {
     var message = messages[i]
     listenIpc(message)
