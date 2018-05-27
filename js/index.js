@@ -35,11 +35,10 @@ $(document).ready(function () {
         $('#menu-tree').on('select_node.jstree', function (e, data) {
             var note_id = data.node.id
             sendMessage('get_node', {'id': note_id}, function (data) {
-                var container = document.getElementById('main-container')
                 var editor = document.getElementById('editor')
                 var title = document.getElementById('title-input')
                 var content = data.content ? data.content : '<p><br/></p>'
-                container.setAttribute('note_id', note_id)
+                editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
                 title.value = data.title
             })
@@ -50,9 +49,8 @@ $(document).ready(function () {
     // 保存笔记
     ipcRenderer.on('save', function () {
         console.log('save')
-        var container = document.getElementById('main-container')
         var editor = document.getElementById('editor')
-        var note_id = container.getAttribute('note_id')
+        var note_id = editor.getAttribute('note_id')
         var title = $('#title-input').val()
         var content = editor.innerHTML
         var payload = {'id': note_id, 'title': title, 'content': content}
@@ -60,6 +58,17 @@ $(document).ready(function () {
         sendMessage('save_node', payload, function (data) {
             console.log(data)
         })
+    })
+
+    // 修改标题， 同步修改节点名称
+    $('#title-input').on("change paste keyup", function () {
+        var note_id = $('#editor').attr('note_id')
+        if (note_id) {
+            var tree = $('#menu-tree')
+            var node = tree.jstree('get_node', note_id)
+            var title = $('#title-input').val()
+            tree.jstree('rename_node', node, title)
+        }
     })
 
     // 标题输入框获取光标
