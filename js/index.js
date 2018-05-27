@@ -14,13 +14,12 @@ $(document).ready(function () {
 
         // 创建节点
         $('#menu-tree').on('create_node.jstree', function (e, data) {
-            console.log(data)
             var node = {
                 'parent_id': data.node.id == '#' ? 0 : data.node.parent,
                 'title': data.node.text,
             }
             sendMessage('create_node', node, function (data) {
-                console.log(data)
+                console.log( 'create')
             })
         })
 
@@ -33,15 +32,18 @@ $(document).ready(function () {
         })
 
         // 获取节点
-        $('#menu-tree').on('activate_node.jstree', function (e, data) {
-            console.log(data)
+        $('#menu-tree').on('select_node.jstree', function (e, data) {
             sendMessage('get_node', {'id': data.node.id}, function (data) {
-                console.log(data)
+                $('#main-container').setAttribute('note_id', data.node.id)
+                // $('#editor').html(data.content)
             })
         })
 
     })
 
+    ipcRenderer.on('save', function() {
+
+    })
 
     // 标题输入框获取光标
     $('#title-input').focus()

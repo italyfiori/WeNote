@@ -21,13 +21,10 @@ function sendMessage(message, data, func) {
     }, 5000);
 }
 
-function sendFile(data, func) {
+function sendImage(data, func) {
     sendMessage('send_image', data, func)
 }
 
-function getMenu(func) {
-    sendMessage('get_menu', {}, func)
-}
 
 function createDir(parent_id, func) {
     sendMessage('create_dir', {'parent_id': parent_id}, func)
@@ -45,7 +42,7 @@ function listenIpc(message) {
 }
 
 // 监听回调
-var messages = ['send_image', 'get_menu', 'create_dir']
+var messages = ['send_image', 'get_menu', 'get_node', 'create_node', 'delete_node', 'save_node']
 for (var i = 0; i < messages.length; i++) {
     var message = messages[i]
     listenIpc(message)

@@ -43,13 +43,43 @@ function createWindow() {
 // 部分 API 在 ready 事件触发后才能使用。
 var template = [
     {
+        label: 'File',
+        submenu: [{
+            label: 'Save',
+            accelerator: 'CmdOrCtrl+S',
+            click: function () {
+                win.webContents.send('save_file');
+            }
+        }]
+    },
+    {
         label: 'Edit',
         submenu: [{
-            label: 'File',
-            accelerator: 'CmdOrCtrl+S',
-            click: function (item, focusedWindow) {
-                ipcMain.send('save_node')
-            }
+            label: 'Undo',
+            accelerator: 'CmdOrCtrl+Z',
+            role: 'undo'
+        }, {
+            label: 'Redo',
+            accelerator: 'Shift+CmdOrCtrl+Z',
+            role: 'redo'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Cut',
+            accelerator: 'CmdOrCtrl+X',
+            role: 'cut'
+        }, {
+            label: 'Copy',
+            accelerator: 'CmdOrCtrl+C',
+            role: 'copy'
+        }, {
+            label: 'Paste',
+            accelerator: 'CmdOrCtrl+V',
+            role: 'paste'
+        }, {
+            label: 'Select All',
+            accelerator: 'CmdOrCtrl+A',
+            role: 'selectall'
         }]
     }
 ]
@@ -92,7 +122,7 @@ if (process.platform === 'darwin') {
     })
 }
 
-app.on('ready', function() {
+app.on('ready', function () {
     createWindow()
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
@@ -129,7 +159,6 @@ function getBufferMd5(buffer) {
     hash.update(buffer);
     return hash.digest('hex');
 }
-
 
 
 let fs = require('fs')
@@ -222,13 +251,12 @@ ipcMain.on('get_node', (event, ret) => {
         var sql = "select id, parent_id as parent, title as text from note where id = " + ret.data.id + ";"
         var file_path = path.join(__dirname, ret.data.id + 'html')
         db.get(sql, function (err, res) {
-            // if (os.path.exists(file_path))
             var payload = {
                 code: 0,
                 message_id: ret.message_id,
                 msg: 'success',
             }
-
+            console.log(payload)
             event.sender.send('get_node', payload)
         })
     }

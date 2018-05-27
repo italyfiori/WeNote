@@ -33,7 +33,7 @@ $(document).ready(function() {
                 var bufferReader = new FileReader();
                 bufferReader.onload = function(event) {       
                     var buffer = new Buffer(bufferReader.result)
-                    sendImage(buffer, function(data) {
+                    sendMessage('send_image', buffer, function(data) {
                         if (data.code == 0 && data.image_url) {
                             width = width / 2
                             var html = '<img width=' + width + ' src="' + data.image_url + '">'
