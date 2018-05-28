@@ -15,6 +15,7 @@ $(document).ready(function () {
                 },
             },
         };
+        console.log(data)
         $('#menu-tree').jstree(menu)
 
         // 创建节点

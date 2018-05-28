@@ -233,13 +233,15 @@ var db = new sqlite3.Database(db_file);
 
 // 获取列表
 ipcMain.on('get_menu', (event, data) => {
-    var sql = "select title as text, id, case parent_id when 0 then '#' else parent_id end as parent from note;"
+    var sql = "select title as text, id, parent_id from note;"
     db.all(sql, function (err, rows) {
+        var menu = buildTree(rows)
         var payload = {
             'code': 0,
             'message_id': data.message_id,
-            'menu': rows,
+            'menu': menu,
         }
+
         event.sender.send('get_menu', payload)
     })
 })
@@ -339,4 +341,49 @@ ipcMain.on('move_node', (event, ret) => {
         })
     }
 })
+
+
+// 构建树
+function buildTree(rows) {
+    console.log(rows);
+  node_list = {}
+  parent_set = {}
+  // rows.push({'nodeId': 0, 'parentId': -1})
+  for (id in rows) {
+    row = rows[id]
+    node_id   = row['id']
+    parent_id = row['parent_id']
+    
+    // 构造辅助对象
+    if(!parent_set[parent_id]) {
+      parent_set[parent_id] = []
+    }
+    parent_set[parent_id].push(row)
+    node_list[node_id] = row
+  }
+  
+  var menu = _buildTree('0', parent_set, node_list)
+  return menu['children']
+}
+
+// 构建树
+function _buildTree(cur_node_id, parent_set, node_list) {
+  var sub_nodes = parent_set[cur_node_id]
+  var cur_node  = node_list[cur_node_id] ? node_list[cur_node_id] : {}
+  
+  var menu = cur_node
+  menu['children'] = []
+
+  for (i in sub_nodes) {
+    sub_node    = sub_nodes[i]
+    sub_node_id = sub_node['id']
+    
+    if(!parent_set[sub_node_id]) {
+      menu['children'].push(sub_node)
+    } else {
+      menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))      
+    }
+  }
+  return menu
+}
 
