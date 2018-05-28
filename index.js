@@ -379,7 +379,7 @@ function _buildTree(cur_node_id, parent_set, node_list) {
     sub_node_id = sub_node['id']
     
     if(!parent_set[sub_node_id]) {
-      menu['children'].push(sub_node)
+      menu['children'].push({'id': sub_node_id, 'text': sub_node['text']})
     } else {
       menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))      
     }
