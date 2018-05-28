@@ -22,7 +22,7 @@ $(document).ready(function () {
         $('#menu-tree').on('create_node.jstree', function (e, data) {
             var node    = data
             var payload = {
-                'parent_id': data.node.parent == '#' ? 0 : data.node.parent,
+                'parent_id': data.node.parent,
                 'title': data.node.text,
             }
             console.log(data)
@@ -41,7 +41,7 @@ $(document).ready(function () {
 
         $('#menu-tree').bind('move_node.jstree', function(e, data) {
             var note_id = data.node.id
-            var parent_id = data.parent == '#' ? 0 : data.node.parent
+            var parent_id = data.node.parent
             var payload = {'id': note_id, 'parent': parent_id}
             sendMessage('move_node', payload, function (data) {
                 console.log(data)
