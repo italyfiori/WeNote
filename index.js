@@ -109,6 +109,21 @@ if (process.platform === 'darwin') {
                 }
             },
             {
+    label: 'Toggle Developer Tools',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Alt+Command+I'
+      } else {
+        return 'Ctrl+Shift+I'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.toggleDevTools()
+      }
+    }
+  },
+            {
                 label: `About ${name}`,
                 role: 'about'
             }, {
@@ -196,7 +211,7 @@ ipcMain.on('send_image', (event, data) => {
     var buffer = data.data
     var buffer_md5 = getBufferMd5(buffer)
     var file_name = buffer_md5 + '.png'
-    var file_path = path.join(image_dir, file_name)
+    var file_path = path.join(image_dir, '', file_name)
     fs.writeFile(file_path, buffer, {}, (err, res) => {
         if (err) {
             console.log('write file error:' + err);
@@ -303,6 +318,24 @@ ipcMain.on('save_node', (event, ret) => {
 
         fs.writeFile(file_path, ret.data.content, function (err) {
             console.log('write to ' + file_path)
+        })
+    }
+})
+
+// 保存节点
+ipcMain.on('move_node', (event, ret) => {
+
+    if (ret.data.id >= 0) {
+        var sql = "update note set parent_id = '" + ret.data.parent + "'  where id = " + ret.data.id + ";"
+        var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
+        db.get(sql, function (err, res) {
+            var payload = {
+                code: 0,
+                message_id: ret.message_id,
+                msg: 'success',
+            }
+
+            event.sender.send('move_node', payload)
         })
     }
 })

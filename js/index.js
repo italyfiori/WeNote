@@ -8,8 +8,9 @@ $(document).ready(function () {
                 'multiple': false,
                 'data': data.menu
             },
-            "plugins": ["dnd", "contextmenu"]
+            "plugins": ["wholerow", "dnd", "contextmenu"]
         };
+        console.log(menu)
         $('#menu-tree').jstree(menu)
 
         // 创建节点
@@ -25,15 +26,33 @@ $(document).ready(function () {
 
         // 删除节点
         $('#menu-tree').on('delete_node.jstree', function (e, data) {
-
             sendMessage('delete_node', {'id': data.node.id}, function (data) {
+                console.log(data)
+            })
+        })
+
+        $('#menu-tree').bind('move_node.jstree', function(e, data) {
+            var note_id = data.node.id
+            var parent_id = data.parent == '#' ? 0 : data.node.parent
+            var payload = {'id': note_id, 'parent': parent_id}
+            sendMessage('move_node', payload, function (data) {
                 console.log(data)
             })
         })
 
         // 获取节点
         $('#menu-tree').on('select_node.jstree', function (e, data) {
+            save_note()
             var note_id = data.node.id
+            var container = document.getElementById("editor-container");
+            var notice = document.getElementById("notice");
+            if (container.style.display != "block") {
+                container.style.display = "block";
+            }
+            if (notice.style.display != "none") {
+                notice.style.display = "none";    
+            }
+
             sendMessage('get_node', {'id': note_id}, function (data) {
                 var editor = document.getElementById('editor')
                 var title = document.getElementById('title-input')
@@ -46,18 +65,25 @@ $(document).ready(function () {
 
     })
 
-    // 保存笔记
-    ipcRenderer.on('save', function () {
-        console.log('save')
+    function save_note() {
         var editor = document.getElementById('editor')
         var note_id = editor.getAttribute('note_id')
-        var title = $('#title-input').val()
-        var content = editor.innerHTML
-        var payload = {'id': note_id, 'title': title, 'content': content}
-        console.log(payload)
-        sendMessage('save_node', payload, function (data) {
-            console.log(data)
-        })
+        if (note_id) {
+            var title = $('#title-input').val()
+            var content = editor.innerHTML
+            var payload = {'id': note_id, 'title': title, 'content': content}
+            console.log(payload)
+            sendMessage('save_node', payload, function (data) {
+                console.log(data)
+            })    
+        } else {
+            console.log('未选中笔记')
+        }
+    }
+
+    // 保存笔记
+    ipcRenderer.on('save', function () {
+        save_note()
     })
 
     // 修改标题， 同步修改节点名称
@@ -239,7 +265,7 @@ $(document).ready(function () {
             }
 
             // 表格换行时，进入下一个段落
-            if (curNode.nodeName == 'TD') {
+            if (curNode == editor || curNode.nodeName == 'TD') {
                 console.log('come here')
                 event.preventDefault()
                 var p = document.createElement("p")
