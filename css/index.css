@@ -99,7 +99,7 @@ body {
 }
 
 img:hover {
-    cursor: move;
+    cursor: default;
 }
 
 #editor > :first-child {

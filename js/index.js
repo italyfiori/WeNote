@@ -79,7 +79,7 @@ $(document).ready(function () {
         var editor = document.getElementById('editor')
         var note_id = editor.getAttribute('note_id')
         if (note_id) {
-            var title = $('#title-input').val()
+            var title = $('#title-input').val() ? $('#title-input').val() : 'utitled note'
             var content = editor.innerHTML
             var payload = {'id': note_id, 'title': title, 'content': content}
             console.log(payload)
@@ -102,7 +102,7 @@ $(document).ready(function () {
         if (note_id) {
             var tree = $('#menu-tree')
             var node = tree.jstree('get_node', note_id)
-            var title = $('#title-input').val()
+            var title = $('#title-input').val() ? $('#title-input').val() : 'utitled note'
             tree.jstree('rename_node', node, title)
         }
     })
@@ -168,7 +168,7 @@ $(document).ready(function () {
     // 绑定编辑区内容变化事件
     $('#editor').bind("DOMSubtreeModified", function () {
         setTimeout(function () {
-            // adjustEditor()
+            adjustEditor()
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
 
