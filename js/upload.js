@@ -24,6 +24,7 @@ function sendMessage(message, data, func) {
 // 监听主进程消息
 function listenIpc(message) {
     ipcRenderer.on(message, (event, data) => {
+
         if (data.code == 0 && data.message_id) {
             event_emitter.emit(data.message_id, data)
             return

@@ -8,19 +8,26 @@ $(document).ready(function () {
                 'multiple': false,
                 'data': data.menu
             },
-            "plugins": ["wholerow", "dnd", "contextmenu"]
+            "plugins": ["wholerow", "dnd", "contextmenu"],
+            "types": {
+                "default" : {
+                    "icon" : false  // 删除默认图标
+                },
+            },
         };
-        console.log(menu)
         $('#menu-tree').jstree(menu)
 
         // 创建节点
         $('#menu-tree').on('create_node.jstree', function (e, data) {
-            var node = {
-                'parent_id': data.node.id == '#' ? 0 : data.node.parent,
+            var node    = data
+            var payload = {
+                'parent_id': data.node.parent == '#' ? 0 : data.node.parent,
                 'title': data.node.text,
             }
-            sendMessage('create_node', node, function (data) {
-                console.log('create')
+            console.log(data)
+            sendMessage('create_node', payload, function (data) {
+                console.log(data)
+                $('#menu-tree').jstree('set_id', node.node, data.note_id)
             })
         })
 

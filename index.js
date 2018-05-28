@@ -247,7 +247,6 @@ ipcMain.on('get_menu', (event, data) => {
 
 // 创建节点
 ipcMain.on('create_node', (event, ret) => {
-    console.log(ret)
     if (ret.data.parent_id >= 0) {
         var sql = "insert into note(title, parent_id) values('" + ret.data.title + "'," + ret.data.parent_id + ")"
         console.log(sql)
@@ -258,7 +257,8 @@ ipcMain.on('create_node', (event, ret) => {
                 msg: 'success',
                 note_id: this.lastID
             }
-            event.sender.send('create_note', payload)
+            console.log(payload);
+            event.sender.send('create_node', payload)
         })
     }
 })
