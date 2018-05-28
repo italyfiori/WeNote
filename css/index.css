@@ -30,7 +30,6 @@ body {
 #side-menu {
     width: 200px;
     height: 100%;
-    border-right: 1px solid #eee;
     display: inline-block;
     overflow: hidden;
 }
@@ -61,6 +60,7 @@ body {
     font-size: 24px;
     padding-left: 20px;
     line-height: 48px;
+    border-left: 1px solid #eee;
 }
 
 #editor {    
@@ -73,6 +73,7 @@ body {
     position: absolute;
     left: 0;
     right: 0;
+    border-left: 1px solid #eee;
 }
 
 #title-bar .btn-group, #title-bar .dropdown{

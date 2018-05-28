@@ -139,10 +139,6 @@ $(document).ready(function () {
 
     // 调整编辑区的内容格式
     function adjustEditor() {
-        $('img').click(function () {
-            selectNode(this)
-        })
-
         // 编辑区内容被全部删除时，增加一个段落标签
         var childNodes = editor.childNodes
         if (childNodes.length == 0) {
@@ -172,7 +168,7 @@ $(document).ready(function () {
     // 绑定编辑区内容变化事件
     $('#editor').bind("DOMSubtreeModified", function () {
         setTimeout(function () {
-            adjustEditor()
+            // adjustEditor()
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
 

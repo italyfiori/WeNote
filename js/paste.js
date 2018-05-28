@@ -9,11 +9,8 @@ $(document).ready(function() {
         }
 
         // 点击后选中当前图像
-        setTimeout(function() {
-            // $('img').click(function() {
-            //     selectNode(this)
-            // })
-        }, 100)
+        
+        
         
         for (var i = 0; i < len; i++) {        
             if (items[i].type.indexOf("image") !== -1) {
@@ -21,7 +18,18 @@ $(document).ready(function() {
             }
         }
 
-        if (blob !== null) {
+        if(blob === null) {
+            setTimeout(function() {
+                $('img').unbind()
+                $('img').click(function() {
+                    console.log(this)
+                    selectNode(this)
+                })
+            }, 100)
+            return;
+        }
+
+        // if (blob !== null) {
             // 获取图像信息
             var img = new Image();
             img.onload = function(){
@@ -38,6 +46,14 @@ $(document).ready(function() {
                             width = width / 2
                             var html = '<img width=' + width + ' src="' + data.image_url + '">'
                             document.execCommand('insertHTML', false, html)
+                            console.log('come here');
+                            setTimeout(function() {
+                                $('img').unbind()
+                                $('img').click(function() {
+                                    console.log(this)
+                                    selectNode(this)
+                                })
+                            }, 100)
                         }
                     })
                 }
@@ -48,6 +64,6 @@ $(document).ready(function() {
 
             var URLObj = window.URL || window.webkitURL;
             img.src = URLObj.createObjectURL(blob);
-        }
+        // }
     })
 })
