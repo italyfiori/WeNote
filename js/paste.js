@@ -29,6 +29,12 @@ $(document).ready(function() {
             return;
         }
 
+        var note_id = editor.getAttribute('note_id')
+        if (!note_id) {
+            console.log("没有选定note");
+            return;
+        }
+
         // if (blob !== null) {
             // 获取图像信息
             var img = new Image();
@@ -41,7 +47,10 @@ $(document).ready(function() {
                 var bufferReader = new FileReader();
                 bufferReader.onload = function(event) {       
                     var buffer = new Buffer(bufferReader.result)
-                    sendMessage('send_image', buffer, function(data) {
+                    var payload = {'buffer': buffer, 'note_id': note_id}
+                    console.log(payload);
+                    sendMessage('save_image', payload, function(data) {
+                        console.log(data);
                         if (data.code == 0 && data.image_url) {
                             width = width / 2
                             var html = '<img width=' + width + ' src="' + data.image_url + '">'

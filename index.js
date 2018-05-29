@@ -195,20 +195,25 @@ function getBufferMd5(buffer) {
     return hash.digest('hex');
 }
 
-
 // 接收文件数据
-ipcMain.on('send_image', (event, data) => {
-    if (!Buffer.isBuffer(data.data)) {
+ipcMain.on('save_image', (event, data) => {
+    if (!Buffer.isBuffer(data.data.buffer)) {
         console.log('data is not buffer, ' + data.message_id)
         return
     }
 
-    var image_dir = path.join(__dirname, 'data', 'images')
+    var note_id = data.data.note_id
+    var image_dir = path.join(__dirname, 'data', 'images', String(note_id))
+    console.log(image_dir);
     if (!fs.existsSync(image_dir)) {
+        console.log('make dir');
         fs.mkdirSync(image_dir, 755);
     }
 
-    var buffer = data.data
+    console.log(data);
+
+    
+    var buffer = data.data.buffer
     var buffer_md5 = getBufferMd5(buffer)
     var file_name = buffer_md5 + '.png'
     var file_path = path.join(image_dir, '', file_name)
@@ -220,9 +225,9 @@ ipcMain.on('send_image', (event, data) => {
         var payload = {
             'code': 0,
             'message_id': data.message_id,
-            'image_url': path.join('data', 'images', file_name),
+            'image_url': path.join(image_dir,  file_name),
         }
-        event.sender.send('send_image', payload)
+        event.sender.send('save_image', payload)
     })
 })
 
