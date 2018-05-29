@@ -306,25 +306,14 @@ ipcMain.on('get_node', (event, ret) => {
 ipcMain.on('save_node', (event, ret) => {
 
     if (ret.data.id >= 0) {
-        var sql = "update note set title = '" + ret.data.title + "'  where id = " + ret.data.id + ";"
         var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
-        db.get(sql, function (err, res) {
-            var payload = {
-                code: 0,
-                message_id: ret.message_id,
-                msg: 'success',
-            }
-
-            event.sender.send('save_node', payload)
-        })
-
         fs.writeFile(file_path, ret.data.content, function (err) {
             console.log('write to ' + file_path)
         })
     }
 })
 
-// 保存节点
+// 拖拽移动节点
 ipcMain.on('move_node', (event, ret) => {
 
     if (ret.data.id >= 0) {
@@ -338,6 +327,22 @@ ipcMain.on('move_node', (event, ret) => {
             }
 
             event.sender.send('move_node', payload)
+        })
+    }
+})
+
+// 保存节点
+ipcMain.on('rename_node', (event, ret) => {
+
+    if (ret.data.id >= 0) {
+        var sql = "update note set title = '" + ret.data.title + "'  where id = " + ret.data.id + ";"
+        db.get(sql, function (err, res) {
+            var payload = {
+                code: 0,
+                message_id: ret.message_id,
+                msg: 'success',
+            }
+            event.sender.send('rename_node', payload)
         })
     }
 })

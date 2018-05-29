@@ -39,6 +39,19 @@ $(document).ready(function () {
             })
         })
 
+        // 修改标题节点
+        $('#menu-tree').on('rename_node.jstree', function(e, data) {
+            var note_id = data.node.id
+            var title = data.node.text
+            var payload = {'id': note_id, 'title': title}
+            console.log('**rename_node**')
+            console.log(data)
+            sendMessage('rename_node', payload, function (data) {
+                console.log(data)
+            })
+        })
+
+        // 拖拽节点
         $('#menu-tree').bind('move_node.jstree', function(e, data) {
             var note_id = data.node.id
             var parent_id = data.node.parent == '#' ? 0 : data.node.parent
@@ -69,19 +82,18 @@ $(document).ready(function () {
                 var content = data.content ? data.content : '<p><br/></p>'
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
-                title.value = data.title
             })
         })
 
     })
 
+    // 保存节点
     function save_note() {
         var editor = document.getElementById('editor')
         var note_id = editor.getAttribute('note_id')
         if (note_id) {
-            var title = $('#title-input').val() ? $('#title-input').val() : 'utitled note'
             var content = editor.innerHTML
-            var payload = {'id': note_id, 'title': title, 'content': content}
+            var payload = {'id': note_id, 'content': content}
             console.log(payload)
             sendMessage('save_node', payload, function (data) {
                 console.log(data)
@@ -94,17 +106,6 @@ $(document).ready(function () {
     // 保存笔记
     ipcRenderer.on('save', function () {
         save_note()
-    })
-
-    // 修改标题， 同步修改节点名称
-    $('#title-input').on("change paste keyup", function () {
-        var note_id = $('#editor').attr('note_id')
-        if (note_id) {
-            var tree = $('#menu-tree')
-            var node = tree.jstree('get_node', note_id)
-            var title = $('#title-input').val() ? $('#title-input').val() : 'utitled note'
-            tree.jstree('rename_node', node, title)
-        }
     })
 
     // 标题输入框获取光标
