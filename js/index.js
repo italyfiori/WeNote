@@ -82,6 +82,10 @@ $(document).ready(function () {
                 var content = data.content ? data.content : '<p><br/></p>'
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
+                $('img').click(function() {
+                    console.log(this)
+                    selectNode(this)
+                })
             })
         })
 
@@ -109,14 +113,7 @@ $(document).ready(function () {
     })
 
     // 标题输入框获取光标
-    $('#title-input').focus()
-
-    // 在标题输入框中键入回车键跳到编辑器中
-    $('#title-input').keypress(function (event) {
-        if (event.key == "Enter") {
-            editor.focus()
-        }
-    })
+    $('#editor').focus()
 
     // 失去焦点时记录光标位置
     var lastRange = null

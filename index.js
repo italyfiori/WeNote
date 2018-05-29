@@ -207,7 +207,7 @@ ipcMain.on('save_image', (event, data) => {
     console.log(image_dir);
     if (!fs.existsSync(image_dir)) {
         console.log('make dir');
-        fs.mkdirSync(image_dir, 755);
+        fs.mkdirSync(image_dir);
     }
 
     console.log(data);
