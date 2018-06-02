@@ -10,8 +10,8 @@ $(document).ready(function () {
             },
             "plugins": ["wholerow", "dnd", "contextmenu"],
             "types": {
-                "default" : {
-                    "icon" : false  // 删除默认图标
+                "default": {
+                    "icon": false  // 删除默认图标
                 },
             },
         };
@@ -20,7 +20,7 @@ $(document).ready(function () {
 
         // 创建节点
         $('#menu-tree').on('create_node.jstree', function (e, data) {
-            var node    = data
+            var node = data
             var payload = {
                 'parent_id': data.node.parent == '#' ? 0 : data.node.parent,
                 'title': data.node.text,
@@ -40,7 +40,7 @@ $(document).ready(function () {
         })
 
         // 修改标题节点
-        $('#menu-tree').on('rename_node.jstree', function(e, data) {
+        $('#menu-tree').on('rename_node.jstree', function (e, data) {
             var note_id = data.node.id
             var title = data.node.text
             var payload = {'id': note_id, 'title': title}
@@ -52,7 +52,7 @@ $(document).ready(function () {
         })
 
         // 拖拽节点
-        $('#menu-tree').bind('move_node.jstree', function(e, data) {
+        $('#menu-tree').bind('move_node.jstree', function (e, data) {
             var note_id = data.node.id
             var parent_id = data.node.parent == '#' ? 0 : data.node.parent
             var payload = {'id': note_id, 'parent': parent_id}
@@ -72,7 +72,7 @@ $(document).ready(function () {
                 container.style.display = "block";
             }
             if (notice.style.display != "none") {
-                notice.style.display = "none";    
+                notice.style.display = "none";
             }
 
             console.log(data)
@@ -82,7 +82,7 @@ $(document).ready(function () {
                 var content = data.content ? data.content : '<p><br/></p>'
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
-                $('img').click(function() {
+                $('img').click(function () {
                     console.log(this)
                     selectNode(this)
                 })
@@ -101,7 +101,7 @@ $(document).ready(function () {
             console.log(payload)
             sendMessage('save_node', payload, function (data) {
                 console.log(data)
-            })    
+            })
         } else {
             console.log('未选中笔记')
         }
@@ -212,6 +212,15 @@ $(document).ready(function () {
                 return
             }
 
+            // 触发代码块
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '``') {
+                event.preventDefault()
+                var html = '<pre><br/></pre>';
+                document.execCommand('insertHTML', false, html)
+                $(parentNode).remove()
+                return
+            }
+
             // 触发引用块markdown语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '&gt;') {
                 event.preventDefault()
@@ -244,16 +253,6 @@ $(document).ready(function () {
         }
 
         if (event.key == 'Enter') {
-            if (blockNode && blockNode.nodeName == 'PRE') {
-                event.preventDefault()
-                var html = '<br/>'
-                document.execCommand('insertHTML', false, html)
-                var br = document.createElement("br")
-                range.insertNode(br)
-                setCursorAfterNode(br)
-                return false
-            }
-
             // 触发表格markdown语法
             var pat = /^\|(([^\|]+)\|)+$/
             if (pat.test(innerHTML)) {
@@ -276,6 +275,19 @@ $(document).ready(function () {
                 p.appendChild(document.createElement('br'))
                 range.insertNode(p)
                 setCursor(p)
+                return
+            }
+
+            // 代码块换行
+            if (blockNode && blockNode.nodeName == 'PRE') {
+                var html = blockNode.innerHTML
+                var last_index = html.lastIndexOf("\n")
+                var html_length = html.length
+                if (last_index < 0 || last_index != html_length - 1) {
+                    document.execCommand('insertHTML', false, "\n")
+                }
+                document.execCommand('insertHTML', false, "\n")
+                event.preventDefault()
                 return
             }
 
