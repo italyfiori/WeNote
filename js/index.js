@@ -224,6 +224,17 @@ $(document).ready(function () {
         // console.debug(blockNode);
         // console.debug(range);
 
+        if (event.key == '`') {
+            // 触发代码块
+            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '``') {
+                event.preventDefault()
+                var html = '<pre class="source"><br/></pre>';
+                document.execCommand('insertHTML', false, html)
+                $(parentNode).remove()
+                return
+            }
+        }        
+
         if (event.key == ' ') {
             // 触发标题块markdown语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML in titleTagMap) {
@@ -236,16 +247,7 @@ $(document).ready(function () {
                 return
             }
 
-            // 触发代码块
-            if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '``') {
-                event.preventDefault()
-                var html = '<pre class="source"><br/></pre>';
-                document.execCommand('insertHTML', false, html)
-                $(parentNode).remove()
-                return
-            }
-
-            // 触发引用块markdown语法
+            // 触发引用块语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '&gt;') {
                 event.preventDefault()
                 var html = '<blockquote><p><br></p></blockquote>'
@@ -255,7 +257,7 @@ $(document).ready(function () {
                 return
             }
 
-            // 触发列表块markdown语法
+            // 触发列表块语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '1.' || innerHTML == '*' || innerHTML == '-')) {
                 event.preventDefault()
                 var html = innerHTML == '1.' ? '<ol><li><br/></li></ol>' : '<ul><li><br/></li></ul>'
@@ -265,7 +267,7 @@ $(document).ready(function () {
                 return
             }
 
-            // 触发水平线markdown语法
+            // 触发水平线语法
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && (innerHTML == '--')) {
                 event.preventDefault()
                 var html = '<hr contenteditable="false" /><p><br><p>'
