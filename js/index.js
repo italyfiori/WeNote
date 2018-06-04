@@ -210,7 +210,33 @@ $(document).ready(function () {
         }
     })
 
+    $('#editor').keyup(function(event) {
+        var sel = window.getSelection()
+        var range = sel.getRangeAt(0)
+        var curNode = getCurNode()
+        var offset = range.startOffset
+        if (event.key == '$' && offset > 1) {
+            console.log('here')
+            var ran = document.createRange()
+            ran.setStart(curNode, offset - 2)
+            ran.setEnd(curNode, offset)
+            var str = ran.toString()
+            console.log(str)
+            if (str == '$$') {
+                ran.deleteContents()
+                var html = '<a class="code">abc</a>';
+                document.execCommand('insertHTML', false, html)
+                console.log(range)
+                return
+            }
+        }
+
+
+    })
+
     $('#editor').keypress(function (event) {
+        
+
         // 获取当前节点信息和range范围
         var sel = window.getSelection()
         var range = sel.getRangeAt(0)
@@ -218,6 +244,15 @@ $(document).ready(function () {
         var parentNode = curNode.parentNode
         var blockNode = getBlockContainer()
         var innerHTML = $(parentNode).html()
+
+
+
+        if (event.key == 'Enter') {
+            var container = getContainer()
+            if (container.tagName == 'A') {
+                event.preventDefault()    
+            }
+        }
 
         // console.debug(curNode);
         // console.debug(parentNode);

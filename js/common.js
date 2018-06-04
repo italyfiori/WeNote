@@ -44,14 +44,24 @@ function getCurNode() {
 
 // 获取第一个块节点
 var blockTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'LI', 'PRE', 'DIV']
+var allTags   = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'LI', 'PRE', 'DIV', 'A']
+
 function getBlockContainer() {
+    return getContainerForTags(blockTags)
+}
+
+function getContainer() {
+    return getContainerForTags(allTags)
+}
+
+function getContainerForTags(tags) {
     var curNode = getCurNode()
     var tagName = curNode.tagName
-    while(curNode != editor && blockTags.indexOf(tagName) < 0) {
+    while(curNode != editor && tags.indexOf(tagName) < 0) {
         curNode = curNode.parentNode
         tagName = curNode.tagName
     }
-    return blockTags.indexOf(tagName) >= 0 ? curNode : undefined
+    return tags.indexOf(tagName) >= 0 ? curNode : undefined
 }
 
 // 根据标题创建表格html
