@@ -293,8 +293,8 @@ $(document).ready(function () {
                 return
             }
 
-            // 表格换行时，进入下一个段落
-            if (curNode == editor || curNode.nodeName == 'TD') {
+            // 在表格里换行时，进入下一个段落
+            if (curNode.nodeName == 'TD') {
                 console.log('come here')
                 event.preventDefault()
                 var p = document.createElement("p")
@@ -334,6 +334,7 @@ $(document).ready(function () {
             // 标题块换行后进入段落块
             if (blockNode && titleTagName.indexOf(blockNode.tagName) >= 0) {
                 event.preventDefault()
+                console.log('here')
                 $(blockNode).after('<p><br></p>')
                 setCursorAfterNode(blockNode)
                 return
