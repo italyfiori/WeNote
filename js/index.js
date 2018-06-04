@@ -1,5 +1,27 @@
 $(document).ready(function () {
 
+    $('#editor').bind('keypress focus click', function() {
+        console.log('****')
+        var block = getBlockContainer()
+        var source = $('pre.source')
+        // 离开代码块加高亮
+        if(source.length > 0 && source[0] != block) {
+            $(source[0]).addClass('highlight')
+            $(source[0]).removeClass('source')
+            hljs.highlightBlock(source[0]);
+            console.log(source[0].innerText + ' highlight')
+        }
+        
+        // 进入代码块取消高亮
+        if(block && block.nodeName == "PRE" && $(block).hasClass('highlight')) {
+            $(block).addClass('source')
+            $(block).removeClass('highlight')
+            block.innerText = block.innerText
+            console.log(block.innerText + ' unhighlight')
+        }
+        
+    })
+
     // 获取菜单
     sendMessage('get_menu', {}, function (data) {
         var menu = {
@@ -82,6 +104,7 @@ $(document).ready(function () {
                 var content = data.content ? data.content : '<p><br/></p>'
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
+                setCursor(editor)
                 $('img').click(function () {
                     console.log(this)
                     selectNode(this)
@@ -113,7 +136,7 @@ $(document).ready(function () {
     })
 
     // 标题输入框获取光标
-    $('#editor').focus()
+    // $('#editor').focus()
 
     // 失去焦点时记录光标位置
     var lastRange = null
@@ -122,6 +145,7 @@ $(document).ready(function () {
         if (range) {
             lastRange = range.cloneRange()
         }
+        return true
     })
 
     // 恢复光标位置
@@ -215,7 +239,7 @@ $(document).ready(function () {
             // 触发代码块
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '``') {
                 event.preventDefault()
-                var html = '<pre><br/></pre>';
+                var html = '<pre class="source"><br/></pre>';
                 document.execCommand('insertHTML', false, html)
                 $(parentNode).remove()
                 return
