@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    $('#editor').bind('keypress focus click', function() {
+    $('#editor').bind('keyup focus click', function() {
         console.log('****')
         var block = getBlockContainer()
         var source = $('pre.source')
@@ -228,7 +228,7 @@ $(document).ready(function () {
             // 触发代码块
             if (curNode.nodeName == '#text' && parentNode.tagName == 'P' && innerHTML == '``') {
                 event.preventDefault()
-                var html = '<pre class="source"><br/></pre>';
+                var html = '<pre class="source hljs"><br/></pre>';
                 document.execCommand('insertHTML', false, html)
                 $(parentNode).remove()
                 return
