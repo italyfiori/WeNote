@@ -1,25 +1,25 @@
 $(document).ready(function () {
 
-    $('#editor').bind('keyup focus click', function() {
+    $('#editor').bind('keyup focus click', function () {
         console.log('****')
         var block = getBlockContainer()
         var source = $('pre.source')
         // 离开代码块加高亮
-        if(source.length > 0 && source[0] != block) {
+        if (source.length > 0 && source[0] != block) {
             $(source[0]).addClass('highlight')
             $(source[0]).removeClass('source')
             hljs.highlightBlock(source[0]);
             console.log(source[0].innerText + ' highlight')
         }
-        
+
         // 进入代码块取消高亮
-        if(block && block.nodeName == "PRE" && $(block).hasClass('highlight')) {
+        if (block && block.nodeName == "PRE" && $(block).hasClass('highlight')) {
             $(block).addClass('source')
             $(block).removeClass('highlight')
             block.innerText = block.innerText
             console.log(block.innerText + ' unhighlight')
         }
-        
+
     })
 
     // 获取菜单
@@ -169,6 +169,15 @@ $(document).ready(function () {
             return
         }
 
+        // 标注文字后增加空格
+        $('p a.code').parent().each(function() {
+            var len = this.innerHTML.length
+            if(this.innerHTML.slice(len -4, len) == '</a>') {
+                $(this).append('&nbsp;')
+            }
+        })
+
+
         // 编辑区下的div标签转换成p标签
         var divs = editor.querySelectorAll("div");
         for (var i = 0; i < divs.length; i++) {
@@ -210,7 +219,7 @@ $(document).ready(function () {
         }
     })
 
-    $('#editor').keyup(function(event) {
+    $('#editor').keyup(function (event) {
         var sel = window.getSelection()
         var range = sel.getRangeAt(0)
         var curNode = getCurNode()
@@ -235,7 +244,7 @@ $(document).ready(function () {
     })
 
     $('#editor').keypress(function (event) {
-        
+
 
         // 获取当前节点信息和range范围
         var sel = window.getSelection()
@@ -246,18 +255,24 @@ $(document).ready(function () {
         var innerHTML = $(parentNode).html()
 
 
-
-        if (event.key == 'Enter') {
-            var container = getContainer()
-            if (container.tagName == 'A') {
-                event.preventDefault()    
+        if (event.key == '*') {
+            // 触发
+            var offset = range.startOffset
+            var text   = curNode.nodeValue
+            if (text) {
+                var start  = text.lastIndexOf('*')
+                if (start >= 0 && offset - start > 1) {
+                    var text = text.slice(start + 1, offset)
+                    var html = '<a class="code">' + text + '</a>';
+                    range.setStart(curNode, start)
+                    range.setEnd(curNode, offset)
+                    document.execCommand('insertHTML', false, html)
+                    range.deleteContents()
+                    event.preventDefault()
+                    return
+                }
             }
         }
-
-        // console.debug(curNode);
-        // console.debug(parentNode);
-        // console.debug(blockNode);
-        // console.debug(range);
 
         if (event.key == '`') {
             // 触发代码块
@@ -268,7 +283,7 @@ $(document).ready(function () {
                 $(parentNode).remove()
                 return
             }
-        }        
+        }
 
         if (event.key == ' ') {
             // 触发标题块markdown语法
