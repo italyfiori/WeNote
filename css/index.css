@@ -69,6 +69,7 @@ img:hover {
 
 #editor pre {
     tab-size: 4;
+    margin-bottom: 0;
 }
 
 #editor a.code {
