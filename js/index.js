@@ -1,7 +1,6 @@
 $(document).ready(function () {
 
     $('#editor').bind('keyup focus click', function () {
-        console.log('****')
         var block = getBlockContainer()
         var source = $('pre.source')
         // 离开代码块加高亮
@@ -9,7 +8,7 @@ $(document).ready(function () {
             $(source[0]).addClass('highlight')
             $(source[0]).removeClass('source')
             hljs.highlightBlock(source[0]);
-            console.log(source[0].innerText + ' highlight')
+            console.debug(source[0].innerText + ' highlight')
         }
 
         // 进入代码块取消高亮
@@ -17,7 +16,7 @@ $(document).ready(function () {
             $(block).addClass('source')
             $(block).removeClass('highlight')
             block.innerText = block.innerText
-            console.log(block.innerText + ' unhighlight')
+            console.debug(block.innerText + ' unhighlight')
         }
 
     })
@@ -37,7 +36,7 @@ $(document).ready(function () {
                 },
             },
         };
-        console.log(data)
+
         $('#menu-tree').jstree(menu)
 
         // 创建节点
@@ -219,29 +218,6 @@ $(document).ready(function () {
         }
     })
 
-    $('#editor').keyup(function (event) {
-        var sel = window.getSelection()
-        var range = sel.getRangeAt(0)
-        var curNode = getCurNode()
-        var offset = range.startOffset
-        if (event.key == '$' && offset > 1) {
-            console.log('here')
-            var ran = document.createRange()
-            ran.setStart(curNode, offset - 2)
-            ran.setEnd(curNode, offset)
-            var str = ran.toString()
-            console.log(str)
-            if (str == '$$') {
-                ran.deleteContents()
-                var html = '<a class="code">abc</a>';
-                document.execCommand('insertHTML', false, html)
-                console.log(range)
-                return
-            }
-        }
-
-
-    })
 
     $('#editor').keypress(function (event) {
 
@@ -264,6 +240,28 @@ $(document).ready(function () {
                 if (start >= 0 && offset - start > 1) {
                     var text = text.slice(start + 1, offset)
                     var html = '<a class="code">' + text + '</a>';
+                    range.setStart(curNode, start)
+                    range.setEnd(curNode, offset)
+                    document.execCommand('insertHTML', false, html)
+                    range.deleteContents()
+                    event.preventDefault()
+                    return
+                }
+            }
+        }
+
+        if (event.key == '$') {
+            // 触发
+            var offset = range.startOffset
+            var text   = curNode.nodeValue
+            if (text) {
+                var start  = text.lastIndexOf('$$')
+                if (start >= 0 && offset - start >= 4 && text.charAt(text.length - 1) == '$') {
+                    var text = text.slice(start + 2, offset - 1)
+                    var id   = 'math' + getRandomInt(100000)
+                    var html = '<a class="math" id="' + id + '"> ' + text + '</a>';
+                    console.log(html)
+                    // MQ.StaticMath(problemSpan);
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
                     document.execCommand('insertHTML', false, html)
