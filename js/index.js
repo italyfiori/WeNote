@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     $('#editor').bind('keyup focus click', function () {
         var block = getBlockContainer()
         var source = $('pre.source')
@@ -169,7 +168,7 @@ $(document).ready(function () {
         }
 
         // 标注文字后增加空格
-        $('p a.code').parent().each(function() {
+        $('p a').parent().each(function() {
             var len = this.innerHTML.length
             if(this.innerHTML.slice(len -4, len) == '</a>') {
                 $(this).append('&nbsp;')
@@ -251,7 +250,7 @@ $(document).ready(function () {
         }
 
         if (event.key == '$') {
-            // 触发
+            // 触发数学公式
             var offset = range.startOffset
             var text   = curNode.nodeValue
             if (text) {
@@ -259,13 +258,22 @@ $(document).ready(function () {
                 if (start >= 0 && offset - start >= 4 && text.charAt(text.length - 1) == '$') {
                     var text = text.slice(start + 2, offset - 1)
                     var id   = 'math' + getRandomInt(100000)
-                    var html = '<a class="math" id="' + id + '"> ' + text + '</a>';
-                    console.log(html)
-                    // MQ.StaticMath(problemSpan);
+                    var html = '<a class="math" contenteditable="false" id="' + id + '"> ' + text + '</a>';
+
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
-                    document.execCommand('insertHTML', false, html)
                     range.deleteContents()
+                    document.execCommand('insertHTML', false, html)
+
+                    var ele = document.getElementById(id)
+                    ele.contentEditable = "false"
+                    katex.render(text, ele)
+                    range.setStartAfter(ele)
+                    range.collapse(true)
+                    var selection = window.getSelection()
+                    selection.removeAllRanges()
+                    selection.addRange(range)
+                    // console.log(range)
                     event.preventDefault()
                     return
                 }

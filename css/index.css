@@ -73,10 +73,13 @@ img:hover {
 
 #editor a.code {
     padding: 2px 4px;
-    /*font-size: 90%;*/
     color: #c7254e;
     background-color: #f9f2f4;
     border-radius: 4px;
+}
+
+#editor a.math {
+    color: #0f0f0f;
 }
 
 #editor > :first-child {
@@ -102,7 +105,7 @@ img:hover {
 }
 
 #editor table {
-    border: 1;
+    border: 1px;
     border-collapse: collapse;
     margin: 10px 0;
 }
@@ -112,7 +115,7 @@ img:hover {
 }
 
 #editor table th {
-    font: bold;
+    font-weight: bold;
 }
 
 #editor table td {
