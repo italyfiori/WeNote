@@ -235,10 +235,10 @@ $(document).ready(function () {
             var offset = range.startOffset
             var text   = curNode.nodeValue
             if (text) {
-                var start  = text.lastIndexOf('*')
-                if (start >= 0 && offset - start > 1) {
-                    var text = text.slice(start + 1, offset)
-                    var html = '<a class="code">' + text + '</a>';
+                var start  = text.lastIndexOf('**')
+                if (start >= 0 && offset - start >= 4 && text.charAt(text.length - 1) == '*') {
+                    var text = text.slice(start + 2, offset - 1)
+                    var html = '<a class="code">' + text + '</a>&nbsp;';
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
                     document.execCommand('insertHTML', false, html)
@@ -256,9 +256,10 @@ $(document).ready(function () {
             if (text) {
                 var start  = text.lastIndexOf('$$')
                 if (start >= 0 && offset - start >= 4 && text.charAt(text.length - 1) == '$') {
+                    console.log('math')
                     var text = text.slice(start + 2, offset - 1)
                     var id   = 'math' + getRandomInt(100000)
-                    var html = '<a class="math" contenteditable="false" id="' + id + '"> ' + text + '</a>';
+                    var html = '<a class="math" id="' + id + '"> ' + text + '</a> &nbsp;';
 
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
