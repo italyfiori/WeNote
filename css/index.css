@@ -160,7 +160,7 @@ img:hover {
 }
 
 #editor h1, h2, h3, h4, h5, h6{
-    font-weight: normal;
+    font-weight: bold;
 }
 
 #editor h3, h4, h5, h6{

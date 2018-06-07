@@ -238,7 +238,7 @@ var db = new sqlite3.Database(db_file);
 
 // 获取列表
 ipcMain.on('get_menu', (event, data) => {
-    var sql = "select title as text, id, parent_id from note;"
+    var sql = "select title as text, id, parent_id from note order by title;"
     db.all(sql, function (err, rows) {
         var menu = buildTree(rows)
         var payload = {

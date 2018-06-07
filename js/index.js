@@ -170,9 +170,9 @@ $(document).ready(function () {
         // 标注文字后增加空格
         $('p a').parent().each(function() {
             var len = this.innerHTML.length
-            if(this.innerHTML.slice(len -4, len) == '</a>') {
-                $(this).append('&nbsp;')
-            }
+            // if(this.innerHTML.slice(len -4, len) == '</a>') {
+            //     $(this).append('&nbsp;')
+            // }
         })
 
 
@@ -236,7 +236,7 @@ $(document).ready(function () {
             var text   = curNode.nodeValue
             if (text) {
                 var start  = text.lastIndexOf('**')
-                if (start >= 0 && offset - start >= 4 && text.charAt(text.length - 1) == '*') {
+                if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '*') {
                     var text = text.slice(start + 2, offset - 1)
                     var html = '<a class="code">' + text + '</a>&nbsp;';
                     range.setStart(curNode, start)
@@ -255,16 +255,16 @@ $(document).ready(function () {
             var text   = curNode.nodeValue
             if (text) {
                 var start  = text.lastIndexOf('$$')
-                if (start >= 0 && offset - start >= 4 && text.charAt(text.length - 1) == '$') {
+                if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '$') {
                     console.log('math')
                     var text = text.slice(start + 2, offset - 1)
                     var id   = 'math' + getRandomInt(100000)
                     var html = '<a class="math" id="' + id + '"> ' + text + '</a> &nbsp;';
-
+                    document.execCommand('insertHTML', false, html)
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
                     range.deleteContents()
-                    document.execCommand('insertHTML', false, html)
+                    
 
                     var ele = document.getElementById(id)
                     ele.contentEditable = "false"
