@@ -241,8 +241,9 @@ $(document).ready(function () {
                     var html = '<a class="code">' + text + '</a>&nbsp;';
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
-                    document.execCommand('insertHTML', false, html)
                     range.deleteContents()
+                    document.execCommand('insertHTML', false, html)
+
                     event.preventDefault()
                     return
                 }
@@ -260,10 +261,10 @@ $(document).ready(function () {
                     var text = text.slice(start + 2, offset - 1)
                     var id   = 'math' + getRandomInt(100000)
                     var html = '<a class="math" id="' + id + '"> ' + text + '</a> &nbsp;';
-                    document.execCommand('insertHTML', false, html)
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
                     range.deleteContents()
+                    document.execCommand('insertHTML', false, html)
                     
 
                     var ele = document.getElementById(id)
