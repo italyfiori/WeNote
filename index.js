@@ -397,3 +397,12 @@ function _buildTree(cur_node_id, parent_set, node_list) {
   return menu
 }
 
+function receiveMessage(message, func) {
+    ipcMain.on(message, (event, request) => {
+        var response = func(data)
+        var response
+        response['message_id'] = request.id
+        event.sender.send(response)
+    })
+}
+

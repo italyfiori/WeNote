@@ -20,6 +20,46 @@ $(document).ready(function () {
 
     })
 
+
+
+    // 文件拖拽
+    var holder = document
+
+    holder.ondragover = () => {
+        return false;
+    };
+
+    holder.ondragleave = () => {
+        return false;
+    };
+
+    holder.ondragend = () => {
+        return false;
+    };
+
+    holder.ondrop = (e) => {
+        e.preventDefault();
+
+        var editor = document.getElementById('editor')
+        var note_id = editor.getAttribute('note_id')
+        if (!note_id) {
+            console.warn("没有选中笔记!")
+            return
+        }
+        if (e.dataTransfer.files.length != 1) {
+            console.warn("不支持多个文件!")
+            return
+        }
+
+        var filePath = e.dataTransfer.files[0].path
+        var payload  = {note_id: note_id, filePath: filePath}
+        sendMessage('drag_file', payload, function(response) {
+            console.log(response)
+        })
+
+        return false;
+    };
+
     // 获取菜单
     sendMessage('get_menu', {}, function (data) {
         var menu = {

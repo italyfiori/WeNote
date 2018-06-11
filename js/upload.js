@@ -23,18 +23,16 @@ function sendMessage(message, data, func) {
 
 // 监听主进程消息
 function listenIpc(message) {
-    ipcRenderer.on(message, (event, data) => {
-
-        if (data.code == 0 && data.message_id) {
-            event_emitter.emit(data.message_id, data)
-            return
+    ipcRenderer.on(message, (event, response) => {
+        if (!response.message_id) {
+            console.warn('response not have message id!')
         }
-        console.error('get message error:' + data.msg)
+        event_emitter.emit(response.message_id, response)
     })
 }
 
 // 监听回调
-var messages = ['save_image', 'get_menu', 'get_node', 'create_node', 'delete_node', 'save_node']
+var messages = ['save_image', 'get_menu', 'get_node', 'create_node', 'delete_node', 'save_node', 'drag_file']
 for (var i = 0; i < messages.length; i++) {
     var message = messages[i]
     listenIpc(message)
