@@ -77,14 +77,13 @@ $(document).ready(function () {
 
             // console.log($('a.file'))
 
-            // (function(file_url) {
-                $('a.file').click(function(event) {
-                    event.preventDefault()
-                    sendMessage('open_file_link', {file_url: file_url}, function(response) {
-                        console.log('receive response' + response)
-                    })
+            $('a.file').unbind()
+            $('a.file').click(function(event) {
+                event.preventDefault()
+                sendMessage('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
+                    console.log('receive response' + response)
                 })
-            // }(file_url))
+            })
            
         })  
 
@@ -166,18 +165,30 @@ $(document).ready(function () {
                 notice.style.display = "none";
             }
 
-            console.log(data)
             sendMessage('get_node', {'id': note_id}, function (data) {
                 var editor = document.getElementById('editor')
                 var title = document.getElementById('title-input')
+                
+
                 var content = data.content ? data.content : '<p><br/></p>'
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
                 setCursor(editor)
+
+                // 图片可点击
                 $('img').click(function () {
                     console.log(this)
                     selectNode(this)
                 })
+
+                // 文件可点击
+                $('a.file').click(function(event) {
+                    event.preventDefault()
+                    sendMessage('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
+                        console.log('receive response' + response)
+                    })
+                })
+
             })
         })
 
@@ -190,7 +201,6 @@ $(document).ready(function () {
         if (note_id) {
             var content = editor.innerHTML
             var payload = {'id': note_id, 'content': content}
-            console.log(payload)
             sendMessage('save_node', payload, function (data) {
                 console.log(data)
             })
