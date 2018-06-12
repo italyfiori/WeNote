@@ -75,13 +75,11 @@ $(document).ready(function () {
             var ele = document.getElementById(file_id)
             ele.contentEditable = "false"
 
-            // console.log($('a.file'))
-
             $('a.file').unbind()
             $('a.file').click(function(event) {
                 event.preventDefault()
                 sendMessage('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
-                    console.log('receive response' + response)
+                    // do nothing
                 })
             })
            
@@ -185,7 +183,7 @@ $(document).ready(function () {
                 $('a.file').click(function(event) {
                     event.preventDefault()
                     sendMessage('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
-                        console.log('receive response' + response)
+                        // do nothing
                     })
                 })
 

@@ -83,6 +83,11 @@ img:hover {
     color: #0f0f0f;
 }
 
+#editor a.file, #editor a.file:link, #editor a.file:active, #editor a.file:visited, #editor a.file:hover {
+    color: #337ab7;
+    text-decoration:none;
+}
+
 #editor > :first-child {
     margin-top: 10px;
 }
