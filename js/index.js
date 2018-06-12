@@ -70,7 +70,7 @@ $(document).ready(function () {
             var file_url = response.data.file_url
             var file_name = response.data.file_name
             var file_id   = 'file' + getRandomInt(100000)
-            var html = '<a class="file" href="{0}" id="{1}">{2}</a>&nbsp;'.format(file_url, file_id, file_name)
+            var html = '<a class="file" href="{0}" id="{1}">{2}</a> &nbsp;'.format(file_url, file_id, file_name)
             document.execCommand('insertHTML', false, html)
             var ele = document.getElementById(file_id)
             ele.contentEditable = "false"
