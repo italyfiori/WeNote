@@ -20,6 +20,17 @@ $(document).ready(function () {
 
     })
 
+    if (!String.prototype.format) {
+      String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) { 
+          return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+          ;
+        });
+      };
+    }
 
 
     // 文件拖拽
@@ -52,10 +63,30 @@ $(document).ready(function () {
         }
 
         var filePath = e.dataTransfer.files[0].path
-        var payload  = {note_id: note_id, filePath: filePath}
+        var payload  = {note_id: note_id, file_path: filePath}
+
+        // 
         sendMessage('drag_file', payload, function(response) {
-            console.log(response)
-        })
+            var file_url = response.data.file_url
+            var file_name = response.data.file_name
+            var file_id   = 'file' + getRandomInt(100000)
+            var html = '<a class="file" href="{0}" id="{1}">{2}</a>&nbsp;'.format(file_url, file_id, file_name)
+            document.execCommand('insertHTML', false, html)
+            var ele = document.getElementById(file_id)
+            ele.contentEditable = "false"
+
+            // console.log($('a.file'))
+
+            // (function(file_url) {
+                $('a.file').click(function(event) {
+                    event.preventDefault()
+                    sendMessage('open_file_link', {file_url: file_url}, function(response) {
+                        console.log('receive response' + response)
+                    })
+                })
+            // }(file_url))
+           
+        })  
 
         return false;
     };

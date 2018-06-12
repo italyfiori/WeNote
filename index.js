@@ -2,7 +2,8 @@ const {
     app,
     BrowserWindow,
     Menu,
-    ipcMain
+    ipcMain,
+    shell
 } = require('electron')
 const electron = require('electron')
 const path = require('path')
@@ -352,6 +353,66 @@ ipcMain.on('rename_node', (event, ret) => {
     }
 })
 
+function getFileSaveDir(note_id) {
+    return path.join(__dirname, 'data', 'files', String(note_id))
+}
+
+function getFilePath(note_id, file_name) {
+    return path.join(__dirname, 'data', 'files', String(note_id), file_name)
+}
+
+function getFileUrl(note_id, file_name) {
+    return path.join('data', 'files', String(note_id), file_name)
+}
+
+function makeResponse(request, data, code, msg) {
+    var response = {
+        code: code,
+        msg: msg,
+        message_id: request.message_id,
+        data: data
+    }
+    return response;
+}
+
+function makeSuccResponse(request, data) {
+    return makeResponse(request, data, 0, 'success')
+}
+
+// 保存节点
+ipcMain.on('drag_file', (event, request) => {
+    var note_id = request.data.note_id
+    var save_dir = getFileSaveDir(note_id)
+    if (!fs.existsSync(save_dir)) {
+        fs.mkdirSync(save_dir)
+    }
+
+    var src_file = request.data.file_path
+    var file_name = path.basename(src_file)
+    var dst_file = getFilePath(note_id, file_name)
+    fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
+    
+    var file_url = getFileUrl(note_id, file_name)
+    var data = {
+        file_url: file_url,
+        file_name: file_name,
+    }
+    var response = makeSuccResponse(request, data)
+    event.sender.send('drag_file', response)
+})
+
+// 保存节点
+ipcMain.on('open_file_link', (event, request) => {
+    var file_url = request.data.file_url
+    if (!fs.existsSync(file_url)) {
+        console.warn('file not exists, ' + file_url)
+        return
+    }
+    console.log('open file ' + file_url)
+    shell.openItem(file_url);   
+    var response = makeSuccResponse(request, {})
+    event.sender.send('open_file_link', response)
+})
 
 // 构建树
 function buildTree(rows) {

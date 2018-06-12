@@ -32,7 +32,7 @@ function listenIpc(message) {
 }
 
 // 监听回调
-var messages = ['save_image', 'get_menu', 'get_node', 'create_node', 'delete_node', 'save_node', 'drag_file']
+var messages = ['save_image', 'get_menu', 'get_node', 'create_node', 'delete_node', 'save_node', 'drag_file', 'open_file_link']
 for (var i = 0; i < messages.length; i++) {
     var message = messages[i]
     listenIpc(message)
