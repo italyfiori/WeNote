@@ -198,28 +198,23 @@ function getBufferMd5(buffer) {
 // 接收文件数据
 ipcMain.on('save_image', (event, data) => {
     if (!Buffer.isBuffer(data.data.buffer)) {
-        console.log('data is not buffer, ' + data.message_id)
+        console.error('data is not buffer, ' + data.message_id)
         return
     }
 
     var note_id = data.data.note_id
     var image_dir = path.join(__dirname, 'data', 'images', String(note_id))
-    console.log(image_dir);
     if (!fs.existsSync(image_dir)) {
-        console.log('make dir');
         fs.mkdirSync(image_dir);
     }
 
-    console.log(data);
-
-    
     var buffer = data.data.buffer
     var buffer_md5 = getBufferMd5(buffer)
     var file_name = buffer_md5 + '.png'
     var file_path = path.join(image_dir, '', file_name)
     fs.writeFile(file_path, buffer, {}, (err, res) => {
         if (err) {
-            console.log('write file error:' + err);
+            console.error('write file error:' + err);
             return
         }
         var payload = {
@@ -256,7 +251,6 @@ ipcMain.on('get_menu', (event, data) => {
 ipcMain.on('create_node', (event, ret) => {
     if (ret.data.parent_id >= 0) {
         var sql = "insert into note(title, parent_id) values('" + ret.data.title + "'," + ret.data.parent_id + ")"
-        console.log(sql)
         db.run(sql, function (err, res) {
             var payload = {
                 code: 0,
@@ -264,7 +258,6 @@ ipcMain.on('create_node', (event, ret) => {
                 msg: 'success',
                 note_id: this.lastID
             }
-            console.log(payload);
             event.sender.send('create_node', payload)
         })
     }
@@ -290,11 +283,15 @@ ipcMain.on('get_node', (event, ret) => {
     if (ret.data.id >= 0) {
         var sql = "select id, title from note where id = " + ret.data.id + ";"
         var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
+        var history = get_note(ret.data.id)
+
         db.get(sql, function (err, res) {
             var cont = ''
             if (fs.existsSync(file_path)) {
                 cont = fs.readFileSync(file_path)
             }
+            cont = history.lastVersion || cont
+
             var payload = {
                 code: 0,
                 message_id: ret.message_id,
@@ -308,13 +305,68 @@ ipcMain.on('get_node', (event, ret) => {
 })
 
 // 保存节点
-ipcMain.on('save_node', (event, ret) => {
 
+
+function getNotePath(note_id) {
+    return path.join(__dirname, 'data', 'notes', String(note_id) + '.json')
+}
+
+// function getNote(note_id) {
+//     var history = new TextHistory()
+//     var file_path = getNotePath(note_id)
+//     if (!fs.existsSync(file_path)) {
+//         return history
+//     }
+//     var file_content = fs.readFileSync(file_path)
+//     var history_data = JSON.parse(file_content)
+//     history.
+
+// }
+
+function save_note(note_id, history) {
+    var file_path = getNotePath(note_id)
+    fs.writeFileSync(file_path, JSON.stringify(history))
+}
+
+function get_note(note_id) {
+    var history = new TextHistory()
+    var file_path = getNotePath(note_id)
+    if (!fs.existsSync(file_path)) {
+        return history
+    }
+    var file_cont = fs.readFileSync(file_path)
+    try {
+        var file_history = JSON.parse(file_cont)
+        for(key in file_history) {
+            history[key] = file_history[key]
+        }
+    } catch (err) {
+        console.error(err)
+    }
+    return history
+}
+
+
+
+var TextHistory = require('text-history');
+ipcMain.on('save_node', (event, ret) => {
     if (ret.data.id >= 0) {
         var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
-        fs.writeFile(file_path, ret.data.content, function (err) {
-            console.log('write to ' + file_path)
-        })
+        
+        var history = get_note(ret.data.id)
+        if(!history.addVersion(ret.data.content)) {
+            console.warn('note has no change:' + String(ret.data.id))
+            return
+        }
+
+        save_note(ret.data.id, history)
+        var payload = {
+            code: 0,
+            message_id: ret.message_id,
+            data: history,
+            msg: 'success',
+        }
+        event.sender.send('save_node', payload)
     }
 })
 
@@ -355,7 +407,6 @@ ipcMain.on('rename_node', (event, ret) => {
 
 // 构建树
 function buildTree(rows) {
-    console.log(rows);
   node_list = {}
   parent_set = {}
   // rows.push({'nodeId': 0, 'parentId': -1})
