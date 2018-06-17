@@ -8,6 +8,7 @@ const electron = require('electron')
 const path = require('path')
 const url = require('url')
 let fs = require('fs')
+var NoteData = require('./server/NoteData')
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
@@ -279,24 +280,16 @@ ipcMain.on('delete_node', (event, ret) => {
 })
 
 // 获取节点
-ipcMain.on('get_node', (event, ret) => {
-    if (ret.data.id >= 0) {
-        var sql = "select id, title from note where id = " + ret.data.id + ";"
-        var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
-        var history = get_note(ret.data.id)
-
+ipcMain.on('get_node', (event, req) => {
+    if (req.data.id >= 0) {
+        var sql = "select id, title from note where id = " + req.data.id + ";"
+        var content = NoteData.get_note(req.data.id)
         db.get(sql, function (err, res) {
-            var cont = ''
-            if (fs.existsSync(file_path)) {
-                cont = fs.readFileSync(file_path)
-            }
-            cont = history.lastVersion || cont
-
             var payload = {
                 code: 0,
-                message_id: ret.message_id,
+                message_id: req.message_id,
                 msg: 'success',
-                content: cont,
+                content: content,
                 title: res.title,
             }
             event.sender.send('get_node', payload)
@@ -305,65 +298,24 @@ ipcMain.on('get_node', (event, ret) => {
 })
 
 // 保存节点
-
-
-function getNotePath(note_id) {
-    return path.join(__dirname, 'data', 'notes', String(note_id) + '.json')
-}
-
-// function getNote(note_id) {
-//     var history = new TextHistory()
-//     var file_path = getNotePath(note_id)
-//     if (!fs.existsSync(file_path)) {
-//         return history
-//     }
-//     var file_content = fs.readFileSync(file_path)
-//     var history_data = JSON.parse(file_content)
-//     history.
-
-// }
-
-function save_note(note_id, history) {
-    var file_path = getNotePath(note_id)
-    fs.writeFileSync(file_path, JSON.stringify(history))
-}
-
-function get_note(note_id) {
-    var history = new TextHistory()
-    var file_path = getNotePath(note_id)
-    if (!fs.existsSync(file_path)) {
-        return history
-    }
-    var file_cont = fs.readFileSync(file_path)
-    try {
-        var file_history = JSON.parse(file_cont)
-        for(key in file_history) {
-            history[key] = file_history[key]
-        }
-    } catch (err) {
-        console.error(err)
-    }
-    return history
-}
-
-
-
-var TextHistory = require('text-history');
 ipcMain.on('save_node', (event, ret) => {
     if (ret.data.id >= 0) {
-        var file_path = path.join(__dirname, 'data', 'notes', ret.data.id + '.html')
-        
-        var history = get_note(ret.data.id)
-        if(!history.addVersion(ret.data.content)) {
+        // 保存文件
+        var note_id   = ret.data.id
+        var file_cont = ret.data.content
+        if (NoteData.get_note(note_id) === file_cont) {
             console.warn('note has no change:' + String(ret.data.id))
             return
         }
+        NoteData.save_note(note_id, file_cont)
 
-        save_note(ret.data.id, history)
+        // 保存历史
+        NoteData.append_history(note_id, file_cont)
+
+        // 返回
         var payload = {
             code: 0,
             message_id: ret.message_id,
-            data: history,
             msg: 'success',
         }
         event.sender.send('save_node', payload)
