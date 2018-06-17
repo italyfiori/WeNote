@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 var TextHistory = require('text-history');
+var striptags = require('striptags');
+
 
 const base_path = path.dirname(__dirname);
 
@@ -73,7 +75,7 @@ function append_history(note_id, new_cont) {
     }
 
     var file_path = get_history_path(note_id)
-    var version_cont = JSON.stringify({'time': Date.now(), 'size': new_cont.length, 'patches': patches})
+    var version_cont = JSON.stringify({'time': Date.now(), 'size': striptags(new_cont).length, 'patches': patches})
     if (fs.existsSync(file_path)) {
         version_cont = "\n" + version_cont
     }

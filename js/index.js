@@ -174,7 +174,7 @@ $(document).ready(function () {
     })
 
     function createTableHtml(version_list) {
-        var html = '<table class="table">'
+        var html = '<table class="table table-bordered table-hover">'
         html += '<tr><th>版本</th><th>时间</th><th>大小</th><th>操作</th></tr>'
         for (i in version_list) {
             var version = version_list[i]

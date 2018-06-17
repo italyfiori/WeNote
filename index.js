@@ -89,6 +89,7 @@ var template = [
         label: 'History',
         submenu: [{
             label: 'History List',
+            accelerator: 'CmdOrCtrl+K',
             click: function () {
                 win.webContents.send('history_action');
             }
@@ -379,7 +380,6 @@ ipcMain.on('recover_version', (event, req) => {
         var note_id = req.data.note_id
         var version_id = req.data.version_id
         var version = NoteData.get_version(note_id, parseInt(version_id))
-        console.log(version)
         event.sender.send('recover_version', Util.makeResult(req, version))
     }
 })
