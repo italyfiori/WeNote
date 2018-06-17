@@ -9,6 +9,7 @@ const path = require('path')
 const url = require('url')
 let fs = require('fs')
 var NoteData = require('./server/NoteData')
+var Util = require('./server/Util')
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
@@ -83,7 +84,16 @@ var template = [
             accelerator: 'CmdOrCtrl+A',
             role: 'selectall'
         }]
-    }
+    },
+    {
+        label: 'History',
+        submenu: [{
+            label: 'History List',
+            click: function () {
+                win.webContents.send('history_action');
+            }
+        }]
+    },
 ]
 
 if (process.platform === 'darwin') {
@@ -110,20 +120,20 @@ if (process.platform === 'darwin') {
                 }
             },
             {
-    label: 'Toggle Developer Tools',
-    accelerator: (function () {
-      if (process.platform === 'darwin') {
-        return 'Alt+Command+I'
-      } else {
-        return 'Ctrl+Shift+I'
-      }
-    })(),
-    click: function (item, focusedWindow) {
-      if (focusedWindow) {
-        focusedWindow.toggleDevTools()
-      }
-    }
-  },
+                label: 'Toggle Developer Tools',
+                accelerator: (function () {
+                    if (process.platform === 'darwin') {
+                        return 'Alt+Command+I'
+                    } else {
+                        return 'Ctrl+Shift+I'
+                    }
+                })(),
+                click: function (item, focusedWindow) {
+                    if (focusedWindow) {
+                        focusedWindow.toggleDevTools()
+                    }
+                }
+            },
             {
                 label: `About ${name}`,
                 role: 'about'
@@ -221,7 +231,7 @@ ipcMain.on('save_image', (event, data) => {
         var payload = {
             'code': 0,
             'message_id': data.message_id,
-            'image_url': path.join(image_dir,  file_name),
+            'image_url': path.join(image_dir, file_name),
         }
         event.sender.send('save_image', payload)
     })
@@ -301,7 +311,7 @@ ipcMain.on('get_node', (event, req) => {
 ipcMain.on('save_node', (event, ret) => {
     if (ret.data.id >= 0) {
         // 保存文件
-        var note_id   = ret.data.id
+        var note_id = ret.data.id
         var file_cont = ret.data.content
         if (NoteData.get_note(note_id) === file_cont) {
             console.warn('note has no change:' + String(ret.data.id))
@@ -356,48 +366,66 @@ ipcMain.on('rename_node', (event, ret) => {
     }
 })
 
+ipcMain.on('get_version_list', (event, req) => {
+    if(req.data.id >= 0) {
+        var note_id = req.data.id
+        var history_list = NoteData.get_version_list(note_id)
+        event.sender.send('get_version_list', Util.makeResult(req, history_list))
+    }
+})
+
+ipcMain.on('recover_version', (event, req) => {
+    if(req.data.note_id >= 0 && req.data.version_id >= 0) {
+        var note_id = req.data.note_id
+        var version_id = req.data.version_id
+        var version = NoteData.get_version(note_id, parseInt(version_id))
+        console.log(version)
+        event.sender.send('recover_version', Util.makeResult(req, version))
+    }
+})
+
 
 // 构建树
 function buildTree(rows) {
-  node_list = {}
-  parent_set = {}
-  // rows.push({'nodeId': 0, 'parentId': -1})
-  for (id in rows) {
-    row = rows[id]
-    node_id   = row['id']
-    parent_id = row['parent_id']
-    
-    // 构造辅助对象
-    if(!parent_set[parent_id]) {
-      parent_set[parent_id] = []
+    node_list = {}
+    parent_set = {}
+    // rows.push({'nodeId': 0, 'parentId': -1})
+    for (id in rows) {
+        row = rows[id]
+        node_id = row['id']
+        parent_id = row['parent_id']
+
+        // 构造辅助对象
+        if (!parent_set[parent_id]) {
+            parent_set[parent_id] = []
+        }
+        parent_set[parent_id].push(row)
+        node_list[node_id] = row
     }
-    parent_set[parent_id].push(row)
-    node_list[node_id] = row
-  }
-  
-  var menu = _buildTree('0', parent_set, node_list)
-  return menu['children']
+
+    var menu = _buildTree('0', parent_set, node_list)
+    return menu['children']
 }
 
 // 构建树
 function _buildTree(cur_node_id, parent_set, node_list) {
-  var sub_nodes = parent_set[cur_node_id]
-  var cur_node  = node_list[cur_node_id] ? node_list[cur_node_id] : {}
-  
-  var menu = cur_node
-  menu['children'] = []
+    var sub_nodes = parent_set[cur_node_id]
+    var cur_node = node_list[cur_node_id] ? node_list[cur_node_id] : {}
 
-  for (i in sub_nodes) {
-    sub_node    = sub_nodes[i]
-    sub_node_id = sub_node['id']
-    
-    if(!parent_set[sub_node_id]) {
-      menu['children'].push({'id': sub_node_id, 'text': sub_node['text']})
-    } else {
-      menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))      
+    var menu = cur_node
+    menu['children'] = []
+
+    for (i in sub_nodes) {
+        sub_node = sub_nodes[i]
+        sub_node_id = sub_node['id']
+
+        if (!parent_set[sub_node_id]) {
+            menu['children'].push({'id': sub_node_id, 'text': sub_node['text']})
+        } else {
+            menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))
+        }
     }
-  }
-  return menu
+    return menu
 }
 
 function receiveMessage(message, func) {

@@ -34,19 +34,20 @@ function save_note(note_id, file_cont) {
 function parse_history_content(history_content) {
     try {
         var history = new TextHistory()
-        var rows = history_content.split('\n')    
+        var rows = history_content.split('\n')
         for (var i = 0; i < rows.length; i++) {
             var row = JSON.parse(rows[i])
-            if(!row.patches || !row.time) {
+            if (!row.patches || !row.time) {
                 return history
             }
             history.patchesList.push(row.patches)
             history.timeList.push(row.time)
+            history.sizeList.push(row.size || 0)
         }
     } catch (err) {
         console.error('parse history error:' + err)
     }
-    
+
     return history
 }
 
@@ -72,15 +73,36 @@ function append_history(note_id, new_cont) {
     }
 
     var file_path = get_history_path(note_id)
-    var version_cont = JSON.stringify( {'time': Date.now(), 'patches': patches} )
+    var version_cont = JSON.stringify({'time': Date.now(), 'size': new_cont.length, 'patches': patches})
     if (fs.existsSync(file_path)) {
         version_cont = "\n" + version_cont
     }
-    
+
     fs.appendFileSync(file_path, version_cont)
 }
+
+function get_version_list(note_id) {
+    var history = get_history(note_id)
+    var time_list = history.timeList
+    var size_list = history.sizeList
+
+    var version_list = []
+    for (let i = time_list.length - 1; i >= 0; i--) {
+        version_list.push( {id: i, time: time_list[i], size: size_list[i]} )
+    }
+    return version_list
+}
+
+function get_version(note_id, version_id) {
+    var history = get_history(note_id)
+    return history.getVersion(version_id)
+}
+
+
 
 exports.get_note = get_note
 exports.save_note = save_note
 exports.get_history = get_history
 exports.append_history = append_history
+exports.get_version_list = get_version_list
+exports.get_version = get_version

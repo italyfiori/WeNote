@@ -21,7 +21,6 @@ $(document).ready(function () {
     })
 
 
-
     // 文件拖拽
     var holder = document
 
@@ -52,8 +51,8 @@ $(document).ready(function () {
         }
 
         var filePath = e.dataTransfer.files[0].path
-        var payload  = {note_id: note_id, filePath: filePath}
-        sendMessage('drag_file', payload, function(response) {
+        var payload = {note_id: note_id, filePath: filePath}
+        sendMessage('drag_file', payload, function (response) {
             console.log(response)
         })
 
@@ -140,7 +139,7 @@ $(document).ready(function () {
                 var editor = document.getElementById('editor')
                 var title = document.getElementById('title-input')
                 var content = data.content ? data.content : '<p><br/></p>'
-                
+
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
                 setCursor(editor)
@@ -172,6 +171,56 @@ $(document).ready(function () {
     // 保存笔记
     ipcRenderer.on('save', function () {
         save_note()
+    })
+
+    function createTableHtml(version_list) {
+        var html = '<table class="table">'
+        html += '<tr><th>版本</th><th>时间</th><th>大小</th><th>操作</th></tr>'
+        for (i in version_list) {
+            var version = version_list[i]
+            var data = {
+                id: version.id,
+                time: ts2time(version.time),
+                size: String(version.size).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'),
+                op: '<a class="version" href="">恢复</a>'.format(version.id)
+            }
+            html += '<tr><td>{id}</td><td>{time}</td><td>{size}</td><td>{op}</td></tr>'.format(data)
+        }
+        html += '</table>';
+        return html
+    }
+
+
+
+    ipcRenderer.on('history_action', function () {
+        var note_id = editor.getAttribute('note_id')
+        if (!note_id) {
+            console.warn('no note selected')
+            return
+        }
+        var payload = {'id': note_id}
+
+        sendMessage('get_version_list', payload, function (response) {
+            var html = createTableHtml(response.data)
+            $('#version_list_body').html(html)
+            $('#version_list').modal()
+
+            $('a.version').unbind()
+            $('a.version').click(function () {
+                var version_id = $(this).parents('tr')[0].firstChild.innerHTML
+                var payload = {note_id: note_id, version_id: version_id}
+                sendMessage('recover_version', payload, function(response) {
+                    editor.innerHTML = response.data
+                    setCursor(editor)
+                    $('img').click(function () {
+                        console.log(this)
+                        selectNode(this)
+                    })
+                    $('#version_list').modal('hide')
+                })
+                return false
+            })
+        })
     })
 
     // 标题输入框获取光标
@@ -209,7 +258,7 @@ $(document).ready(function () {
         }
 
         // 标注文字后增加空格
-        $('p a').parent().each(function() {
+        $('p a').parent().each(function () {
             var len = this.innerHTML.length
             // if(this.innerHTML.slice(len -4, len) == '</a>') {
             //     $(this).append('&nbsp;')
@@ -274,9 +323,9 @@ $(document).ready(function () {
         if (event.key == '*') {
             // 触发
             var offset = range.startOffset
-            var text   = curNode.nodeValue
+            var text = curNode.nodeValue
             if (text) {
-                var start  = text.lastIndexOf('**')
+                var start = text.lastIndexOf('**')
                 if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '*') {
                     var text = text.slice(start + 2, offset - 1)
                     var html = '<a class="code">' + text + '</a>&nbsp;';
@@ -294,19 +343,19 @@ $(document).ready(function () {
         if (event.key == '$') {
             // 触发数学公式
             var offset = range.startOffset
-            var text   = curNode.nodeValue
+            var text = curNode.nodeValue
             if (text) {
-                var start  = text.lastIndexOf('$$')
+                var start = text.lastIndexOf('$$')
                 if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '$') {
                     console.log('math')
                     var text = text.slice(start + 2, offset - 1)
-                    var id   = 'math' + getRandomInt(100000)
+                    var id = 'math' + getRandomInt(100000)
                     var html = '<a class="math" id="' + id + '"> ' + text + '</a> &nbsp;';
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
                     range.deleteContents()
                     document.execCommand('insertHTML', false, html)
-                    
+
 
                     var ele = document.getElementById(id)
                     ele.contentEditable = "false"
