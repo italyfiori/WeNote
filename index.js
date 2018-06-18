@@ -2,7 +2,8 @@ const {
     app,
     BrowserWindow,
     Menu,
-    ipcMain
+    ipcMain,
+    shell
 } = require('electron')
 const electron = require('electron')
 const path = require('path')
@@ -263,6 +264,7 @@ ipcMain.on('get_menu', (event, data) => {
 ipcMain.on('create_node', (event, ret) => {
     if (ret.data.parent_id >= 0) {
         var sql = "insert into note(title, parent_id) values('" + ret.data.title + "'," + ret.data.parent_id + ")"
+        console.log(sql)
         db.run(sql, function (err, res) {
             var payload = {
                 code: 0,
@@ -270,6 +272,7 @@ ipcMain.on('create_node', (event, ret) => {
                 msg: 'success',
                 note_id: this.lastID
             }
+            console.log(payload);
             event.sender.send('create_node', payload)
         })
     }
@@ -367,6 +370,68 @@ ipcMain.on('rename_node', (event, ret) => {
     }
 })
 
+function getFileSaveDir(note_id) {
+    return path.join(__dirname, 'data', 'files', String(note_id))
+}
+
+function getFilePath(note_id, file_name) {
+    return path.join(__dirname, 'data', 'files', String(note_id), file_name)
+}
+
+function getFileUrl(note_id, file_name) {
+    return path.join('data', 'files', String(note_id), file_name)
+}
+
+function makeResponse(request, data, code, msg) {
+    var response = {
+        code: code,
+        msg: msg,
+        message_id: request.message_id,
+        data: data
+    }
+    return response;
+}
+
+function makeSuccResponse(request, data) {
+    return makeResponse(request, data, 0, 'success')
+}
+
+// 保存节点
+ipcMain.on('drag_file', (event, request) => {
+    var note_id = request.data.note_id
+    var save_dir = getFileSaveDir(note_id)
+    if (!fs.existsSync(save_dir)) {
+        fs.mkdirSync(save_dir)
+    }
+
+    var src_file = request.data.file_path
+    var file_name = path.basename(src_file)
+    var dst_file = getFilePath(note_id, file_name)
+    fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
+
+    var file_url = getFileUrl(note_id, file_name)
+    var data = {
+        file_url: file_url,
+        file_name: file_name,
+    }
+    var response = Util.make(request, data)
+    event.sender.send('drag_file', response)
+})
+
+// 保存节点
+ipcMain.on('open_file_link', (event, request) => {
+    console.log(request)
+    var file_url = request.data.file_url
+    if (!fs.existsSync(file_url)) {
+        console.warn('file not exists, ' + file_url)
+        return
+    }
+    console.log('open file ' + file_url)
+    shell.openItem(file_url);
+    var response = makeSuccResponse(request, {})
+    event.sender.send('open_file_link', response)
+})
+
 ipcMain.on('get_version_list', (event, req) => {
     if(req.data.id >= 0) {
         var note_id = req.data.id
@@ -384,48 +449,48 @@ ipcMain.on('recover_version', (event, req) => {
     }
 })
 
-
 // 构建树
 function buildTree(rows) {
-    node_list = {}
-    parent_set = {}
-    // rows.push({'nodeId': 0, 'parentId': -1})
-    for (id in rows) {
-        row = rows[id]
-        node_id = row['id']
-        parent_id = row['parent_id']
-
-        // 构造辅助对象
-        if (!parent_set[parent_id]) {
-            parent_set[parent_id] = []
-        }
-        parent_set[parent_id].push(row)
-        node_list[node_id] = row
+    console.log(rows);
+  node_list = {}
+  parent_set = {}
+  // rows.push({'nodeId': 0, 'parentId': -1})
+  for (id in rows) {
+    row = rows[id]
+    node_id   = row['id']
+    parent_id = row['parent_id']
+    
+    // 构造辅助对象
+    if(!parent_set[parent_id]) {
+      parent_set[parent_id] = []
     }
-
-    var menu = _buildTree('0', parent_set, node_list)
-    return menu['children']
+    parent_set[parent_id].push(row)
+    node_list[node_id] = row
+  }
+  
+  var menu = _buildTree('0', parent_set, node_list)
+  return menu['children']
 }
 
 // 构建树
 function _buildTree(cur_node_id, parent_set, node_list) {
-    var sub_nodes = parent_set[cur_node_id]
-    var cur_node = node_list[cur_node_id] ? node_list[cur_node_id] : {}
+  var sub_nodes = parent_set[cur_node_id]
+  var cur_node  = node_list[cur_node_id] ? node_list[cur_node_id] : {}
+  
+  var menu = cur_node
+  menu['children'] = []
 
-    var menu = cur_node
-    menu['children'] = []
-
-    for (i in sub_nodes) {
-        sub_node = sub_nodes[i]
-        sub_node_id = sub_node['id']
-
-        if (!parent_set[sub_node_id]) {
-            menu['children'].push({'id': sub_node_id, 'text': sub_node['text']})
-        } else {
-            menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))
-        }
+  for (i in sub_nodes) {
+    sub_node    = sub_nodes[i]
+    sub_node_id = sub_node['id']
+    
+    if(!parent_set[sub_node_id]) {
+      menu['children'].push({'id': sub_node_id, 'text': sub_node['text']})
+    } else {
+      menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))      
     }
-    return menu
+  }
+  return menu
 }
 
 function receiveMessage(message, func) {

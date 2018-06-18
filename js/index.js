@@ -20,6 +20,18 @@ $(document).ready(function () {
 
     })
 
+    if (!String.prototype.format) {
+      String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) {
+          return typeof args[number] != 'undefined'
+            ? args[number]
+            : match
+          ;
+        });
+      };
+    }
+
 
     // 文件拖拽
     var holder = document
@@ -51,9 +63,28 @@ $(document).ready(function () {
         }
 
         var filePath = e.dataTransfer.files[0].path
-        var payload = {note_id: note_id, filePath: filePath}
-        sendMessage('drag_file', payload, function (response) {
-            console.log(response)
+        var payload  = {note_id: note_id, file_path: filePath}
+
+        //
+        sendMessage('drag_file', payload, function(response) {
+            var file_url = response.data.file_url
+            var file_name = response.data.file_name
+            var file_id   = 'file' + getRandomInt(100000)
+            var html = '<a class="file" href="{0}" id="{1}">{2}</a> &nbsp;'.format(file_url, file_id, file_name)
+            document.execCommand('insertHTML', false, html)
+            var ele = document.getElementById(file_id)
+            ele.contentEditable = "false"
+
+            $('a.file').unbind()
+            $('a.file').click(function(event) {
+                event.preventDefault()
+                console.log('here')
+                return
+                sendMessage('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
+                    // do nothing
+                })
+            })
+
         })
 
         return false;
@@ -139,13 +170,20 @@ $(document).ready(function () {
                 var editor = document.getElementById('editor')
                 var title = document.getElementById('title-input')
                 var content = data.content ? data.content : '<p><br/></p>'
-
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
                 setCursor(editor)
                 $('img').click(function () {
                     console.log(this)
                     selectNode(this)
+                })
+
+                $('a.file').unbind()
+                $('a.file').click(function(event) {
+                    event.preventDefault()
+                    sendMessage('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
+                        // do nothing
+                    })
                 })
             })
         })
@@ -258,7 +296,7 @@ $(document).ready(function () {
         }
 
         // 标注文字后增加空格
-        $('p a').parent().each(function () {
+        $('p a').parent().each(function() {
             var len = this.innerHTML.length
             // if(this.innerHTML.slice(len -4, len) == '</a>') {
             //     $(this).append('&nbsp;')
@@ -323,9 +361,9 @@ $(document).ready(function () {
         if (event.key == '*') {
             // 触发
             var offset = range.startOffset
-            var text = curNode.nodeValue
+            var text   = curNode.nodeValue
             if (text) {
-                var start = text.lastIndexOf('**')
+                var start  = text.lastIndexOf('**')
                 if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '*') {
                     var text = text.slice(start + 2, offset - 1)
                     var html = '<a class="code">' + text + '</a>&nbsp;';
@@ -343,19 +381,19 @@ $(document).ready(function () {
         if (event.key == '$') {
             // 触发数学公式
             var offset = range.startOffset
-            var text = curNode.nodeValue
+            var text   = curNode.nodeValue
             if (text) {
-                var start = text.lastIndexOf('$$')
+                var start  = text.lastIndexOf('$$')
                 if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '$') {
                     console.log('math')
                     var text = text.slice(start + 2, offset - 1)
-                    var id = 'math' + getRandomInt(100000)
+                    var id   = 'math' + getRandomInt(100000)
                     var html = '<a class="math" id="' + id + '"> ' + text + '</a> &nbsp;';
                     range.setStart(curNode, start)
                     range.setEnd(curNode, offset)
                     range.deleteContents()
                     document.execCommand('insertHTML', false, html)
-
+                    
 
                     var ele = document.getElementById(id)
                     ele.contentEditable = "false"
