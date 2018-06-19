@@ -7,5 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "diff-match-patch": "^1.0.1",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1",
+    "jstree": "file:jstree",
+    "katex": "^0.10.0-beta",
+    "sqlite3-offline": "^3.2.0",
+    "striptags": "^3.1.1"
+  }
 }
