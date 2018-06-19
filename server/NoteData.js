@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-var TextHistory = require('text-history');
+var TextHistory = require('./lib/history');
 var striptags = require('striptags');
 
 
