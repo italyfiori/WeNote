@@ -1,5 +1,8 @@
-var message = require(__dirname + '/front/lib/message.js')
+// 设置根目录
+const rootpath = __dirname
 
-message.send('get_menu', {}, function (response) {
-    console.log(response)
-})
+var jquery = jQuery = $ = require('jquery')
+var menu   = require(rootpath + '/front/lib/menu.js')
+
+
+menu.load_menu()
