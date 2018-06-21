@@ -23,9 +23,22 @@ function load_menu() {
             note.create_note(new_node)
         })
 
-        // 修改标题节点
+        // 修改笔记标题
         $('#menu-tree').on('rename_node.jstree', function (e, data) {
             note.update_title(data.node.id, data.node.text)
+        })
+
+        // 删除笔记
+        $('#menu-tree').on('delete_node.jstree', function (e, data) {
+            var note_id = data.node.id
+            note.delete_note(note_id)
+        })
+
+        // 移动笔记
+        $('#menu-tree').bind('move_node.jstree', function (e, data) {
+            var note_id   = data.node.id
+            var parent_id = data.node.parent == '#' ? 0 : data.node.parent
+            note.move_note(note_id, parent_id)
         })
     })
 

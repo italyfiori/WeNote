@@ -32,6 +32,7 @@ function update_title(note_id, title) {
 
 // 保存笔记
 function save_note() {
+    // 判断是否选中笔记
     var editor  = dom.getEditor()
     var note_id = editor.getAttribute('note_id')
     if (!note_id) {
@@ -46,7 +47,24 @@ function save_note() {
     })
 }
 
+// 删除笔记
+function delete_note(note_id) {
+    message.send('delete_note', {'id': note_id}, function (response) {
+        // do nothing
+    })
+}
+
+// 移动笔记
+function move_note(note_id, parent_id) {
+    var payload = {'id': note_id, 'parent': parent_id}
+    message.send('move_note', payload, function (response) {
+        // do nothing
+    })
+}
+
 exports.load_note    = load_note
 exports.create_note  = create_note
 exports.update_title = update_title
 exports.save_note    = save_note
+exports.delete_note  = delete_note
+exports.move_note    = move_note

@@ -279,7 +279,7 @@ ipcMain.on('create_note', (event, ret) => {
 })
 
 // 删除节点
-ipcMain.on('delete_node', (event, ret) => {
+ipcMain.on('delete_note', (event, ret) => {
     if (ret.data.id >= 0) {
         var sql = "delete from note where id = " + ret.data.id + ";"
         db.run(sql, function (err, res) {
@@ -288,7 +288,7 @@ ipcMain.on('delete_node', (event, ret) => {
                 message_id: ret.message_id,
                 msg: 'success',
             }
-            event.sender.send('delete_node', payload)
+            event.sender.send('delete_note', payload)
         })
     }
 })
