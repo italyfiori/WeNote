@@ -1,14 +1,14 @@
-var jquery  = jQuery = $ = require('jquery')
-var note    = require(rootpath + '/front/lib/note.js')
-var message = require(rootpath + '/front/lib/message.js')
-var state   = require(rootpath + '/front/lib/state.js')
+const {ipcRenderer} = require('electron')
+var jquery          = jQuery = $ = require('jquery')
+var note            = require(rootpath + '/front/lib/note.js')
+var message         = require(rootpath + '/front/lib/message.js')
+var state           = require(rootpath + '/front/lib/state.js')
 
 // 加载左侧菜单
 function load_menu() {
     message.send('get_menu', {}, function (response) {
-        var menu = create_menu_object(response.menu)
-
         // 加载菜单
+        var menu = create_menu_object(response.menu)
         $('#menu-tree').jstree(menu)
 
         // 获取笔记
@@ -16,6 +16,21 @@ function load_menu() {
             note.load_note(data.node.id)
             state.switch2editor()
         })
+
+        // 创建笔记
+        $('#menu-tree').on('create_node.jstree', function (e, data) {
+            var new_node = data.node
+            note.create_note(new_node)
+        })
+
+        // 修改标题节点
+        $('#menu-tree').on('rename_node.jstree', function (e, data) {
+            note.update_title(data.node.id, data.node.text)
+        })
+    })
+
+    ipcRenderer.on('save', function () {
+        note.save_note()
     })
 }
 

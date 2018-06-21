@@ -261,7 +261,7 @@ ipcMain.on('get_menu', (event, data) => {
 
 
 // 创建节点
-ipcMain.on('create_node', (event, ret) => {
+ipcMain.on('create_note', (event, ret) => {
     if (ret.data.parent_id >= 0) {
         var sql = "insert into note(title, parent_id) values('" + ret.data.title + "'," + ret.data.parent_id + ")"
         console.log(sql)
@@ -273,7 +273,7 @@ ipcMain.on('create_node', (event, ret) => {
                 note_id: this.lastID
             }
             console.log(payload);
-            event.sender.send('create_node', payload)
+            event.sender.send('create_note', payload)
         })
     }
 })
@@ -294,7 +294,7 @@ ipcMain.on('delete_node', (event, ret) => {
 })
 
 // 获取节点
-ipcMain.on('get_node', (event, req) => {
+ipcMain.on('get_note', (event, req) => {
     if (req.data.id >= 0) {
         var sql = "select id, title from note where id = " + req.data.id + ";"
         var content = NoteData.get_note(req.data.id)
@@ -306,13 +306,13 @@ ipcMain.on('get_node', (event, req) => {
                 content: content,
                 title: res.title,
             }
-            event.sender.send('get_node', payload)
+            event.sender.send('get_note', payload)
         })
     }
 })
 
 // 保存节点
-ipcMain.on('save_node', (event, ret) => {
+ipcMain.on('save_note', (event, ret) => {
     if (ret.data.id >= 0) {
         // 保存文件
         var note_id = ret.data.id
@@ -332,12 +332,12 @@ ipcMain.on('save_node', (event, ret) => {
             message_id: ret.message_id,
             msg: 'success',
         }
-        event.sender.send('save_node', payload)
+        event.sender.send('save_note', payload)
     }
 })
 
 // 拖拽移动节点
-ipcMain.on('move_node', (event, ret) => {
+ipcMain.on('move_note', (event, ret) => {
 
     if (ret.data.id >= 0) {
         var sql = "update note set parent_id = '" + ret.data.parent + "'  where id = " + ret.data.id + ";"
@@ -349,13 +349,13 @@ ipcMain.on('move_node', (event, ret) => {
                 msg: 'success',
             }
 
-            event.sender.send('move_node', payload)
+            event.sender.send('move_note', payload)
         })
     }
 })
 
 // 保存节点
-ipcMain.on('rename_node', (event, ret) => {
+ipcMain.on('rename_note', (event, ret) => {
 
     if (ret.data.id >= 0) {
         var sql = "update note set title = '" + ret.data.title + "'  where id = " + ret.data.id + ";"
@@ -365,7 +365,7 @@ ipcMain.on('rename_node', (event, ret) => {
                 message_id: ret.message_id,
                 msg: 'success',
             }
-            event.sender.send('rename_node', payload)
+            event.sender.send('rename_note', payload)
         })
     }
 })
@@ -459,7 +459,7 @@ function buildTree(rows) {
     row = rows[id]
     node_id   = row['id']
     parent_id = row['parent_id']
-    
+
     // 构造辅助对象
     if(!parent_set[parent_id]) {
       parent_set[parent_id] = []
@@ -467,7 +467,7 @@ function buildTree(rows) {
     parent_set[parent_id].push(row)
     node_list[node_id] = row
   }
-  
+
   var menu = _buildTree('0', parent_set, node_list)
   return menu['children']
 }
@@ -476,18 +476,18 @@ function buildTree(rows) {
 function _buildTree(cur_node_id, parent_set, node_list) {
   var sub_nodes = parent_set[cur_node_id]
   var cur_node  = node_list[cur_node_id] ? node_list[cur_node_id] : {}
-  
+
   var menu = cur_node
   menu['children'] = []
 
   for (i in sub_nodes) {
     sub_node    = sub_nodes[i]
     sub_node_id = sub_node['id']
-    
+
     if(!parent_set[sub_node_id]) {
       menu['children'].push({'id': sub_node_id, 'text': sub_node['text']})
     } else {
-      menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))      
+      menu['children'].push(_buildTree(sub_node_id, parent_set, node_list))
     }
   }
   return menu
@@ -501,4 +501,3 @@ function receiveMessage(message, func) {
         event.sender.send(response)
     })
 }
-
