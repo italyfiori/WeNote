@@ -21,6 +21,12 @@ function clean() {
     $('a.file').unbind()
     $('div.resize').unbind()
     $(document).unbind()
+
+    var editor = dom.getEditor()
+    if (editor) {
+        $(editor).unbind()
+    }
+
 }
 
 // 初始化编辑器
@@ -38,6 +44,19 @@ function init() {
 
     $('table').each(function() {
         table.makeTableResizeable(this)
+    })
+
+    var editor = dom.getEditor()
+    $(editor).keypress(function() {
+        var node = null
+        var sel = window.getSelection()
+        if (sel.rangeCount > 0) {
+            var range = sel.getRangeAt(0)
+            node = range.startContainer
+            console.log('start');
+            console.log(node.tagName);
+        }
+        // console.log(node.nodeName);
     })
 }
 

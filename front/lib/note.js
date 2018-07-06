@@ -20,7 +20,6 @@ function load_note(note_id) {
             state.init()
         }
     ])
-
 }
 
 // 创建笔记
