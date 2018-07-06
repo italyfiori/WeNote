@@ -1,7 +1,7 @@
 const {ipcRenderer} = require('electron')
 let EventEmitter    = require('events').EventEmitter;
 let event_emitter   = new EventEmitter();
-let util            = require(__dirname + '/util.js')
+let util            = require(rootpath + '/front/lib/util.js')
 
 // 要监听的主进程消息
 let listen_messages = {}
