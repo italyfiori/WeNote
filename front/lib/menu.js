@@ -14,7 +14,6 @@ function load_menu() {
         // 获取笔记
         $('#menu-tree').on('select_node.jstree', function (e, data) {
             note.load_note(data.node.id)
-            state.switch2editor()
         })
 
         // 创建笔记
@@ -42,6 +41,7 @@ function load_menu() {
         })
     })
 
+    // 接收到master请求, 保存笔记
     ipcRenderer.on('save', function () {
         note.save_note()
     })

@@ -1,4 +1,6 @@
-var dom = require(rootpath + '/front/lib/dom.js')
+var dom     = require(rootpath + '/front/lib/dom.js')
+var table   = require(rootpath + '/front/lib/table.js')
+var message = require(rootpath + '/front/lib/message.js')
 
 // 切换到编辑器模式
 function switch2editor() {
@@ -13,6 +15,32 @@ function switch2editor() {
     }
 }
 
+// 清除编辑器绑定的事件
+function clean() {
+    $('img').unbind()
+    $('a.file').unbind()
+    $('div.resize').unbind()
+    $(document).unbind()
+}
+
+// 初始化编辑器
+function init() {
+    switch2editor()
+
+    $('img').click(function () {
+        dom.selectNode(this)
+    })
+
+    $('a.file').click(function(event) {
+        event.preventDefault()
+        message.send('open_file_link', {}, function (response) {})
+    })
+
+    $('table').each(function() {
+        table.makeTableResizeable(this)
+    })
+}
 
 
-exports.switch2editor = switch2editor
+exports.clean = clean
+exports.init  = init

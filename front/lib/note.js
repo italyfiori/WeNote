@@ -1,14 +1,26 @@
 var message = require(rootpath + '/front/lib/message.js')
 var dom     = require(rootpath + '/front/lib/dom.js')
+var state   = require(rootpath + '/front/lib/state.js')
+var async   = require("async");
 
 // 获取笔记内容
 function load_note(note_id) {
-    message.send('get_note', {'id': note_id}, function (response) {
-        var editor  = dom.getEditor()
-        var content = response.content ? response.content : '<p><br/></p>'
-        editor.setAttribute('note_id', note_id)
-        editor.innerHTML = content
-    })
+    async.series([
+        function(next) {
+            message.send('get_note', {'id': note_id}, function (response) {
+                var editor  = dom.getEditor()
+                var content = response.content ? response.content : '<p><br/></p>'
+                state.clean()
+                editor.setAttribute('note_id', note_id)
+                editor.innerHTML = content
+                next()
+            })
+        },
+        function() {
+            state.init()
+        }
+    ])
+
 }
 
 // 创建笔记
