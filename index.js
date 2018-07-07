@@ -96,6 +96,66 @@ var template = [
             }
         }]
     },
+    {
+        label: 'Table',
+        submenu: [{
+            label: 'insert row abover',
+            accelerator: 'CmdOrCtrl+Alt+Up',
+            click: function () {
+                win.webContents.send('add_row_before');
+            }
+        }, {
+            label: 'insert row after',
+            accelerator: 'CmdOrCtrl+Alt+Down',
+            click: function () {
+                win.webContents.send('add_row_after');
+            }
+        }, {
+            label: 'delete row',
+            accelerator: 'CmdOrCtrl+Alt+Delete',
+            click: function () {
+                win.webContents.send('delete_row');
+            }
+        }, {
+            type: 'separator'
+        }, {
+            label: 'insert column before',
+            accelerator: 'CmdOrCtrl+Alt+Left',
+            click: function () {
+                win.webContents.send('add_col_before');
+            }
+        }, {
+            label: 'insert column after',
+            accelerator: 'CmdOrCtrl+Alt+Right',
+            click: function () {
+                win.webContents.send('add_col_after');
+            }
+        }, {
+            label: 'delete column',
+            click: function () {
+                win.webContents.send('delete_col');
+            }
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Heading Row',
+            click: function () {
+                win.webContents.send('heading_row');
+            }
+        }, {
+            label: 'Heading Column',
+            click: function () {
+                win.webContents.send('heading_col');
+            }
+        }, {
+            type: 'separator'
+        },{
+            label: 'delete table',
+            click: function () {
+                win.webContents.send('delete_table');
+            }
+        }]
+    },
 ]
 
 if (process.platform === 'darwin') {
@@ -420,7 +480,6 @@ ipcMain.on('drag_file', (event, request) => {
 
 // 保存节点
 ipcMain.on('open_file_link', (event, request) => {
-    console.log(request)
     var file_url = request.data.file_url
     if (!fs.existsSync(file_url)) {
         console.warn('file not exists, ' + file_url)

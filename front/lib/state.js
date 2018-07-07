@@ -44,7 +44,9 @@ function init() {
     // 点击文件
     $('a.file').click(function(event) {
         event.preventDefault()
-        message.send('open_file_link', {}, function (response) {})
+        message.send('open_file_link', {file_url: this.getAttribute("href")}, function (response) {
+            // console.log(response);
+        })
     })
 
     // 表格可拖拽
