@@ -1,6 +1,8 @@
 var dom     = require(rootpath + '/front/lib/dom.js')
 var table   = require(rootpath + '/front/lib/table.js')
 var message = require(rootpath + '/front/lib/message.js')
+var action  = require(rootpath + '/front/lib/action.js')
+var $       = require('jquery')
 
 // 切换到编辑器模式
 function switch2editor() {
@@ -47,17 +49,7 @@ function init() {
     })
 
     var editor = dom.getEditor()
-    $(editor).keypress(function() {
-        var node = null
-        var sel = window.getSelection()
-        if (sel.rangeCount > 0) {
-            var range = sel.getRangeAt(0)
-            node = range.startContainer
-            console.log('start');
-            console.log(node.tagName);
-        }
-        // console.log(node.nodeName);
-    })
+    action.setActions(editor)
 }
 
 

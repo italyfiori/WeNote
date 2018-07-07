@@ -1,6 +1,32 @@
 // 记录被选中的单元
 var tdSelected = null
 
+// 创建表格html
+function createTableHtml(titles) {
+    var html = '<table border="1">'
+    var col = titles.length
+
+    // 插入首行
+    html += '<tr class="head">'
+    for (var i = 0; i < col; i++) {
+        html += '<td><p>' + titles[i] + '</p></td>'
+    }
+    html += '</tr>'
+
+    // 首行后插入2行
+    for (var i = 0; i < 1; i++) {
+        html += '<tr>'
+        for (var j = 0; j < col; j++) {
+            html += '<td><p><br/></p></td>'
+        }
+        html += '</tr>'
+    }
+
+    html += '</table>'
+    return html
+}
+
+// 使表格可拖拽
 function makeTableResizeable(table) {
     var tds = $(table).find('td')
     for (let i = 0; i < tds.length; i++) {
@@ -51,3 +77,4 @@ function makeTableResizeable(table) {
 }
 
 exports.makeTableResizeable = makeTableResizeable
+exports.createTableHtml     = createTableHtml
