@@ -474,7 +474,7 @@ ipcMain.on('drag_file', (event, request) => {
         file_url: file_url,
         file_name: file_name,
     }
-    var response = Util.make(request, data)
+    var response = Util.makeResult(request, data)
     event.sender.send('drag_file', response)
 })
 
