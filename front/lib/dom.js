@@ -50,13 +50,18 @@ function setCursor(node, offset = 0) {
     selection.addRange(range)
 }
 
-function setCursorAfter(node) {
-    let selection = window.getSelection();
-    selection.removeAllRanges();
-    let range = document.createRange();
-    range.setStartAfter(node)
-    range.setEndAfter(node)
-    selection.addRange(range)
+// 判断块节点是否为空
+function blockEmpty(blockNode) {
+    if (!blockNode.childNodes || blockNode.childNodes.length == 0) {
+        return true
+    } else if (blockNode.childNodes.length == 1 && blockNode.childNodes[0].nodeName == 'BR') {
+        return true
+    } else if (blockNode.childNodes.length == 1 && blockNode.childNodes[0].innerText == '') {
+        return true
+    } else if(blockNode.innerText == "\n" || blockNode.innerText == "") {
+        return true
+    }
+    return false
 }
 
 exports.getEditor          = getEditor
@@ -65,4 +70,4 @@ exports.getEditorContainer = getEditorContainer
 exports.selectNode         = selectNode
 exports.getBlockParent     = getBlockParent
 exports.setCursor          = setCursor
-exports.setCursorAfter     = setCursorAfter
+exports.blockEmpty         = blockEmpty

@@ -41,18 +41,36 @@ function setActions(node) {
             return false
         }
 
+        // 改写换行功能
         if (key == 'Enter') {
-            return !enterAction(curNode, blockNode, range)
-        } else if(key == 'Backspace') {
-            return !backAction()
+            return !enterAction(curNode, parentNode, blockNode, range)
         }
 
         return true
     })
+
+    $(node).keydown(function (e) {
+        var selection = window.getSelection()
+        if(selection.rangeCount !== 1) {
+            return true
+        }
+
+        var key        = e.key
+        var range      = selection.getRangeAt(0)
+        var curNode    = range.startContainer
+        var parentNode = curNode.parentNode
+        var blockNode  = dom.getBlockParent(curNode)
+        var innerHTML  = $(parentNode).html()
+
+        // 改写回退键功能
+        if(key == 'Backspace' && range.startOffset == 0) {
+            return !backAction(curNode, parentNode, blockNode, range)
+        }
+    })
 }
 
-// 换行建功能
-function enterAction(curNode, blockNode, range) {
+// 换行建功能改写
+function enterAction(curNode, parentNode, blockNode, range) {
     // 换行时先清除字体格式(粗体、下划线、斜体)
     var parents = $(curNode).parentsUntil(blockNode) // 找到当前文本的所有格式标签
     for (var i = 0; i < parents.length; i++) {
@@ -91,31 +109,84 @@ function enterAction(curNode, blockNode, range) {
             return true
         } else if(range.startOffset == blockNode.innerText.length){
             $(blockNode).after('<p><br></p>')
-            dom.setCursorAfter(blockNode)
+            dom.setCursor(blockNode.nextSibling)
             return true
         }
         return false
     }
 
     // 在引用块最后一个空行后换行，退出引用块
-    if (curNode.tagName == 'P' && parentNode.nodeName == 'BLOCKQUOTE' && parentNode.lastChild == curNode && range.startOffset == 0) {
-        parentNode.removeChild(curNode)
+    if (curNode.nodeName == 'P' && parentNode.nodeName == 'BLOCKQUOTE' && parentNode.lastChild == curNode && range.startOffset == 0) {
         $(parentNode).after('<p><br></p>')
-        dom.setCursorAfterNode(curNode.parentNode)
+        dom.setCursor(curNode.parentNode.nextSibling)
+        parentNode.removeChild(curNode)
         return true
     }
 
     // 在列表最后一个空行后换行，退出列表
     if (curNode.nodeName == 'LI' && (parentNode.nodeName == 'OL' || parentNode.nodeName == 'UL') && parentNode.lastChild == curNode && range.startOffset == 0) {
-        parentNode.removeChild(curNode)
         $(parentNode).after('<p><br></p>')
-        dom.setCursorAfterNode(curNode.parentNode)
+        dom.setCursor(curNode.parentNode.nextSibling)
+        parentNode.removeChild(curNode)
         return true
     }
 }
 
-// 回退键功能
-function backAction() {
+// 回退键功能改写
+function backAction(curNode, parentNode, blockNode, range) {
+    // 引用块回退删除
+    if (curNode.nodeName == 'P' && parentNode.nodeName == 'BLOCKQUOTE' &&
+        parentNode.childNodes.length == 1 && dom.blockEmpty(curNode)) {
+        $(parentNode).after('<p><br></p>')
+        dom.setCursor(parentNode.nextSibling)
+        $(parentNode).remove()
+        return true
+    }
+
+    // 代码块回退删除
+    if (blockNode.nodeName == 'PRE' && dom.blockEmpty(blockNode)) {
+        $(blockNode).after('<p><br></p>')
+        dom.setCursor(blockNode.nextSibling)
+        $(blockNode).remove()
+        return true
+    }
+
+    // 列表回退删除
+    if (blockNode.nodeName == 'LI' && blockNode.parentNode.childNodes.length == 1 && dom.blockEmpty(blockNode)) {
+        $(blockNode.parentNode).after('<p><br></p>')
+        dom.setCursor(blockNode.parentNode.nextSibling)
+        $(blockNode.parentNode).remove()
+        return true
+    }
+
+    // 标题回退删除自身
+    if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(blockNode.nodeName) >= 0 && dom.blockEmpty(blockNode)) {
+        $(blockNode).after('<p><br></p>')
+        setCursor(blockNode.nextSibling)
+        $(blockNode).remove()
+        return true
+    }
+
+    // 标题回退改写
+    if (titleNames.indexOf(blockNode.nodeName) >= 0) {
+        // 前面是空行，回退一行
+        blockPrevious = blockNode.previousSibling
+        if (blockPrevious && dom.blockEmpty(blockPrevious)) {
+            $(blockPrevious).remove()
+            return true
+        } else if (blockPrevious && blockPrevious.nodeName == 'P') {
+            document.execCommand('formatBlock', false, "<p>")
+            return true
+        }
+    }
+
+    // 跳入上一个节点
+    // if (jumpBack(blockNode)) {
+    //     // console.log('jump');
+    //     event.preventDefault()
+    //     return false
+    // }
+
 
 }
 
@@ -223,7 +294,7 @@ function ulAction(parentNode) {
 function hrAction(parentNode) {
     var html = '<hr contenteditable="false" /><p><br><p>'
     $(parentNode).after(html)
-    dom.setCursorAfter(parentNode.nextSibling)
+    dom.setCursor(parentNode.nextSibling.nextSibling)
     $(parentNode).remove()
 }
 
