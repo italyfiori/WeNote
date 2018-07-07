@@ -2,6 +2,7 @@ var dom     = require(rootpath + '/front/lib/dom.js')
 var table   = require(rootpath + '/front/lib/table.js')
 var message = require(rootpath + '/front/lib/message.js')
 var action  = require(rootpath + '/front/lib/action.js')
+var adjust  = require(rootpath + '/front/lib/adjust.js')
 var $       = require('jquery')
 
 // 切换到编辑器模式
@@ -35,21 +36,32 @@ function clean() {
 function init() {
     switch2editor()
 
+    // 点击图片
     $('img').click(function () {
         dom.selectNode(this)
     })
 
+    // 点击文件
     $('a.file').click(function(event) {
         event.preventDefault()
         message.send('open_file_link', {}, function (response) {})
     })
 
+    // 表格可拖拽
     $('table').each(function() {
         table.makeTableResizeable(this)
     })
 
+    // 按键功能改写
     var editor = dom.getEditor()
     action.setActions(editor)
+
+    // 编辑器内容改写
+    $(editor).bind("DOMSubtreeModified", function () {
+        setTimeout(function () {
+            adjust.adjustEditor()
+        }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
+    });
 }
 
 
