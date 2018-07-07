@@ -64,6 +64,15 @@ function blockEmpty(blockNode) {
     return false
 }
 
+// 找到最后一个子节点
+function findLastChild(blockNode) {
+    var node = blockNode
+    while ($(node).children(':not(div.resize)').length > 0) {
+        node = $(node).children(':not(div.resize)').last()[0]
+    }
+    return node
+}
+
 exports.getEditor          = getEditor
 exports.getNotice          = getNotice
 exports.getEditorContainer = getEditorContainer
@@ -71,3 +80,4 @@ exports.selectNode         = selectNode
 exports.getBlockParent     = getBlockParent
 exports.setCursor          = setCursor
 exports.blockEmpty         = blockEmpty
+exports.findLastChild      = findLastChild

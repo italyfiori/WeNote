@@ -21,6 +21,7 @@ let fontTags = {
     'B': 'bold',
 }
 
+// 改写编辑器按键功能
 function setActions(node) {
     $(node).keypress(function(e) {
         var selection = window.getSelection()
@@ -35,7 +36,7 @@ function setActions(node) {
         var blockNode  = dom.getBlockParent(curNode)
         var innerHTML  = $(parentNode).html()
 
-        // 获取markdown激活标签
+        // markdown语法功能
         var actionResult = markdownAction(key, range, curNode, parentNode, innerHTML)
         if (actionResult === true) {
             return false
@@ -181,13 +182,54 @@ function backAction(curNode, parentNode, blockNode, range) {
     }
 
     // 跳入上一个节点
-    // if (jumpBack(blockNode)) {
-    //     // console.log('jump');
-    //     event.preventDefault()
-    //     return false
-    // }
+    if (jumpBack(blockNode)) {
+        return true
+    }
+}
 
+// 尝试跳入上一个节点，并返回是否阻止默认回退行为
+function jumpBack(blockNode) {
+    var shouldPrevent = false
+    var previousNode  = null
 
+    // 从引用跳到上一个块的末尾
+    if (blockNode.nodeName == 'P' && blockNode.parentNode.nodeName == 'BLOCKQUOTE' && blockNode.parentNode.firstChild == blockNode) {
+        previousNode = blockNode.parentNode.previousSibling
+        shouldPrevent = true
+    } else if (blockNode.nodeName == 'PRE') {
+        // 从代码跳到上一个块的末尾
+        previousNode = blockNode.previousSibling
+        shouldPrevent = true
+    } else if (blockNode.nodeName == 'LI' && blockNode.parentNode.firstChild == blockNode) {
+        // 从列表跳到上一个块的末尾
+        previousNode = blockNode.parentNode.previousSibling
+        shouldPrevent = true
+    } else if (titleNames.indexOf(blockNode.nodeName) >= 0) {
+        previousNode = blockNode.previousSibling
+        shouldPrevent = true
+    } else if(blockNode.nodeName == 'P') {
+        if (blockNode.previousSibling && blockNode.previousSibling.nodeName == 'P') {
+            shouldPrevent = false
+        } else {
+            shouldPrevent = true
+            previousNode = blockNode.previousSibling
+        }
+    }
+
+    if (previousNode) {
+        var cursorNode = dom.findLastChild(previousNode)
+        var offset     = 0
+        if (cursorNode.lastChild && cursorNode.lastChild.nodeName == '#text') {
+            cursorNode = cursorNode.lastChild
+            offset     = cursorNode.length
+        }
+        if (dom.blockEmpty(blockNode)) {
+            $(blockNode).remove()
+        }
+        dom.setCursor(cursorNode, offset)
+    }
+
+    return shouldPrevent
 }
 
 // 激活markdown语法标记
