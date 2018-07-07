@@ -13,14 +13,20 @@ body {
     overflow-y: scroll;
 }
 
+#notice {
+	position: absolute;
+	height: 100%;
+    width: 100%;
+	text-align: center;
+}
+
 #main-container #notice p {
     position: absolute;
     top: 50%;
-    height: 100%;
-    width: 100%;
+	width: 100%;
     color: gray;
+	transform: translate(0, -50%);
     text-align: center;
-    vertical-align: middle;;
 }
 
 #main-container > div {
@@ -28,11 +34,12 @@ body {
 }
 
 #side-menu {
-    width: 200px;
+    width: 220px;
     height: 100%;
     display: inline-block;
-    overflow: hidden;
+    overflow: scroll;
     background-color: rgb(246, 246, 246);
+	position: fixed;
 }
 
 #main-content {
@@ -41,7 +48,7 @@ body {
     height: 100%;
     position: absolute;;
     right: 0;
-    left: 200px;
+    left: 220px;
     /*word-wrap: wrap;*/
     /*word-break: normal;;*/
     /*overflow-x: wrap;*/
@@ -51,7 +58,7 @@ body {
     min-height: 100%;
 }
 
-#editor {    
+#editor {
     padding: 50px 90px 0 90px;
     border: none;
     outline: none;
@@ -61,6 +68,12 @@ body {
     left: 0;
     right: 0;
     border-left: 1px solid #eee;
+	white-space: normal;
+	word-break: break-all;
+}
+
+#editor > p, #editor > div, #editor > pre, #editor > table{
+	margin: 8px 0;
 }
 
 img:hover {
@@ -70,6 +83,8 @@ img:hover {
 #editor pre {
     tab-size: 4;
     margin-bottom: 0;
+	margin: 6px 0;
+	white-space: pre-wrap;
 }
 
 #editor a.code {
@@ -120,6 +135,10 @@ img:hover {
     height: 21px;
 }
 
+#editor table tr:hover{
+    background-color: rgb(245, 245, 245);
+}
+
 #editor table th {
     font-weight: bold;
 }
@@ -142,7 +161,7 @@ img:hover {
     user-select: none;
 }
 
-#editor table td.head {
+#editor table td.head, #editor table tr.head td {
     font-weight: bold;
     background-color: rgb(240, 240, 240);
 }
@@ -166,6 +185,7 @@ img:hover {
 
 #editor h1, h2, h3, h4, h5, h6{
     font-weight: bold;
+	margin: 10px 0;
 }
 
 #editor h3, h4, h5, h6{
