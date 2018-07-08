@@ -1,12 +1,13 @@
-var dom     = require(rootpath + '/front/lib/dom.js')
-var table   = require(rootpath + '/front/lib/table.js')
-var message = require(rootpath + '/front/lib/message.js')
-var action  = require(rootpath + '/front/lib/action.js')
-var adjust  = require(rootpath + '/front/lib/adjust.js')
-var drag    = require(rootpath + '/front/lib/drag.js')
-var paste   = require(rootpath + '/front/lib/paste.js')
-var history = require(rootpath + '/front/lib/history.js')
-var $       = require('jquery')
+var dom       = require(rootpath + '/front/lib/dom.js')
+var table     = require(rootpath + '/front/lib/table.js')
+var message   = require(rootpath + '/front/lib/message.js')
+var action    = require(rootpath + '/front/lib/action.js')
+var adjust    = require(rootpath + '/front/lib/adjust.js')
+var drag      = require(rootpath + '/front/lib/drag.js')
+var paste     = require(rootpath + '/front/lib/paste.js')
+var history   = require(rootpath + '/front/lib/history.js')
+var highlight = require(rootpath + '/front/lib/highlight.js')
+var $         = require('jquery')
 
 // 切换到编辑器模式
 function switch2editor() {
@@ -65,6 +66,7 @@ function init() {
     drag.setDragFile()
     paste.setPasteImage()
     history.setHistoryAction()
+    highlight.setHighlight()
 
     // 编辑器内容改写
     $(editor).bind("DOMSubtreeModified", function () {
@@ -73,6 +75,7 @@ function init() {
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
 }
+
 
 
 exports.clean = clean
