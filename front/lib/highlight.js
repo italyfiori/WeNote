@@ -1,5 +1,4 @@
 var dom  = require(rootpath + '/front/lib/dom.js')
-var hljs = require(rootpath + '/front/lib/highlight.js')
 var $    = require('jquery')
 
 function setHighlight() {

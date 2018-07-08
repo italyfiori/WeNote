@@ -5,8 +5,11 @@ var jquery = jQuery = $ = require('jquery')
 var menu   = require(rootpath + '/front/lib/menu.js')
 var init   = require(rootpath + '/front/lib/init.js')
 
-init()
-menu.load_menu()
+$(document).ready(function() {
+    init()
+    menu.load_menu()
+})
+
 
 // TODO: 快捷键功能(表格 done、历史版本 done)
 // TODO: 文件拖拽 done
