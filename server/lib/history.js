@@ -1,7 +1,12 @@
 const path = require('path')
+const {
+    ipcMain,
+}              = require('electron')
 const rootpath = path.dirname(path.dirname(__dirname))
 const fs = require('fs')
-require(path.join(rootpath, 'server/lib/text_history'))
+var text_history = require(path.join(rootpath, 'server/lib/text_history'))
+var util = require(path.join(rootpath, 'server/lib/util'))
+
 // 解析note历史版本信息
 function parse_history_content(history_content) {
     try {
@@ -70,6 +75,9 @@ function get_version(note_id, version_id) {
     return history.getVersion(version_id)
 }
 
+function get_history_path(note_id) {
+    return path.join(rootpath, 'data', 'notes', note_id + '.history')
+}
 
 
 function init() {
@@ -77,7 +85,7 @@ function init() {
         if(req.data.id >= 0) {
             var note_id = req.data.id
             var history_list = get_version_list(note_id)
-            event.sender.send('get_version_list', Util.makeResult(req, history_list))
+            event.sender.send('get_version_list', util.makeResult(req, history_list))
         }
     })
 
@@ -86,7 +94,9 @@ function init() {
             var note_id = req.data.note_id
             var version_id = req.data.version_id
             var version = get_version(note_id, parseInt(version_id))
-            event.sender.send('recover_version', Util.makeResult(req, version))
+            event.sender.send('recover_version', util.makeResult(req, version))
         }
     })
 }
+
+exports.init = init
