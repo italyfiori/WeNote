@@ -5,6 +5,7 @@ var action  = require(rootpath + '/front/lib/action.js')
 var adjust  = require(rootpath + '/front/lib/adjust.js')
 var drag    = require(rootpath + '/front/lib/drag.js')
 var paste   = require(rootpath + '/front/lib/paste.js')
+var history = require(rootpath + '/front/lib/history.js')
 var $       = require('jquery')
 
 // 切换到编辑器模式
@@ -18,6 +19,7 @@ function switch2editor() {
     if (notice.style.display != "none") {
         notice.style.display = "none";
     }
+    dom.setCursor(editor)
 }
 
 // 清除编辑器绑定的事件
@@ -62,6 +64,7 @@ function init() {
     action.setActions(editor)
     drag.setDragFile()
     paste.setPasteImage()
+    history.setHistoryAction()
 
     // 编辑器内容改写
     $(editor).bind("DOMSubtreeModified", function () {

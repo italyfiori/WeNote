@@ -8,6 +8,6 @@ var init   = require(rootpath + '/front/lib/init.js')
 init()
 menu.load_menu()
 
-// TODO: 快捷键功能(表格、历史版本)
-// TODO: 文件拖拽
-// TODO: 复制图片
+// TODO: 快捷键功能(表格 done、历史版本 done)
+// TODO: 文件拖拽 done
+// TODO: 复制图片 done
