@@ -293,7 +293,7 @@ ipcMain.on('save_image', (event, data) => {
         var payload = {
             'code': 0,
             'message_id': data.message_id,
-            'image_url': path.join(image_dir, file_name),
+            'image_url': path.join('data', 'images', String(note_id), file_name),
         }
         event.sender.send('save_image', payload)
     })
