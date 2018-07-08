@@ -1,5 +1,20 @@
+const {ipcRenderer} = require('electron')
+var dom             = require(rootpath + '/front/lib/dom.js')
+var $               = require('jquery')
+
 // 记录被选中的单元
 var tdSelected = null
+
+function createRow(len) {
+    var html = ''
+    // 插入首行
+    html += '<tr>'
+    for (var i = 0; i < len; i++) {
+        html += '<td><p><br/></p></td>'
+    }
+    html += '</tr>'
+    return html
+}
 
 // 创建表格html
 function createTableHtml(titles) {
@@ -76,5 +91,144 @@ function makeTableResizeable(table) {
     });
 }
 
+function setTableAction() {
+    ipcRenderer.on('add_row_after', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        row        = row[0]
+        var td_len = $(row).children('td').length
+        var html   = createRow(td_len)
+        $(row).after(html)
+        makeTableResizeable(row.parentNode)
+    })
+
+    ipcRenderer.on('add_row_before', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        row        = row[0]
+        var td_len = $(row).children('td').length
+        var html   = createRow(td_len)
+        $(row).before(html)
+        makeTableResizeable(row.parentNode)
+    })
+
+    ipcRenderer.on('add_col_before', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        var index = $(curNode).parents('td').index()
+        var table = row.parents('table')[0]
+        $(row[0]).parent().children().each(function() {
+            $(this).children().eq(index).before('<td><p><br/></p></td>')
+        })
+        makeTableResizeable(row[0].parentNode)
+    })
+
+    ipcRenderer.on('add_col_after', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        var index = $(curNode).parents('td').index()
+        var table = row.parents('table')[0]
+        $(row[0]).parent().children().each(function() {
+            $(this).children().eq(index).after('<td><p><br/></p></td>')
+        })
+        makeTableResizeable(row[0].parentNode)
+    })
+
+    ipcRenderer.on('delete_col', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        var td = $(curNode).parents('td').first()
+        if (td.siblings().length ==0) {
+            $(row.parents('table')[0]).remove()
+            return
+        }
+
+        var index = td.index()
+        $(row[0]).parent().children().each(function() {
+            $(this).children().eq(index).remove()
+        })
+        makeTableResizeable(row[0].parentNode)
+    })
+
+    ipcRenderer.on('heading_row', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        var row = $(curNode).parents('tr').first().toggleClass('head')
+    })
+
+    ipcRenderer.on('heading_col', function() {
+        var curNode = dom.getCurNode()
+        var row     = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        var td = $(curNode).parents('td').first()
+        var index = td.index()
+        $(row).parent().children().each(function() {
+            $(this).children().eq(index).toggleClass('head')
+        })
+    })
+
+    ipcRenderer.on('delete_row', function() {
+        var curNode = dom.getCurNode()
+        var row = $(curNode).parents('tr')
+        if (row.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        row = $(row[0])
+        var table = row.parents('table')[0]
+        var next_cursor = null
+        if (row.next()[0]) {
+            next_cursor = row.next()[0].firstChild.firstChild
+        } else if (row.prev()[0]) {
+            next_cursor = row.prev()[0].firstChild.firstChild
+        }
+
+        if (next_cursor) {
+            row.remove()
+            dom.setCursor(next_cursor)
+        } else {
+            $(table).remove()
+        }
+    })
+
+    ipcRenderer.on('delete_table', function() {
+        var curNode = dom.getCurNode()
+        var table = $(curNode).parents('table')
+        if (table.length == 0) {
+            console.warn('not in table')
+            return
+        }
+        $(table).remove()
+    })
+}
+
 exports.makeTableResizeable = makeTableResizeable
 exports.createTableHtml     = createTableHtml
+exports.setTableAction      = setTableAction

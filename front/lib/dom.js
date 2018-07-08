@@ -73,6 +73,16 @@ function findLastChild(blockNode) {
     return node
 }
 
+// 获取当前节点
+function getCurNode() {
+    var sel = window.getSelection()
+    if (sel.rangeCount > 0) {
+        var range = sel.getRangeAt(0)
+        return range.startContainer
+    }
+    return null
+}
+
 exports.getEditor          = getEditor
 exports.getNotice          = getNotice
 exports.getEditorContainer = getEditorContainer
@@ -81,3 +91,4 @@ exports.getBlockParent     = getBlockParent
 exports.setCursor          = setCursor
 exports.blockEmpty         = blockEmpty
 exports.findLastChild      = findLastChild
+exports.getCurNode         = getCurNode

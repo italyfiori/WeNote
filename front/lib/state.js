@@ -4,6 +4,7 @@ var message = require(rootpath + '/front/lib/message.js')
 var action  = require(rootpath + '/front/lib/action.js')
 var adjust  = require(rootpath + '/front/lib/adjust.js')
 var drag    = require(rootpath + '/front/lib/drag.js')
+var paste   = require(rootpath + '/front/lib/paste.js')
 var $       = require('jquery')
 
 // 切换到编辑器模式
@@ -57,9 +58,10 @@ function init() {
 
     // 按键功能改写
     var editor = dom.getEditor()
-    action.setActions(editor)
 
+    action.setActions(editor)
     drag.setDragFile()
+    paste.setPasteImage()
 
     // 编辑器内容改写
     $(editor).bind("DOMSubtreeModified", function () {
