@@ -1,40 +1,92 @@
-'use strict';
-
-const DiffMatchPatch = require('diff-match-patch');
-const diff = new DiffMatchPatch();
-
-/**
- *  Can call as function or use new
- * @param hashFunction {function}  accepts one parameter and returns some value to represent the id of this object
- * @returns {TextHistory}
- * @constructor
- */
-function TextHistory() {
-    if (!(this instanceof TextHistory)) {
-        return new TextHistory();
+const path = require('path')
+const rootpath = path.dirname(path.dirname(__dirname))
+const fs = require('fs')
+require(path.join(rootpath, 'server/lib/text_history'))
+// 解析note历史版本信息
+function parse_history_content(history_content) {
+    try {
+        var history = new text_history()
+        var rows = history_content.split('\n')
+        for (var i = 0; i < rows.length; i++) {
+            var row = JSON.parse(rows[i])
+            if (!row.patches || !row.time) {
+                return history
+            }
+            history.patchesList.push(row.patches)
+            history.timeList.push(row.time)
+            history.sizeList.push(row.size || 0)
+        }
+    } catch (err) {
+        console.error('parse history error:' + err)
     }
-    this.patchesList = []
-    this.timeList = []
-    this.sizeList = []
-    return this;
+
+    return history
 }
 
-// 获取新content与最新版本的patches
-TextHistory.prototype.getPatches = function (new_content) {
-    var lastVersion = this.patchesList.reduce((text, patch) => diff.patch_apply(patch, text)[0], '')
-    return diff.patch_make(lastVersion, new_content);
+// 获取note历史版本信息
+function get_history(note_id) {
+    var file_path = get_history_path(note_id)
+    if (!fs.existsSync(file_path)) {
+        return new text_history()
+    }
+
+    var history_content = fs.readFileSync(file_path, 'utf8')
+    return parse_history_content(history_content)
+
 }
 
-// 获取指定历史版本
-TextHistory.prototype.getVersion = function (index) {
-    let patchesList = this.patchesList.slice(0, index + 1);
-    return patchesList.reduce((text, patch) => diff.patch_apply(patch, text)[0], '');
-};
+// 添加note历史版本信息
+function append_history(note_id, new_cont) {
+    var history = get_history(note_id)
+    var patches = history.getPatches(new_cont)
+    if (patches.length == 0) {
+        console.warn('note has not change:' + String(note_id))
+        return
+    }
 
-// 获取最新历史版本
-TextHistory.prototype.getLastVersion = function (index) {
-    return this.patchesList.reduce((text, patch) => diff.patch_apply(patch, text)[0], '');
-};
+    var file_path = get_history_path(note_id)
+    var version_cont = JSON.stringify({'time': Date.now(), 'size': striptags(new_cont).length, 'patches': patches})
+    if (fs.existsSync(file_path)) {
+        version_cont = "\n" + version_cont
+    }
+
+    fs.appendFileSync(file_path, version_cont)
+}
+
+function get_version_list(note_id) {
+    var history = get_history(note_id)
+    var time_list = history.timeList
+    var size_list = history.sizeList
+
+    var version_list = []
+    for (let i = time_list.length - 1; i >= 0; i--) {
+        version_list.push({id: i, time: time_list[i], size: size_list[i]})
+    }
+    return version_list
+}
+
+function get_version(note_id, version_id) {
+    var history = get_history(note_id)
+    return history.getVersion(version_id)
+}
 
 
-module.exports = TextHistory;
+
+function init() {
+    ipcMain.on('get_version_list', (event, req) => {
+        if(req.data.id >= 0) {
+            var note_id = req.data.id
+            var history_list = get_version_list(note_id)
+            event.sender.send('get_version_list', Util.makeResult(req, history_list))
+        }
+    })
+
+    ipcMain.on('recover_version', (event, req) => {
+        if(req.data.note_id >= 0 && req.data.version_id >= 0) {
+            var note_id = req.data.note_id
+            var version_id = req.data.version_id
+            var version = get_version(note_id, parseInt(version_id))
+            event.sender.send('recover_version', Util.makeResult(req, version))
+        }
+    })
+}
