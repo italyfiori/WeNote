@@ -1,7 +1,7 @@
 'use strict';
 
 const DiffMatchPatch = require('diff-match-patch');
-const diff = new DiffMatchPatch();
+const diff           = new DiffMatchPatch();
 
 function TextHistory() {
     if (!(this instanceof TextHistory)) {

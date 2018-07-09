@@ -1,12 +1,12 @@
-const path = require('path')
-const fs = require('fs')
-var crypto = require('crypto');
-const rootpath = path.dirname(path.dirname(__dirname))
-const util = require(path.join(rootpath, 'server/lib/util'))
 const {
     ipcMain,
     shell
 }              = require('electron')
+const path     = require('path')
+const fs       = require('fs')
+const crypto   = require('crypto');
+const rootpath = path.dirname(path.dirname(__dirname))
+const util     = require(path.join(rootpath, 'server/lib/util'))
 
 function getFileSaveDir(note_id) {
     return path.join(rootpath, 'data', 'files', String(note_id))

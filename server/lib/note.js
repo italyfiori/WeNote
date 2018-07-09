@@ -1,11 +1,11 @@
-const path = require('path')
+const path     = require('path')
 const rootpath = path.dirname(path.dirname(__dirname))
-const db_file = path.join(rootpath, 'data/db/wiki.db')
-
-const ipcMain = require('electron').ipcMain
-const fs = require('fs')
-const util = require(path.join(rootpath, 'server/lib/util'))
-const sqlite3 = require('sqlite3-offline').verbose();
+const db_file  = path.join(rootpath, 'data/db/wiki.db')
+const ipcMain  = require('electron').ipcMain
+const fs       = require('fs')
+const util     = require(path.join(rootpath, 'server/lib/util'))
+const history  = require(path.join(rootpath, 'server/lib/history'))
+const sqlite3  = require('sqlite3-offline').verbose();
 
 // 构建树
 function buildTree(rows) {
@@ -138,19 +138,19 @@ function init() {
     })
 
     // 保存节点
-    ipcMain.on('save_note', (event, ret) => {
-        if (ret.data.id >= 0) {
+    ipcMain.on('save_note', (event, req) => {
+        if (req.data.id >= 0) {
             // 保存文件
-            var note_id = ret.data.id
-            var file_cont = ret.data.content
+            var note_id = req.data.id
+            var file_cont = req.data.content
             if (get_note(note_id) === file_cont) {
-                console.warn('note has no change:' + String(ret.data.id))
+                console.warn('note has no change:' + String(req.data.id))
                 return
             }
             save_note(note_id, file_cont)
 
             // 保存历史
-            // NoteData.append_history(note_id, file_cont)
+            history.append_history(note_id, file_cont)
 
             var payload = util.makeResult(req)
             event.sender.send('save_note', payload)

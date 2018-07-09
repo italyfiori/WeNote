@@ -1,17 +1,17 @@
-const rootpath = __dirname
+
 const {
     app,
     BrowserWindow,
     Menu,
-}              = require('electron')
-
-const path     = require('path')
-const url      = require('url')
-let fs         = require('fs')
-const template = require(path.join(rootpath, '/server/lib/sys_menu'))
+}                  = require('electron')
+const path         = require('path')
+const url          = require('url')
+let fs             = require('fs')
+const rootpath     = __dirname
+const template     = require(path.join(rootpath, '/server/lib/sys_menu'))
 const custom_event = require(path.join(rootpath, '/server/lib/custom_event'))
-var note = require(path.join(rootpath, 'server/lib/note'))
-var history = require(path.join(rootpath, 'server/lib/history'))
+var note           = require(path.join(rootpath, 'server/lib/note'))
+var history        = require(path.join(rootpath, 'server/lib/history'))
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
@@ -40,7 +40,6 @@ function createWindow() {
     })
 }
 
-
 app.on('ready', function () {
     createWindow()
     const menu = Menu.buildFromTemplate(template.getTemplate(win))
@@ -64,14 +63,7 @@ app.on('activate', () => {
     }
 })
 
-
-
-
-
-
-
 // 获取笔记列表
-
 note.init()
 custom_event.init()
 history.init()

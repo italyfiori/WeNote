@@ -1,11 +1,12 @@
-const path = require('path')
 const {
     ipcMain,
-}              = require('electron')
-const rootpath = path.dirname(path.dirname(__dirname))
-const fs = require('fs')
+}                = require('electron')
+const path       = require('path')
+const fs         = require('fs')
+const rootpath   = path.dirname(path.dirname(__dirname))
 var text_history = require(path.join(rootpath, 'server/lib/text_history'))
-var util = require(path.join(rootpath, 'server/lib/util'))
+var util         = require(path.join(rootpath, 'server/lib/util'))
+var striptags    = require('striptags');
 
 // 解析note历史版本信息
 function parse_history_content(history_content) {
@@ -99,4 +100,5 @@ function init() {
     })
 }
 
-exports.init = init
+exports.init           = init
+exports.append_history = append_history

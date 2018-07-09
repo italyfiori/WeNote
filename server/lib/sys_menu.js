@@ -1,7 +1,7 @@
 const {
     app,
     BrowserWindow,
-} = require('electron')
+}              = require('electron')
 const electron = require('electron')
 
 function getTemplate(win) {
