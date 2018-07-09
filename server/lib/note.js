@@ -1,11 +1,11 @@
-const path     = require('path')
-const rootpath = path.dirname(path.dirname(__dirname))
-const db_file  = path.join(rootpath, 'data/db/wiki.db')
 const ipcMain  = require('electron').ipcMain
+const path     = require('path')
 const fs       = require('fs')
+const rootpath = path.dirname(path.dirname(__dirname))
 const util     = require(path.join(rootpath, 'server/lib/util'))
 const history  = require(path.join(rootpath, 'server/lib/history'))
 const sqlite3  = require('sqlite3-offline').verbose();
+const db_file  = path.join(rootpath, 'data/db/wiki.db')
 
 // 构建树
 function buildTree(rows) {
@@ -73,7 +73,6 @@ function save_note(note_id, file_cont) {
 
 function init() {
     // 获取笔记列表
-
     var db = new sqlite3.Database(db_file);
 
     // 获取列表
@@ -90,7 +89,6 @@ function init() {
             event.sender.send('get_menu', payload)
         })
     })
-
 
     // 创建节点
     ipcMain.on('create_note', (event, req) => {

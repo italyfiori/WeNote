@@ -3,10 +3,10 @@ const {
 }                = require('electron')
 const path       = require('path')
 const fs         = require('fs')
+const striptags    = require('striptags');
 const rootpath   = path.dirname(path.dirname(__dirname))
-var text_history = require(path.join(rootpath, 'server/lib/text_history'))
-var util         = require(path.join(rootpath, 'server/lib/util'))
-var striptags    = require('striptags');
+const text_history = require(path.join(rootpath, 'server/lib/text_history'))
+const util         = require(path.join(rootpath, 'server/lib/util'))
 
 // 解析note历史版本信息
 function parse_history_content(history_content) {
