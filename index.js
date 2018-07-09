@@ -6,12 +6,12 @@ const {
 }                  = require('electron')
 const path         = require('path')
 const url          = require('url')
-let fs             = require('fs')
+const fs           = require('fs')
 const rootpath     = __dirname
 const template     = require(path.join(rootpath, '/server/lib/sys_menu'))
 const custom_event = require(path.join(rootpath, '/server/lib/custom_event'))
-var note           = require(path.join(rootpath, 'server/lib/note'))
-var history        = require(path.join(rootpath, 'server/lib/history'))
+const note         = require(path.join(rootpath, 'server/lib/note'))
+const history      = require(path.join(rootpath, 'server/lib/history'))
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
