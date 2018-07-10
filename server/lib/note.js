@@ -1,11 +1,12 @@
-const ipcMain  = require('electron').ipcMain
-const path     = require('path')
-const fs       = require('fs')
-const rootpath = path.dirname(path.dirname(__dirname))
-const util     = require(path.join(rootpath, 'server/lib/util'))
-const history  = require(path.join(rootpath, 'server/lib/history'))
-const sqlite3  = require('sqlite3-offline').verbose();
-const db_file  = path.join(rootpath, 'data/db/wiki.db')
+const ipcMain   = require('electron').ipcMain
+const path      = require('path')
+const fs        = require('fs')
+const rootpath  = path.dirname(path.dirname(__dirname))
+const util      = require(path.join(rootpath, 'server/lib/util'))
+const history   = require(path.join(rootpath, 'server/lib/history'))
+const sqlite3   = require('sqlite3-offline').verbose();
+const data_path = util.getDataPath()
+const db_file   = path.join(data_path, 'data/db/wiki.db')
 
 // 构建树
 function buildTree(rows) {
@@ -51,7 +52,7 @@ function _buildTree(cur_node_id, parent_set, node_list) {
 
 // 获取note文件路径
 function get_note_path(note_id) {
-    return path.join(rootpath, 'data', 'notes', note_id + '.html')
+    return path.join(data_path, 'data', 'notes', note_id + '.html')
 }
 
 // 获取note内容

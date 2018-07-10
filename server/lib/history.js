@@ -1,12 +1,13 @@
 const {
     ipcMain,
-}                = require('electron')
-const path       = require('path')
-const fs         = require('fs')
+}                  = require('electron')
+const path         = require('path')
+const fs           = require('fs')
 const striptags    = require('striptags');
-const rootpath   = path.dirname(path.dirname(__dirname))
+const rootpath     = path.dirname(path.dirname(__dirname))
 const text_history = require(path.join(rootpath, 'server/lib/text_history'))
 const util         = require(path.join(rootpath, 'server/lib/util'))
+const data_path    = util.getDataPath()
 
 // 解析note历史版本信息
 function parse_history_content(history_content) {
@@ -77,7 +78,7 @@ function get_version(note_id, version_id) {
 }
 
 function get_history_path(note_id) {
-    return path.join(rootpath, 'data', 'notes', note_id + '.history')
+    return path.join(data_path, 'data', 'notes', note_id + '.history')
 }
 
 
@@ -95,6 +96,7 @@ function init() {
             var note_id = req.data.note_id
             var version_id = req.data.version_id
             var version = get_version(note_id, parseInt(version_id))
+            version = util.addImgPrefix(version)
             event.sender.send('recover_version', util.makeResult(req, version))
         }
     })

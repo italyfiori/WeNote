@@ -1,15 +1,16 @@
 const {
     ipcMain,
     shell
-}              = require('electron')
-const path     = require('path')
-const fs       = require('fs')
-const crypto   = require('crypto');
-const rootpath = path.dirname(path.dirname(__dirname))
-const util     = require(path.join(rootpath, 'server/lib/util'))
+}               = require('electron')
+const path      = require('path')
+const fs        = require('fs')
+const crypto    = require('crypto');
+const rootpath  = path.dirname(path.dirname(__dirname))
+const util      = require(path.join(rootpath, 'server/lib/util'))
+const data_path = util.getDataPath()
 
 function getFileSaveDir(note_id) {
-    return path.join(rootpath, 'data', 'files', String(note_id))
+    return path.join(data_path, 'data', 'files', String(note_id))
 }
 
 function getFilePath(note_id, file_name) {
@@ -77,7 +78,7 @@ function init() {
         }
 
         var note_id = req.data.note_id
-        var image_dir = path.join(rootpath, 'data', 'images', String(note_id))
+        var image_dir = path.join(data_path, 'data', 'images', String(note_id))
         if (!fs.existsSync(image_dir)) {
             fs.mkdirSync(image_dir);
         }
