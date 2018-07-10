@@ -77,7 +77,7 @@ function init() {
 
     // 获取列表
     ipcMain.on('get_menu', (event, data) => {
-        var sql = "select title as text, id, parent_id from note order by title;"
+        var sql = "select title as text, id, parent_id from note where is_del = 0 order by title;"
         db.all(sql, function (err, rows) {
             var menu = buildTree(rows)
             var payload = {
@@ -109,7 +109,7 @@ function init() {
     // 删除节点
     ipcMain.on('delete_note', (event, req) => {
         if (req.data.id >= 0) {
-            var sql = "delete from note where id = " + req.data.id + ";"
+            var sql = "update note set is_del = 1 where id = " + req.data.id + ";"
             db.run(sql, function (err, res) {
                 var payload = util.makeResult(req)
                 event.sender.send('delete_note', payload)

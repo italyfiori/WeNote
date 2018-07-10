@@ -225,7 +225,7 @@ function setTableAction() {
             console.warn('not in table')
             return
         }
-        $(table).remove()
+        $(table[0]).remove()
     })
 }
 
