@@ -65,7 +65,6 @@ function init() {
     action.setActions(editor)
     drag.setDragFile()
     paste.setPasteImage()
-    history.setHistoryAction()
     highlight.setHighlight()
 
     // 编辑器内容改写

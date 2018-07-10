@@ -13,7 +13,8 @@ function getFileSaveDir(note_id) {
 }
 
 function getFilePath(note_id, file_name) {
-    return path.join(rootpath, 'data', 'files', String(note_id), file_name)
+    var data_path = util.getDataPath()
+    return path.join(data_path, 'data', 'files', String(note_id), file_name)
 }
 
 function getFileUrl(note_id, file_name) {
@@ -26,10 +27,17 @@ function getBufferMd5(buffer) {
     return hash.digest('hex');
 }
 
+function getImgPath(note_id, file_name) {
+    var data_path = util.getDataPath()
+    return path.join(data_path, 'data', 'images', String(note_id), file_name)
+}
+
 function init() {
     // 保存节点
     ipcMain.on('open_file_link', (event, req) => {
-        var file_url = req.data.file_url
+        var file_url  = req.data.file_url
+        var data_path = util.getDataPath()
+        file_url      = path.join(data_path, file_url)
         if (!fs.existsSync(file_url)) {
             console.warn('file not exists, ' + file_url)
             return
@@ -47,9 +55,9 @@ function init() {
             fs.mkdirSync(save_dir)
         }
 
-        var src_file = req.data.file_path
+        var src_file  = req.data.file_path
         var file_name = path.basename(src_file)
-        var dst_file = getFilePath(note_id, file_name)
+        var dst_file  = getFilePath(note_id, file_name)
         fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
 
         var file_url = getFileUrl(note_id, file_name)
@@ -86,7 +94,7 @@ function init() {
             var payload = {
                 'code': 0,
                 'message_id': req.message_id,
-                'image_url': path.join('data', 'images', String(note_id), file_name),
+                'image_url': getImgPath(note_id, file_name),
             }
             event.sender.send('save_image', payload)
         })

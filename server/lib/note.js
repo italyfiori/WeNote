@@ -61,7 +61,8 @@ function get_note(note_id) {
         console.warn('file not exists:' + String(file_path))
         return ''
     }
-    return fs.readFileSync(file_path)
+    var content = fs.readFileSync(file_path, "utf8")
+    return util.addImgPrefix(content)
 }
 
 // 保存note
@@ -141,6 +142,7 @@ function init() {
             // 保存文件
             var note_id = req.data.id
             var file_cont = req.data.content
+            file_cont = util.trimImgPrefix(file_cont)
             if (get_note(note_id) === file_cont) {
                 console.warn('note has no change:' + String(req.data.id))
                 return
