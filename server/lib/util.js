@@ -1,4 +1,5 @@
-const path      = require('path')
+const path = require('path')
+const os   = require('os')
 
 function makeResult(req, data = {}) {
     var payload = {
@@ -11,7 +12,8 @@ function makeResult(req, data = {}) {
 }
 
 function getDataPath() {
-    return '/Users/louis/Documents/marknote/'
+    var homedir = os.homedir()
+    return path.join(homedir, 'Documents', 'marknote') + '/'
 }
 
 // 增加路径前缀
