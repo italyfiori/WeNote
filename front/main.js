@@ -14,6 +14,7 @@ $(document).ready(function() {
 // TODO: 快捷键功能(表格 done、历史版本 done)
 // TODO: 文件拖拽 done
 // TODO: 复制图片 done
-// TODO: 侧边栏优化（增加删除提示、增加全部文件和回收站分类、右键菜单样式优化）
 // TODO: data路径可配置 done
 // TODO: range选择多个范围回退问题修复
+// TODO: 侧边栏优化（增加删除提示、增加全部文件和回收站分类、右键菜单样式优化）
+// TODO: 增加菜单快捷键(标题灯)
