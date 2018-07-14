@@ -18,6 +18,7 @@ $(document).ready(function() {
 // TODO: range选择多个范围回退问题修复 done
 // TODO: 菜单栏优化: 增加删除提示、增加全部文件和回收站分类 done
 // TODO: 菜单栏优化: 增加静止拖拽节点和区域 done
-// TODO: 菜单栏图标优化: 
+// TODO: 菜单栏图标优化: done
+// TODO: 增加回收站功能
 // TODO: 增加快捷键(标题等)
 // TODO: 增加撤销功能

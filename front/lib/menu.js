@@ -3,6 +3,7 @@ var jquery          = jQuery = $ = require('jquery')
 var note            = require(rootpath + '/front/lib/note.js')
 var message         = require(rootpath + '/front/lib/message.js')
 var state           = require(rootpath + '/front/lib/state.js')
+var util            = require(rootpath + '/front/lib/util.js')
 
 // 加载左侧菜单
 function load_menu() {
@@ -24,10 +25,10 @@ function load_menu() {
         // 移动笔记
         $('#menu-tree').bind('move_node.jstree', function (e, data) {
             var note_id   = data.node.id
-            var parent_id = data.node.parent == '#' ? 0 : data.node.parent
+            var parent_id = util.isInt(data.node.parent) ? data.node.parent : 0
             note.move_note(note_id, parent_id)
         })
-        
+
     })
 
     // 接收到master请求, 保存笔记

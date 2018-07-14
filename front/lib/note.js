@@ -31,7 +31,7 @@ function create_note(obj) {
     $('#menu-tree').jstree('select_node', new_node)
     $('#menu-tree').jstree('edit', new_node)
     var payload = {
-        'parent_id': new_node.parent == 'all' ? 0 : new_node.parent,
+        'parent_id': util.isInt(new_node.parent) ? new_node.parent : 0,
         'title':     new_node.text,
     }
     message.send('create_note', payload, function (response) {

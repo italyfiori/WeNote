@@ -28,6 +28,10 @@ function addStringFormat() {
     }
 }
 
+function isInt(val) {
+    return /^\d+$/.test(val)
+}
+
 function ts2time(ts) {
     var date = new Date(ts);
     var year = date.getFullYear() + '-';
@@ -42,3 +46,4 @@ function ts2time(ts) {
 exports.getRandomInt    = getRandomInt
 exports.addStringFormat = addStringFormat
 exports.ts2time         = ts2time
+exports.isInt           = isInt
