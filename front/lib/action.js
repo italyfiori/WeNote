@@ -64,7 +64,7 @@ function setActions(node) {
         var innerHTML  = $(parentNode).html()
 
         // 改写回退键功能
-        if(key == 'Backspace' && range.startOffset == 0) {
+        if(key == 'Backspace' && range.startOffset == 0 && range.collapsed) {
             return !backAction(curNode, parentNode, blockNode, range)
         }
     })
