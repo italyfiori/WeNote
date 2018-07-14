@@ -36,11 +36,13 @@ function getBaseMenu() {
         {
             text: '全部文档',
             id: 'all',
+            icon: 'jstree-folder',
             parent_id: '#',
             children: [],
         }, {
             text: '回收站',
             id: 'recycle',
+            icon: 'front/images/recycle.png',
             parent_id: '#',
             children: [],
         }

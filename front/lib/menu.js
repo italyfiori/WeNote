@@ -27,6 +27,7 @@ function load_menu() {
             var parent_id = data.node.parent == '#' ? 0 : data.node.parent
             note.move_note(note_id, parent_id)
         })
+        
     })
 
     // 接收到master请求, 保存笔记
@@ -52,21 +53,17 @@ function create_menu_object(menu_content) {
                 return true
             },
         },
-        "plugins": ["wholerow", "dnd", "contextmenu"],
+        "plugins": ["wholerow", "dnd", "contextmenu", "types"],
         "contextmenu" : {
             "items" : customMenu
         },
         "types": {
             "default": {
-                "icon": false  // 删除默认图标
+                "icon": "jstree-file"
             },
         },
 
     }
-}
-
-function check_callback() {
-
 }
 
 // 根据节点自定义右键菜单
