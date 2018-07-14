@@ -16,6 +16,7 @@ $(document).ready(function() {
 // TODO: 复制图片 done
 // TODO: data路径可配置 done
 // TODO: range选择多个范围回退问题修复 done
-// TODO: 菜单栏优化（增加删除提示、增加全部文件和回收站分类、右键菜单样式优化、静止拖拽区域）
-// TODO: 增加菜单快捷键(标题灯)
+// TODO: 菜单栏优化: 增加删除提示、增加全部文件和回收站分类 done
+// TODO: 菜单栏优化: 增加静止拖拽节点和区域
+// TODO: 增加快捷键(标题等)
 // TODO: 增加撤销功能
