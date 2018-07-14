@@ -39,9 +39,18 @@ function load_menu() {
 function create_menu_object(menu_content) {
     return {
         "core": {
-            'check_callback': true,
             'multiple': false,
-            'data': menu_content
+            'data': menu_content,
+            "check_callback" : function(operation, node, node_parent, node_position, more) {
+                if (operation == 'move_node') {
+                    if (node.id == 'all' || node.id == 'recycle') {
+                        return false
+                    } else if (node_parent.id == '#' || node_parent.id == 'recycle') {
+                        return false
+                    }
+                }
+                return true
+            },
         },
         "plugins": ["wholerow", "dnd", "contextmenu"],
         "contextmenu" : {
@@ -52,7 +61,12 @@ function create_menu_object(menu_content) {
                 "icon": false  // 删除默认图标
             },
         },
+
     }
+}
+
+function check_callback() {
+
 }
 
 // 根据节点自定义右键菜单
