@@ -1,6 +1,7 @@
 var message = require(rootpath + '/front/lib/message.js')
 var dom     = require(rootpath + '/front/lib/dom.js')
 var state   = require(rootpath + '/front/lib/state.js')
+var util    = require(rootpath + '/front/lib/util.js')
 var async   = require("async");
 
 // 获取笔记内容
