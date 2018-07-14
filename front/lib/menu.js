@@ -24,15 +24,10 @@ function load_menu() {
 
         // 移动笔记
         $('#menu-tree').bind('move_node.jstree', function (e, data) {
-            console.log(e);
             var note_id   = data.node.id
             var parent_id = util.isInt(data.node.parent) ? data.node.parent : 0
             note.move_note(note_id, parent_id)
         })
-
-        $(document).on('dnd_start.vakata',function(e,data){
-            console.log(e);
-        });
 
     })
 
