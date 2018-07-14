@@ -25,8 +25,26 @@ function buildTree(rows) {
         node_list[node_id] = row
     }
 
-    var menu = _buildTree('0', parent_set, node_list)
-    return menu['children']
+    var base = getBaseMenu()
+    var tree = _buildTree('0', parent_set, node_list)
+    base[0]['children'] = tree['children']
+    return base
+}
+
+function getBaseMenu() {
+    return [
+        {
+            text: '全部文档',
+            id: 'all',
+            parent_id: '#',
+            children: [],
+        }, {
+            text: '回收站',
+            id: 'recycle',
+            parent_id: '#',
+            children: [],
+        }
+    ]
 }
 
 // 构建树
@@ -87,7 +105,6 @@ function init() {
                 'message_id': data.message_id,
                 'menu': menu,
             }
-
             event.sender.send('get_menu', payload)
         })
     })

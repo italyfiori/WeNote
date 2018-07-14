@@ -23,9 +23,15 @@ function load_note(note_id) {
 }
 
 // 创建笔记
-function create_note(new_node) {
+function create_note(obj) {
+    var cur_node    = $('#menu-tree').jstree('get_node', obj.reference)
+    var new_node_id = $('#menu-tree').jstree('create_node', cur_node, 'new note')
+    var new_node    = $('#menu-tree').jstree('get_node', new_node_id)
+    $('#menu-tree').jstree('deselect_node', cur_node)
+    $('#menu-tree').jstree('select_node', new_node)
+    $('#menu-tree').jstree('edit', new_node)
     var payload = {
-        'parent_id': new_node.parent == '#' ? 0 : new_node.parent,
+        'parent_id': new_node.parent == 'all' ? 0 : new_node.parent,
         'title':     new_node.text,
     }
     message.send('create_note', payload, function (response) {
@@ -59,10 +65,14 @@ function save_note() {
 }
 
 // 删除笔记
-function delete_note(note_id) {
-    message.send('delete_note', {'id': note_id}, function (response) {
-        // do nothing
-    })
+function delete_note(obj) {
+    var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
+    var result   = confirm("are you sure delte the note?");
+    if (result == true){
+        message.send('delete_note', {'id': cur_node.id}, function (response) {
+            $('#menu-tree').jstree('delete_node', cur_node)
+        })
+    }
 }
 
 // 移动笔记

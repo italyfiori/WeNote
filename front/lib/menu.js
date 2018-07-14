@@ -16,21 +16,9 @@ function load_menu() {
             note.load_note(data.node.id)
         })
 
-        // 创建笔记
-        $('#menu-tree').on('create_node.jstree', function (e, data) {
-            var new_node = data.node
-            note.create_note(new_node)
-        })
-
-        // 修改笔记标题
+        // 修改笔记标题事件
         $('#menu-tree').on('rename_node.jstree', function (e, data) {
             note.update_title(data.node.id, data.node.text)
-        })
-
-        // 删除笔记
-        $('#menu-tree').on('delete_node.jstree', function (e, data) {
-            var note_id = data.node.id
-            note.delete_note(note_id)
         })
 
         // 移动笔记
@@ -56,12 +44,49 @@ function create_menu_object(menu_content) {
             'data': menu_content
         },
         "plugins": ["wholerow", "dnd", "contextmenu"],
+        "contextmenu" : {
+            "items" : customMenu
+        },
         "types": {
             "default": {
                 "icon": false  // 删除默认图标
             },
         },
     }
+}
+
+// 根据节点自定义右键菜单
+function customMenu(node) {
+    var items = {
+        "create": {
+            "label": "New Note",
+            "action": function (obj) {
+                note.create_note(obj)
+            }
+        },
+        "rename": {
+            "label": 'Rename Note',
+            "action": function (obj) {
+                var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
+                $('#menu-tree').jstree('edit', cur_node)
+            }
+        },
+        "delete": {
+            "label": "Delete Note",
+            "action": function (obj) {
+                note.delete_note(obj)
+            }
+        }
+    }
+
+    if (node.id == 'all') {
+        delete items.delete
+        delete items.rename
+    } else if(node.id == 'recycle') {
+        items = []
+    }
+
+    return items
 }
 
 exports.load_menu = load_menu
