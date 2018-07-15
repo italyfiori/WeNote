@@ -14,6 +14,7 @@ function load_menu() {
 
         // 获取笔记
         $('#menu-tree').on('select_node.jstree', function (e, data) {
+            note.save_note()
             if (data.node.id == '0' || data.node.id == '-1') {
                 note.load_notice()
                 return

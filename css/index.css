@@ -65,7 +65,6 @@ body {
     border: none;
     outline: none;
     min-height: 100%;
-    word-break: break-word;
     position: absolute;
     left: 0;
     right: 0;
@@ -94,6 +93,7 @@ img:hover {
     color: #c7254e;
     background-color: #f9f2f4;
     border-radius: 4px;
+	text-decoration: none;
 }
 
 #editor a.math {
