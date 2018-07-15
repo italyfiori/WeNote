@@ -14,6 +14,10 @@ function load_menu() {
 
         // 获取笔记
         $('#menu-tree').on('select_node.jstree', function (e, data) {
+            if (data.node.id == 'all' || data.node.id == 'recycle') {
+                note.load_notice()
+                return
+            }
             note.load_note(data.node.id)
         })
 

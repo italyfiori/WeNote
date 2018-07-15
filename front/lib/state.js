@@ -23,6 +23,18 @@ function switch2editor() {
     dom.setCursor(editor)
 }
 
+function swtich2Notice() {
+    var editor    = dom.getEditor()
+    var container = dom.getEditorContainer()
+    var notice    = dom.getNotice()
+    if (container.style.display != "none") {
+        container.style.display = "none";
+    }
+    if (notice.style.display != "block") {
+        notice.style.display = "block";
+    }
+}
+
 // 清除编辑器绑定的事件
 function clean() {
     $('img').unbind()
@@ -34,7 +46,6 @@ function clean() {
     if (editor) {
         $(editor).unbind()
     }
-
 }
 
 // 初始化编辑器
@@ -77,5 +88,6 @@ function init() {
 
 
 
-exports.clean = clean
-exports.init  = init
+exports.swtich2Notice = swtich2Notice
+exports.clean         = clean
+exports.init          = init

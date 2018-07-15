@@ -23,6 +23,12 @@ function load_note(note_id) {
     ])
 }
 
+function load_notice() {
+    state.swtich2Notice()
+    state.clean()
+    editor.setAttribute('note_id', '')
+}
+
 // 创建笔记
 function create_note(obj) {
     var cur_node    = $('#menu-tree').jstree('get_node', obj.reference)
@@ -80,11 +86,13 @@ function delete_note(obj) {
 function move_note(note_id, parent_id) {
     var payload = {'id': note_id, 'parent': parent_id}
     message.send('move_note', payload, function (response) {
+        $('#menu-tree').jstree('refres')
         // do nothing
     })
 }
 
 exports.load_note    = load_note
+exports.load_notice  = load_notice
 exports.create_note  = create_note
 exports.update_title = update_title
 exports.save_note    = save_note
