@@ -183,10 +183,8 @@ function init() {
     ipcMain.on('move_note', (event, req) => {
         if (req.data.id >= -1) {
             var sql = "update note set parent_id = '" + req.data.parent + "'  where id = " + req.data.id + ";"
-            console.log(sql);
             db.get(sql, function (err, res) {
                 var payload = util.makeResult(req)
-
                 event.sender.send('move_note', payload)
             })
         }

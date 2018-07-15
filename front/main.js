@@ -20,7 +20,9 @@ $(document).ready(function() {
 // TODO: 菜单栏优化: 增加静止拖拽节点和区域 done
 // TODO: 菜单栏图标优化: done
 // TODO: 修复不能拖拽的bug 待排查、暂未找到原因
-// TODO: 增加回收站功能
+// TODO: 增加回收站功能 done
+// TODO: 增加回收站删除和回收站禁止编辑功能
 // TODO: 增加快捷键(标题等)
 // TODO: 增加撤销功能
 // TODO: 增加导出和打印功能
+// TODO: 分享功能

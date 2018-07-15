@@ -78,12 +78,6 @@ function delete_note(obj) {
     if (result == true){
         var recycle_node = $('#menu-tree').jstree('get_node', '-1')
         $('#menu-tree').jstree('move_node', cur_node, recycle_node)
-        // var payload      = {'id': cur_node.id, 'parent': -1}
-        // message.send('move_note', payload, function (response) {
-        //     console.log(response);
-        //
-        //     $('#menu-tree').jstree('refres')
-        // })
     }
 }
 
