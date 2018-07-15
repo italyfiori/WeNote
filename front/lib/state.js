@@ -40,7 +40,6 @@ function clean() {
     $('img').unbind()
     $('a.file').unbind()
     $('div.resize').unbind()
-    $(document).unbind()
 
     var editor = dom.getEditor()
     if (editor) {

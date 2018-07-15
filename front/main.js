@@ -19,7 +19,7 @@ $(document).ready(function() {
 // TODO: 菜单栏优化: 增加删除提示、增加全部文件和回收站分类 done
 // TODO: 菜单栏优化: 增加静止拖拽节点和区域 done
 // TODO: 菜单栏图标优化: done
-// TODO: 修复不能拖拽的bug 待排查、暂未找到原因
+// TODO: 修复不能拖拽的bug 待排查、暂未找到原因 done (原因是清除编辑器绑定事件时, 解绑了document对象的事件，从而引起bug)
 // TODO: 增加回收站功能 done
 // TODO: 增加回收站删除和回收站禁止编辑功能
 // TODO: 增加快捷键(标题等)
