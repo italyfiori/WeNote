@@ -14,7 +14,7 @@ function load_menu() {
 
         // 获取笔记
         $('#menu-tree').on('select_node.jstree', function (e, data) {
-            if (data.node.id == 'all' || data.node.id == 'recycle') {
+            if (data.node.id == '0' || data.node.id == '-1') {
                 note.load_notice()
                 return
             }
@@ -29,7 +29,7 @@ function load_menu() {
         // 移动笔记
         $('#menu-tree').bind('move_node.jstree', function (e, data) {
             var note_id   = data.node.id
-            var parent_id = util.isInt(data.node.parent) ? data.node.parent : 0
+            var parent_id = data.node.parent
             note.move_note(note_id, parent_id)
         })
 
@@ -49,9 +49,9 @@ function create_menu_object(menu_content) {
             'data': menu_content,
             "check_callback" : function(operation, node, node_parent, node_position, more) {
                 if (operation == 'move_node') {
-                    if (node.id == 'all' || node.id == 'recycle') {
+                    if (node.id == '0' || node.id == '-1') {
                         return false
-                    } else if (node_parent.id == '#' || node_parent.id == 'recycle') {
+                    } else if (node_parent.id == '#') {
                         return false
                     }
                 }
@@ -101,10 +101,10 @@ function customMenu(node) {
         }
     }
 
-    if (node.id == 'all') {
+    if (node.id == '0') {
         delete items.delete
         delete items.rename
-    } else if(node.id == 'recycle') {
+    } else if(node.id == '-1') {
         items = []
     }
 

@@ -76,9 +76,14 @@ function delete_note(obj) {
     var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
     var result   = confirm("are you sure delte the note?");
     if (result == true){
-        message.send('delete_note', {'id': cur_node.id}, function (response) {
-            $('#menu-tree').jstree('delete_node', cur_node)
-        })
+        var recycle_node = $('#menu-tree').jstree('get_node', '-1')
+        $('#menu-tree').jstree('move_node', cur_node, recycle_node)
+        // var payload      = {'id': cur_node.id, 'parent': -1}
+        // message.send('move_note', payload, function (response) {
+        //     console.log(response);
+        //
+        //     $('#menu-tree').jstree('refres')
+        // })
     }
 }
 

@@ -25,9 +25,11 @@ function buildTree(rows) {
         node_list[node_id] = row
     }
 
-    var base = getBaseMenu()
-    var tree = _buildTree('0', parent_set, node_list)
-    base[0]['children'] = tree['children']
+    var base            = getBaseMenu()
+    var all_menu        = _buildTree('0', parent_set, node_list)
+    var recycle_menu    = _buildTree('-1', parent_set, node_list)
+    base[0]['children'] = all_menu['children']
+    base[1]['children'] = recycle_menu['children']
     return base
 }
 
@@ -35,13 +37,13 @@ function getBaseMenu() {
     return [
         {
             text: '全部文档',
-            id: 'all',
+            id: '0',
             icon: 'jstree-folder',
             parent_id: '#',
             children: [],
         }, {
             text: '回收站',
-            id: 'recycle',
+            id: '-1',
             icon: 'front/images/recycle.png',
             parent_id: '#',
             children: [],
@@ -130,7 +132,7 @@ function init() {
     // 删除节点
     ipcMain.on('delete_note', (event, req) => {
         if (req.data.id >= 0) {
-            var sql = "update note set is_del = 1 where id = " + req.data.id + ";"
+            var sql = "update note set parent_id = -1 where id = " + req.data.id + ";"
             db.run(sql, function (err, res) {
                 var payload = util.makeResult(req)
                 event.sender.send('delete_note', payload)
@@ -179,10 +181,12 @@ function init() {
 
     // 拖拽移动节点
     ipcMain.on('move_note', (event, req) => {
-        if (req.data.id >= 0) {
+        if (req.data.id >= -1) {
             var sql = "update note set parent_id = '" + req.data.parent + "'  where id = " + req.data.id + ";"
+            console.log(sql);
             db.get(sql, function (err, res) {
                 var payload = util.makeResult(req)
+
                 event.sender.send('move_note', payload)
             })
         }
