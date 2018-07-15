@@ -185,9 +185,9 @@ img:hover {
     font-size: 20px;
 }
 
-#editor-container #editor h1, h2, h3, h4, h5, h6{
+body #editor-container #editor h1, h2, h3, h4, h5, h6{
     font-weight: bold;
-	margin: 10px 0;
+	margin: 16px 0;
 }
 
 #editor h3, h4, h5, h6{
