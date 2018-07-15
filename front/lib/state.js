@@ -74,7 +74,6 @@ function init() {
 
     action.setActions(editor)
     drag.setDragFile()
-    paste.setPasteImage()
     highlight.setHighlight()
 
     // 编辑器内容改写
