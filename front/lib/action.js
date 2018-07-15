@@ -163,7 +163,7 @@ function backAction(curNode, parentNode, blockNode, range) {
     // 标题回退删除自身
     if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].indexOf(blockNode.nodeName) >= 0 && dom.blockEmpty(blockNode)) {
         $(blockNode).after('<p><br></p>')
-        setCursor(blockNode.nextSibling)
+        dom.setCursor(blockNode.nextSibling)
         $(blockNode).remove()
         return true
     }
