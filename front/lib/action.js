@@ -269,7 +269,6 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         if (text) {
             var start = text.lastIndexOf('$$')
             if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '$') {
-                console.log(range);
                 mathAction(text, start, offset, curNode, range)
                 return true
             }
