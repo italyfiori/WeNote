@@ -14,7 +14,6 @@
     "diff-match-patch": "^1.0.1",
     "highlight.js": "^9.12.0",
     "jquery": "^3.3.1",
-    "jstree": "file:jstree",
     "katex": "^0.10.0-beta",
     "sqlite3-offline": "^3.2.0",
     "striptags": "^3.1.1"
