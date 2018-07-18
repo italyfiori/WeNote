@@ -52,6 +52,7 @@ function append_history(note_id, new_cont) {
     }
 
     var file_path = get_history_path(note_id)
+    util.mkdirs(path.dirname(file_path))
     var version_cont = JSON.stringify({'time': Date.now(), 'size': striptags(new_cont).length, 'patches': patches})
     if (fs.existsSync(file_path)) {
         version_cont = "\n" + version_cont

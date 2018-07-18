@@ -59,6 +59,7 @@ function init() {
         var src_file  = req.data.file_path
         var file_name = path.basename(src_file)
         var dst_file  = getFilePath(note_id, file_name)
+        util.mkdirs(path.dirname(dst_file))
         fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
 
         var file_url = getFileUrl(note_id, file_name)
@@ -77,16 +78,13 @@ function init() {
             return
         }
 
-        var note_id = req.data.note_id
-        var image_dir = path.join(data_path, 'data', 'images', String(note_id))
-        if (!fs.existsSync(image_dir)) {
-            fs.mkdirSync(image_dir);
-        }
-
-        var buffer = req.data.buffer
+        var note_id    = req.data.note_id
+        var image_dir  = path.join(data_path, 'data', 'images', String(note_id))
+        var buffer     = req.data.buffer
         var buffer_md5 = getBufferMd5(buffer)
-        var file_name = buffer_md5 + '.png'
-        var file_path = path.join(image_dir, '', file_name)
+        var file_name  = buffer_md5 + '.png'
+        var file_path  = path.join(image_dir, '', file_name)
+        util.mkdirs(path.dirname(file_path))
         fs.writeFile(file_path, buffer, {}, (err, res) => {
             if (err) {
                 console.error('write file error:' + err);

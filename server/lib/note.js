@@ -91,6 +91,9 @@ function get_note(note_id) {
 // 保存note
 function save_note(note_id, file_cont) {
     var file_path = get_note_path(note_id)
+    if (!fs.existsSync(path.dirname(file_path))) {
+        util.mkdirs(path.dirname(file_path))
+    }
     return fs.writeFileSync(file_path, file_cont)
 }
 

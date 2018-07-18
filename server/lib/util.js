@@ -1,5 +1,6 @@
 const path = require('path')
 const os   = require('os')
+const fs   = require('fs')
 
 function makeResult(req, data = {}) {
     var payload = {
@@ -32,7 +33,23 @@ function trimImgPrefix(content) {
     return content.replace(pattern, replace)
 }
 
+// 递归创建目录
+function mkdirs(dir_path, model = 0777) {
+    // 目录已经存在，则返回
+    if (fs.existsSync(dir_path)) {
+        return true
+    }
+    // 目录不存在, 则先创建父目录
+    if (!fs.existsSync(path.dirname(dir_path))) {
+        mkdirs(path.dirname(dir_path), model)
+    }
+    fs.mkdirSync(dir_path, model)
+    return true
+}
+
+
 exports.makeResult    = makeResult
 exports.addImgPrefix  = addImgPrefix
 exports.trimImgPrefix = trimImgPrefix
 exports.getDataPath   = getDataPath
+exports.mkdirs        = mkdirs

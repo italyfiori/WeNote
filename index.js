@@ -12,6 +12,7 @@ const template     = require(path.join(rootpath, '/server/lib/sys_menu'))
 const custom_event = require(path.join(rootpath, '/server/lib/custom_event'))
 const note         = require(path.join(rootpath, 'server/lib/note'))
 const history      = require(path.join(rootpath, 'server/lib/history'))
+const init         = require(path.join(rootpath, 'server/lib/init'))
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
@@ -63,7 +64,7 @@ app.on('activate', () => {
     }
 })
 
-// 获取笔记列表
+init()
 note.init()
 custom_event.init()
 history.init()
