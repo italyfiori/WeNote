@@ -269,6 +269,7 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         if (text) {
             var start = text.lastIndexOf('$$')
             if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '$') {
+                console.log(range);
                 mathAction(text, start, offset, curNode, range)
                 return true
             }
@@ -354,15 +355,20 @@ function tableAction(innerHTML, parentNode) {
 
 // markdown数学公式
 function mathAction(text, start, offset, curNode, range) {
+    // 插入公式标签
     var text = text.slice(start + 2, offset - 1)
     var id   = 'math' + util.getRandomInt(100000)
-    var html = '<a class="math" id="' + id + '"> ' + text + '</a>&nbsp;';
+    var html = '<a class="math" id="' + id + '"> ' + text + '</a>&nbsp;'; // 末尾增加空格，否则光标可能跑到段落最右边
     document.execCommand('insertHTML', false, html)
-    range.setStart(curNode, start)
-    range.setEnd(curNode, offset)
+
+    // 删除输入的文本
+    var ele  = document.getElementById(id)
+    var node = ele.previousSibling // 通过preivous找到文本节点，直接用curNode还有问题
+    range.setStart(node, start)
+    range.setEnd(node, offset)
     range.deleteContents()
 
-    var ele = document.getElementById(id)
+    // 渲染数学公式
     ele.contentEditable = "false"
     katex.render(text, ele)
     range.setStartAfter(ele)
@@ -376,9 +382,10 @@ function mathAction(text, start, offset, curNode, range) {
 function emphAction(text, start, offset, curNode, range) {
     var text = text.slice(start + 2, offset - 1)
     var html = '<a class="code">' + text + '</a>&nbsp;';
+    document.execCommand('insertHTML', false, html)
+
     range.setStart(curNode, start)
     range.setEnd(curNode, offset)
-    document.execCommand('insertHTML', false, html)
     range.deleteContents()
 }
 
