@@ -9,28 +9,22 @@ const db_file   = path.join(data_path, 'data/db/wiki.db')
 
 // 创建数据库
 function createDB() {
-    async.waterfall([
-        function(callback) {
-            if (!fs.existsSync(db_file)) {
-                if(!util.mkdirs(path.dirname(db_file))) {
-                    console.log(db_file);
-                    return callback('create db path failed!')
-                }
+    if (!fs.existsSync(db_file)) {
+        // 创建文件夹
+        if(!util.mkdirs(path.dirname(db_file))) {
+            console.error('create db path failed!');
+            return
+        }
+
+        // 创建数据库和表
+        var db  = new sqlite3.Database(db_file)
+        var sql = "CREATE TABLE note(id INTEGER PRIMARY KEY AUTOINCREMENT,parent_id INT NOT NULL DEFAULT 0,title TEXT NOT NULL DEFAULT '' ,is_del TINYINT NOT NULL DEFAULT 0 ,create_time INT NOT NULL DEFAULT 0,update_time INT NOT NULL DEFAULT 0);"
+        db.run(sql, function(err) {
+            if (err) {
+                console.error(err);
             }
-            callback(null)
-        },
-        function(callback) {
-            var db  = new sqlite3.Database(db_file)
-            var sql = "CREATE TABLE note(id INTEGER PRIMARY KEY AUTOINCREMENT,parent_id INT NOT NULL DEFAULT 0,title TEXT NOT NULL DEFAULT '' ,is_del TINYINT NOT NULL DEFAULT 0 ,create_time INT NOT NULL DEFAULT 0,update_time INT NOT NULL DEFAULT 0);"
-            db.run(sql, function(err) {
-                callback(err)
-            })
-        }
-    ], function(err, results) {
-        if (err) {
-            console.error(err);
-        }
-    })
+        })
+    }
 }
 
 function init() {
