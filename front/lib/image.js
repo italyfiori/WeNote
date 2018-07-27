@@ -19,7 +19,7 @@ function setImageEvent() {
 
     var options = {
         html: true,
-        content: '图像大小:<input type="text" class="image_size">',
+        content: '图像大小: &nbsp;<input type="text" class="image_size">',
         trigger: 'manual',
         placement: 'bottom',
     }
