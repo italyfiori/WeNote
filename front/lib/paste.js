@@ -1,4 +1,5 @@
 var dom     = require(rootpath + '/front/lib/dom.js')
+var image   = require(rootpath + '/front/lib/image.js')
 var message = require(rootpath + '/front/lib/message.js')
 var $       = require('jquery')
 
@@ -21,10 +22,7 @@ function setPasteImage() {
 
         if(blob === null) {
             setTimeout(function() {
-                $('img').unbind()
-                $('img').click(function() {
-                    dom.selectNode(this)
-                })
+                image.setImageEvent()
             }, 100)
             return
         }
@@ -52,10 +50,7 @@ function setPasteImage() {
                         var html = '<img width=' + width + ' src="' + data.image_url + '">'
                         document.execCommand('insertHTML', false, html)
                         setTimeout(function() {
-                            $('img').unbind()
-                            $('img').click(function() {
-                                dom.selectNode(this)
-                            })
+                            image.setImageEvent()
                         }, 100)
                     }
                 })

@@ -7,6 +7,7 @@ var drag      = require(rootpath + '/front/lib/drag.js')
 var paste     = require(rootpath + '/front/lib/paste.js')
 var history   = require(rootpath + '/front/lib/history.js')
 var highlight = require(rootpath + '/front/lib/highlight.js')
+var image     = require(rootpath + '/front/lib/image.js')
 var $         = require('jquery')
 
 // 切换到编辑器模式
@@ -38,6 +39,7 @@ function swtich2Notice() {
 // 清除编辑器绑定的事件
 function clean() {
     $('img').unbind()
+    $('.image_size').unbind()
     $('a.file').unbind()
     $('div.resize').unbind()
 
@@ -51,10 +53,9 @@ function clean() {
 function init() {
     switch2editor()
 
-    // 点击图片
-    $('img').click(function () {
-        dom.selectNode(this)
-    })
+    // 图片点击功能
+    image.setImageInit()
+    image.setImageEvent()
 
     // 点击文件
     $('a.file').click(function(event) {
