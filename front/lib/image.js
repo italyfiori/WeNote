@@ -3,8 +3,8 @@ var dom = require(rootpath + '/front/lib/dom.js')
 var selectedImage = null
 
 function setImageInit() {
-    // 选中任意地方(除图像和设置大小输入框外)
-    $(document).click(function(event) {
+    // 选中任意地方或输入(除图像和设置大小输入框外)
+    $(document).on('click keypress', function() {
         if (selectedImage) {
             $(selectedImage).popover('hide')
             selectedImage = null
@@ -46,24 +46,31 @@ function setImageEvent() {
         $('.image_size').unbind()
 
         setTimeout(function() {
-
+            // 点击输入框
             $('.image_size').click(function(event) {
                 $(this).focus()
                 event.stopPropagation();
             })
 
+            // 显示图像当前大小
             $('.image_size').val(selectedImage.width + 'px')
 
+            // 弹出框区域不可编辑
+            $('.popover').each(function() {
+                this.contentEditable = "false"
+            })
+
+            // 输入图像大小
             $('.image_size').keypress(function(e) {
                 if (e.key == 'Enter') {
                     var value = $(this).val()
                     if (/^\d+(px)?$/.test(value)) {
-                        // console.log(123);
                         var size = value.indexOf('px') >= 0 ? value : value + 'px'
                         selectedImage.style.width = size
                         $(selectedImage).popover('hide')
                     }
                 }
+                event.stopPropagation();
             })
 
         }, 100)
