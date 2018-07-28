@@ -49,6 +49,11 @@ function clean() {
     }
 }
 
+// 清除辅助元素
+function cleanNote() {
+    $('img').popover('hide')
+}
+
 // 初始化编辑器
 function init() {
     switch2editor()
@@ -90,3 +95,4 @@ function init() {
 exports.swtich2Notice = swtich2Notice
 exports.clean         = clean
 exports.init          = init
+exports.cleanNote     = cleanNote

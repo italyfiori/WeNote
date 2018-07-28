@@ -63,6 +63,10 @@ function save_note() {
         console.warn('未选中笔记')
         return
     }
+
+    // 清除辅助元素
+    state.cleanNote()
+
     // 保存笔记
     var content = editor.innerHTML
     var payload = {'id': note_id, 'content': content}
