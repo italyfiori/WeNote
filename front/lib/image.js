@@ -4,7 +4,7 @@ var selectedImage = null
 
 function setImageInit() {
     // 选中任意地方或输入(除图像和设置大小输入框外)
-    $(document).on('click keypress', function() {
+    $(document).on('click keydown', function() {
         if (selectedImage) {
             $(selectedImage).popover('hide')
             selectedImage = null
@@ -52,22 +52,24 @@ function setImageEvent() {
                 event.stopPropagation();
             })
 
-            // 显示图像当前大小
+            // 弹出框设置为显示图像当前大小
             $('.image_size').val(selectedImage.width + 'px')
 
-            // 弹出框区域不可编辑
+            // 弹出框区域设置为不可编辑
             $('.popover').each(function() {
                 this.contentEditable = "false"
             })
 
             // 输入图像大小
-            $('.image_size').keypress(function(e) {
+            $('.image_size').keydown(function(e) {
                 if (e.key == 'Enter') {
                     var value = $(this).val()
                     if (/^\d+(px)?$/.test(value)) {
                         var size = value.indexOf('px') >= 0 ? value : value + 'px'
                         selectedImage.style.width = size
                         $(selectedImage).popover('hide')
+                    } else {
+                        $(this).val(selectedImage.style.width)
                     }
                 }
                 event.stopPropagation();
