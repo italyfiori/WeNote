@@ -276,7 +276,7 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
     }
 
     if (event.key == '*') {
-        // 触发
+        // 触发着重符号
         var offset = range.startOffset
         var text   = curNode.nodeValue
         if (text) {
@@ -294,62 +294,58 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
 // markdown标题
 function titleAction(titleTag, parentNode) {
     var html = '<' + titleTag + '>' + '<br/></' + titleTag + '>'
-    $(parentNode).after(html)
-    dom.setCursor(parentNode.nextSibling)
-    $(parentNode).remove()
-    return false
+    var node = dom.insertHtml(html)
+    dom.setCursor(node)
 }
 
 // markdown代码块
 function codeAction(parentNode) {
     var html = '<pre class="source hljs"><br/></pre>';
-    $(parentNode).after(html)
-    dom.setCursor(parentNode.nextSibling.firstChild)
-    $(parentNode).remove()
+    var node = dom.insertHtml(html)
+    dom.setCursor(node.firstChild)
 }
 
 // markdown引用块
 function quoteAction(parentNode) {
     var html = '<blockquote><p><br></p></blockquote>'
-    $(parentNode).after(html)
-    dom.setCursor(parentNode.nextSibling.firstChild)
-    $(parentNode).remove()
+    var node = dom.insertHtml(html)
+    dom.setCursor(node.firstChild)
 }
 
 // markdown顺序列表
 function olAction(parentNode) {
     var html = '<ol><li><br/></li></ol>'
-    $(parentNode).after(html)
-    dom.setCursor(parentNode.nextSibling.firstChild)
-    $(parentNode).remove()
+    var olNode = dom.insertHtml(html)
+    dom.setCursor(olNode.firstChild)
 }
 
 // markdown无序列表
 function ulAction(parentNode) {
     var html = '<ul><li><br/></li></ul>'
-    $(parentNode).after(html)
-    dom.setCursor(parentNode.nextSibling.firstChild)
-    $(parentNode).remove()
+    var ulNode = dom.insertHtml(html)
+    dom.setCursor(ulNode.firstChild)
 }
 
 // markdown水平线
 function hrAction(parentNode) {
-    var html = '<hr contenteditable="false" /><p><br><p>'
-    $(parentNode).after(html)
-    dom.setCursor(parentNode.nextSibling.nextSibling)
-    $(parentNode).remove()
+    var html   = '<hr contenteditable="false" /><p><br><p>'
+    var hrNode = dom.insertHtml(html)
+    dom.setCursor(hrNode.nextSibling)
 }
 
 // markdown表格
 function tableAction(innerHTML, parentNode) {
     var titles = innerHTML.substr(1, innerHTML.length - 2)
     var titles = titles.split('|')
-    var html   = table.createTableHtml(titles)
-    $(parentNode).after(html)
-    table.makeTableResizeable(parentNode.nextSibling)
-    var secondRow = $(parentNode.nextSibling).find('tr')[1]
+
+    // 创建表格
+    var html      = table.createTableHtml(titles)
+    var tableNode = dom.insertHtml(html)
+    table.makeTableResizeable(tableNode)
+
+    // 设置光标
+    var secondRow = $(tableNode).find('tr')[1]
     dom.setCursor(secondRow.firstChild.firstChild.firstChild)
-    $(parentNode).remove()
 }
 
 // markdown数学公式

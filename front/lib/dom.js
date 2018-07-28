@@ -1,3 +1,5 @@
+var util  = require(rootpath + '/front/lib/util.js')
+
 // 获取编辑区
 function getEditor() {
     return document.getElementById('editor')
@@ -83,6 +85,27 @@ function getCurNode() {
     return null
 }
 
+function insertHtml(html) {
+    // 插入html
+    var id = util.getRandomInt(10000000)
+    html = html.replace(/>/, ' id="' + id + '">')
+    document.execCommand('insertHTML', false, html)
+
+    // 删除激活语法文本
+    var range = document.createRange();
+    var ele   = document.getElementById(id)
+    range.selectNode(ele.previousSibling)
+    range.deleteContents()
+
+    // 恢复光标
+    range.setStartAfter(ele)
+    range.collapse(true)
+    var selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+    return ele
+}
+
 exports.getEditor          = getEditor
 exports.getNotice          = getNotice
 exports.getEditorContainer = getEditorContainer
@@ -92,3 +115,4 @@ exports.setCursor          = setCursor
 exports.blockEmpty         = blockEmpty
 exports.findLastChild      = findLastChild
 exports.getCurNode         = getCurNode
+exports.insertHtml         = insertHtml
