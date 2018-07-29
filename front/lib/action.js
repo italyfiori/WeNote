@@ -177,7 +177,8 @@ function backAction(curNode, parentNode, blockNode, range) {
         // 前面是空行，回退一行
         blockPrevious = blockNode.previousSibling
         if (blockPrevious && dom.blockEmpty(blockPrevious)) {
-            $(blockPrevious).remove()
+            dom.selectNode(blockPrevious)
+            document.execCommand('delete', null, false)
             return true
         } else if (blockPrevious && blockPrevious.nodeName == 'P') {
             document.execCommand('formatBlock', false, "<p>")
