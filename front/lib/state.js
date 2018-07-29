@@ -39,7 +39,7 @@ function swtich2Notice() {
 }
 
 // 清除编辑器绑定的事件
-function clean() {
+function clean(open_note = true) {
     $('img').unbind()
     $('.image_size').unbind()
     $('a.file').unbind()
@@ -50,6 +50,10 @@ function clean() {
     var editor = dom.getEditor()
     if (editor) {
         $(editor).unbind()
+    }
+
+    if (open_note) {
+        undo.clear()
     }
 }
 
@@ -92,9 +96,6 @@ function init() {
             adjust.adjustEditor()
         }, 10); // 由于adjust函数中修改innerHTML复触发DOMSubtreeModified事件，而获取editor的值还没有发生变化，会形成死循环
     });
-
-    // 撤销功能
-    undo.setUndo()
 }
 
 
