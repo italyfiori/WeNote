@@ -17,10 +17,12 @@ function setHighlight() {
 
         // 进入代码块取消高亮
         if (block && block.nodeName == "PRE" && $(block).hasClass('highlight')) {
+            var caretPos = dom.getCaret(block)
             var startPosition = block.selectionStart;
             $(block).addClass('source')
             $(block).removeClass('highlight')
             block.innerText = block.innerText
+            dom.setCaret(block, caretPos)
         }
     })
 }
