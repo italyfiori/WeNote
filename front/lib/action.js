@@ -119,8 +119,12 @@ function enterAction(curNode, parentNode, blockNode, range) {
     // 在引用块最后一个空行后换行，退出引用块
     if (curNode.nodeName == 'P' && parentNode.nodeName == 'BLOCKQUOTE' && parentNode.lastChild == curNode && range.startOffset == 0) {
         $(parentNode).after('<p><br></p>')
-        dom.setCursor(curNode.parentNode.nextSibling)
-        parentNode.removeChild(curNode)
+        dom.setCursor(parentNode.nextSibling)
+        if (parentNode.childNodes.length == 1) {
+            $(parentNode).remove()
+        } else {
+            parentNode.removeChild(curNode)
+        }
         return true
     }
 
