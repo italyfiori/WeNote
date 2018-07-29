@@ -85,6 +85,26 @@ function getCurNode() {
     return null
 }
 
+function getRange() {
+    var sel = window.getSelection()
+    if (sel.rangeCount > 0) {
+        return sel.getRangeAt(0)
+    }
+    return null
+}
+
+function resetRange(range) {
+    let selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range)
+}
+
+function removeAllListeners(node) {
+    var cloneNode = node.cloneNode(true);
+    node.parentNode.replaceChild(cloneNode, node);
+    return cloneNode
+}
+
 function insertHtml(html) {
     // 插入html
     var id = util.getRandomInt(10000000)
@@ -116,3 +136,6 @@ exports.blockEmpty         = blockEmpty
 exports.findLastChild      = findLastChild
 exports.getCurNode         = getCurNode
 exports.insertHtml         = insertHtml
+exports.getRange           = getRange
+exports.resetRange         = resetRange
+exports.removeAllListeners = removeAllListeners

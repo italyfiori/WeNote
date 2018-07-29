@@ -65,10 +65,13 @@ function makeTableResizeable(table) {
         td.appendChild(grip);
     }
 
-    $(table).find('div.resize').unbind()
+    // 拖拽功能
     $(table).find('div.resize').each(function() {
+        // 移除所有事件
+        var new_node = dom.removeAllListeners(this)
+
         // 按下鼠标开始拖拽
-        this.addEventListener('mousedown', function (e) {
+        new_node.addEventListener('mousedown', function (e) {
             var td = this.parentNode
             tdSelected = td;
             startOffset = td.offsetWidth - e.pageX;

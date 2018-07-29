@@ -21,11 +21,15 @@ function getTemplate(win) {
             submenu: [{
                 label: 'Undo',
                 accelerator: 'CmdOrCtrl+Z',
-                role: 'undo'
+                click: function () {
+                    win.webContents.send('undo');
+                }
             }, {
                 label: 'Redo',
                 accelerator: 'Shift+CmdOrCtrl+Z',
-                role: 'redo'
+                click: function () {
+                    win.webContents.send('redo');
+                }
             }, {
                 type: 'separator'
             }, {
