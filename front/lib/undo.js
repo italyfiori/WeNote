@@ -21,9 +21,11 @@ function setUndo() {
             blocked = false;
             return;
         }
+
+        // 记录内容和光标
         var html  = editor.innerHTML;
-        var range = dom.getRange()
-        undo_history.save({'html': html, 'range': range})
+        var caret = dom.getCaret(editor)
+        undo_history.save({'html': html, 'caret': caret})
 
         // 暂停
         blockOut = true
@@ -44,10 +46,10 @@ function setUndo() {
         undo_history.undo((item) => {
             if (item.html) {
                 editor.innerHTML = item.html
-                dom.resetRange(item.range)
                 blocked = true
                 state.clean(false)
                 state.init()
+                dom.setCaret(editor, item.caret)
             }
         })
     })
@@ -56,10 +58,10 @@ function setUndo() {
         undo_history.redo((item) => {
             if (item.html) {
                 editor.innerHTML = item.html
-                dom.resetRange(item.range)
                 blocked = true
                 state.clean(false)
                 state.init()
+                dom.setCaret(editor, item.caret)
             }
         })
     })

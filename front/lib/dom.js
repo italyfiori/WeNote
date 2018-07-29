@@ -126,6 +126,60 @@ function insertHtml(html) {
     return ele
 }
 
+function getCaret(el) {
+    var caretOffset = 0,
+        sel;
+    if (typeof window.getSelection !== "undefined") {
+        var range = window.getSelection().getRangeAt(0);
+        var selected = range.toString().length;
+        var preCaretRange = range.cloneRange();
+        preCaretRange.selectNodeContents(el);
+        preCaretRange.setEnd(range.endContainer, range.endOffset);
+        caretOffset = preCaretRange.toString().length - selected;
+    }
+    return caretOffset;
+}
+
+function getAllTextnodes(el) {
+    var n, a = [],
+        walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    while (n = walk.nextNode()) a.push(n);
+    return a;
+}
+
+function getCaretData(el, position) {
+    var node;
+    nodes = getAllTextnodes(el);
+    for (var n = 0; n < nodes.length; n++) {
+        if (position > nodes[n].nodeValue.length && nodes[n + 1]) {
+            position -= nodes[n].nodeValue.length;
+        } else {
+            node = nodes[n];
+            break;
+        }
+    }
+    return {
+        node: node,
+        position: position
+    };
+}
+
+function setCaret(node, position) {
+    var data = getCaretData(node, position);
+    setCaretPosition(data)
+}
+
+function setCaretPosition(d) {
+    if (d.node) {
+        var sel   = window.getSelection()
+        var range = document.createRange()
+        range.setStart(d.node, d.position);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+}
+
 exports.getEditor          = getEditor
 exports.getNotice          = getNotice
 exports.getEditorContainer = getEditorContainer
@@ -136,6 +190,7 @@ exports.blockEmpty         = blockEmpty
 exports.findLastChild      = findLastChild
 exports.getCurNode         = getCurNode
 exports.insertHtml         = insertHtml
-exports.getRange           = getRange
-exports.resetRange         = resetRange
+exports.getCaret           = getCaret
+exports.setCaret           = setCaret
 exports.removeAllListeners = removeAllListeners
+exports.getRange           = getRange
