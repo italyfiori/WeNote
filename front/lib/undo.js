@@ -10,28 +10,35 @@ function clear() {
 }
 
 function setUndo() {
-    var editor    = dom.getEditor()
-    var blocked   = false;
-    var blockOut  = false
-    var blockTime = 1000
+    var editor         = dom.getEditor()
+    var blocked        = false;
+    var continousInput = false
+    var blockTime      = 1000
 
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
     var observer = new MutationObserver(function (mutations) {
-        if(blocked || blockOut){
+        if(blocked){
             blocked = false;
             return;
         }
 
-        // 记录内容和光标
         var html  = editor.innerHTML;
         var caret = dom.getCaret(editor)
-        undo_history.save({'html': html, 'caret': caret})
+        if (continousInput) {
+            undo_history.undo((item) => {
+                // 记录内容和光标
+                undo_history.save({'html': html, 'caret': caret})
+            })
+        } else {
+            // 记录内容和光标
+            undo_history.save({'html': html, 'caret': caret})
 
-        // 暂停
-        blockOut = true
-        setTimeout(function() {
-            blockOut = false
-        }, blockTime)
+            // 连续输入
+            continousInput = true
+            setTimeout(function() {
+                continousInput = false
+            }, blockTime)
+        }
     });
 
     observer.observe(editor, {
