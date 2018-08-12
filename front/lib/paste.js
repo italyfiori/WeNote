@@ -4,11 +4,26 @@ var message = require(rootpath + '/front/lib/message.js')
 var table   = require(rootpath + '/front/lib/table.js')
 var $       = require('jquery')
 
+// 清除html样式
 function removeStyle(html) {
-    html = html.replace(/style="[^"]+"/g, '')
+    html = html.replace(/style="[^"]+"/gi, '')
     html = html.replace(/<meta [^>]+>/gi, '')
     html = html.replace('<br class="Apple-interchange-newline">', '')
     return html
+}
+
+// 字符串实体转换
+function encodedString(str){
+     var s = "";
+     if(str.length == 0) return "";
+     s = str.replace(/&/g,"&amp;");
+     s = s.replace(/</g,"&lt;");
+     s = s.replace(/>/g,"&gt;");
+     s = s.replace(/ /g,"&nbsp;");
+     s = s.replace(/\'/g,"&#39;");
+     s = s.replace(/\"/g,"&quot;");
+     s = s.replace(/\n/g,"<br>");
+     return s;
 }
 
 function setPasteImage() {
@@ -20,14 +35,20 @@ function setPasteImage() {
         var items = []
 
         var clipboardData = (event.clipboardData || event.originalEvent.clipboardData)
-        var text = clipboardData.getData("text/html") || "";
-        text = removeStyle(text)
-        if (text !== "") {
-            document.execCommand('insertHTML', false, text)
+        var html = clipboardData.getData("text/html") || "";
+        var text = clipboardData.getData("text")
+
+        if (html !== "") {
+            html = removeStyle(html) // 清除样式
+            document.execCommand('insertHTML', false, html)
             // 表格可拖拽
             $('table').each(function() {
                 table.makeTableResizeable(this)
             })
+        } else if (text !== "") {
+            console.log(text);
+            text = encodedString(text)
+            document.execCommand('insertHTML', false, text)
         }
 
         if (clipboardData.items) {
