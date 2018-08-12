@@ -239,7 +239,7 @@ function jumpBack(blockNode) {
 
 // 激活markdown语法标记
 function markdownAction(key, range, curNode, parentNode, innerHTML) {
-    if (key == '`' && curNode.nodeName == '#text' && parentNode.nodeName == 'P' && innerHTML == '`') {
+    if (key == '`' && curNode.nodeName == '#text' && parentNode.nodeName == 'P' && innerHTML == '``') {
         codeAction(parentNode)
         return true
     } else if (key == ' ') {
@@ -280,13 +280,13 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         }
     }
 
-    if (event.key == '*') {
+    if (event.key == '`') {
         // 触发着重符号
         var offset = range.startOffset
         var text   = curNode.nodeValue
         if (text) {
-            var start  = text.lastIndexOf('**')
-            if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '*') {
+            var start  = text.lastIndexOf('`')
+            if (start >= 0 && offset - start >= 2) {
                 emphAction(text, start, offset, curNode, range)
                 return true
             }
@@ -382,7 +382,7 @@ function mathAction(text, start, offset, curNode, range) {
 
 // markdown重点标记
 function emphAction(text, start, offset, curNode, range) {
-    var text = text.slice(start + 2, offset - 1)
+    var text = text.slice(start + 1, offset)
     var id   = 'code' + util.getRandomInt(100000)
     var html = '<a class="code" id="' + id + '"> ' + text + '</a>';
     document.execCommand('insertHTML', false, html)
