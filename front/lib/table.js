@@ -48,7 +48,8 @@ function makeTableResizeable(table) {
         var td = tds[i]
         // 已经添加过缩放div，则不再添加
         if ($(td).children('.resize').length > 0) {
-            continue
+            $(td).children('.resize').remove()
+            // continue
         }
 
         // 添加缩放div

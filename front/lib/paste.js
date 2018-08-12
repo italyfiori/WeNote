@@ -1,15 +1,35 @@
 var dom     = require(rootpath + '/front/lib/dom.js')
 var image   = require(rootpath + '/front/lib/image.js')
 var message = require(rootpath + '/front/lib/message.js')
+var table   = require(rootpath + '/front/lib/table.js')
 var $       = require('jquery')
+
+function removeStyle(html) {
+    html = html.replace(/style="[^"]+"/g, '')
+    html = html.replace(/<meta [^>]+>/gi, '')
+    html = html.replace('<br class="Apple-interchange-newline">', '')
+    return html
+}
 
 function setPasteImage() {
     var editor = dom.getEditor()
     editor.addEventListener('paste', function (event) {
+        event.preventDefault()
+
         var blob  = null
         var items = []
 
         var clipboardData = (event.clipboardData || event.originalEvent.clipboardData)
+        var text = clipboardData.getData("text/html") || "";
+        text = removeStyle(text)
+        if (text !== "") {
+            document.execCommand('insertHTML', false, text)
+            // 表格可拖拽
+            $('table').each(function() {
+                table.makeTableResizeable(this)
+            })
+        }
+
         if (clipboardData.items) {
             var items = clipboardData.items
         }

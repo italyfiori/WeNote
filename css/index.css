@@ -70,7 +70,7 @@ body {
     right: 0;
     border-left: 1px solid #eee;
 	white-space: normal;
-	word-break: break-all;
+	/* word-break: break-all; */
 }
 
 #editor > p, #editor > div, #editor > pre, #editor > table{
@@ -138,7 +138,7 @@ img:hover {
 }
 
 #editor table tr:hover{
-    background-color: rgb(245, 245, 245);
+    /* background-color: rgb(245, 245, 245); */
 }
 
 #editor table th {
