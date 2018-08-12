@@ -9,6 +9,7 @@ function removeStyle(html) {
     html = html.replace(/style="[^"]+"/gi, '')
     html = html.replace(/<meta [^>]+>/gi, '')
     html = html.replace('<br class="Apple-interchange-newline">', '')
+    html = html.replace(/\n/g,"<br>");
     return html
 }
 
