@@ -55,6 +55,8 @@ function clean(open_note = true) {
     if (open_note) {
         undo.clear()
     }
+
+    $('.popover').remove()
 }
 
 // 清除辅助元素
