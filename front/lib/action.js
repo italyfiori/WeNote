@@ -239,10 +239,7 @@ function jumpBack(blockNode) {
 
 // 激活markdown语法标记
 function markdownAction(key, range, curNode, parentNode, innerHTML) {
-    if (key == '`' && curNode.nodeName == '#text' && parentNode.nodeName == 'P' && innerHTML == '``') {
-        codeAction(parentNode)
-        return true
-    } else if (key == ' ') {
+    if (key == ' ') {
         if (curNode.nodeName == '#text' && parentNode.nodeName == 'P' && innerHTML in titleMap) {
             titleAction(titleMap[innerHTML], parentNode)
             return true
@@ -264,6 +261,12 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
     var pat = /^\|(([^\|]+)\|)+$/
     if (key == 'Enter' && pat.test(innerHTML) && curNode.nodeName == '#text' && parentNode.nodeName == 'P') {
         tableAction(innerHTML, parentNode)
+        return true
+    }
+
+    if (key == 'Enter' && curNode.nodeName == '#text' && parentNode.nodeName == 'P' && innerHTML.indexOf('```') == 0) {
+        var language = innerHTML.substr(3)
+        codeAction(parentNode, language)
         return true
     }
 
@@ -304,8 +307,13 @@ function titleAction(titleTag, parentNode) {
 }
 
 // markdown代码块
-function codeAction(parentNode) {
-    var html = '<pre class="source hljs"><br/></pre>';
+function codeAction(parentNode, language = '') {
+    if(language == '') {
+        var html = '<pre class="source hljs"><br/></pre>';
+    } else {
+        var html = '<pre class="source hljs ' + language + ' "><br/></pre>';
+    }
+
     var node = dom.insertHtml(html)
     dom.setCursor(node.firstChild)
 }
