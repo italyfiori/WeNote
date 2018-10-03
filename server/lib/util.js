@@ -47,9 +47,34 @@ function mkdirs(dir_path, model = 0777) {
     return true
 }
 
+// 删除路径
+function delete_path(file_path) {
+    // 路径不存在
+    if (!fs.existsSync(file_path)) {
+        return
+    }
+
+    // 文件直接删除
+    if (fs.statSync(file_path).isFile()) {
+        console.log('rm file ' + file_path);
+        fs.unlinkSync(file_path)
+        return
+    }
+
+    // 删除所有子节点
+    if (fs.statSync(file_path).isDirectory()) {
+        fs.readdirSync(file_path).forEach(function (name, index) {
+            delete_path(path.join(file_path, name));
+        })
+        console.log('rm dir' + file_path);
+        fs.rmdirSync(file_path);
+    }
+};
+
 
 exports.makeResult    = makeResult
 exports.addImgPrefix  = addImgPrefix
 exports.trimImgPrefix = trimImgPrefix
 exports.getDataPath   = getDataPath
 exports.mkdirs        = mkdirs
+exports.delete_path   = delete_path

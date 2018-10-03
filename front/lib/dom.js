@@ -129,7 +129,7 @@ function insertHtml(html) {
 function getCaret(el) {
     var caretOffset = 0,
         sel;
-    if (typeof window.getSelection !== "undefined") {
+    if (typeof window.getSelection !== "undefined" && window.getSelection().rangeCount) {
         var range = window.getSelection().getRangeAt(0);
         var selected = range.toString().length;
         var preCaretRange = range.cloneRange();

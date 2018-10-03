@@ -5,7 +5,7 @@ var util    = require(rootpath + '/front/lib/util.js')
 var async   = require("async");
 
 // 获取笔记内容
-function load_note(note_id) {
+function load_note(note_id, editable = true) {
     async.series([
         function(next) {
             message.send('get_note', {'id': note_id}, function (response) {
@@ -18,7 +18,13 @@ function load_note(note_id) {
             })
         },
         function() {
-            state.init()
+            if (editable) {
+                state.init()
+                editor.contentEditable = "true"
+            } else {
+                state.switch2editor()
+                editor.contentEditable = "false"
+            }
         }
     ])
 }
@@ -80,12 +86,46 @@ function delete_note(obj) {
     var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
     var result   = confirm("are you sure delte the note?");
     if (result == true){
-        var recycle_node = $('#menu-tree').jstree('get_node', '-1')
-        $('#menu-tree').jstree('move_node', cur_node, recycle_node)
+        if (is_trash_node(cur_node)) {
+            node_ids = get_children_ids(cur_node)
+            node_ids.push(cur_node.id)
+            $('#menu-tree').jstree('delete_node', cur_node)
+            var payload = {'ids': node_ids}
+            message.send('delete_note', payload, function (response) {
+                state.swtich2Notice()
+            })
+        } else {
+            var recycle_node = $('#menu-tree').jstree('get_node', '-1')
+            $('#menu-tree').jstree('move_node', cur_node, recycle_node)
+        }
     }
 }
 
-// 移动笔记
+// 获取所有子节点
+function get_children_ids(cur_node) {
+    var ret_ids  = []
+    var node_ids = []
+
+    while (cur_node) {
+        for (var i = 0; i < cur_node.children.length; i++) {
+            var child_id   = cur_node.children[i]
+            node_ids.push(child_id)
+            ret_ids.push(child_id)
+        }
+
+        node_id  = node_ids.pop()
+        cur_node = node_id ? $('#menu-tree').jstree('get_node', node_id) : false
+    }
+
+    return ret_ids
+}
+
+function is_trash_node(node) {
+    var parents = node.parents
+    return parents.length >= 2 ? parents[parents.length - 2] == "-1" : false
+}
+
+// 移动笔记(请求server)
 function move_note(note_id, parent_id) {
     var payload = {'id': note_id, 'parent': parent_id}
     message.send('move_note', payload, function (response) {
@@ -94,10 +134,11 @@ function move_note(note_id, parent_id) {
     })
 }
 
-exports.load_note    = load_note
-exports.load_notice  = load_notice
-exports.create_note  = create_note
-exports.update_title = update_title
-exports.save_note    = save_note
-exports.delete_note  = delete_note
-exports.move_note    = move_note
+exports.load_note     = load_note
+exports.load_notice   = load_notice
+exports.create_note   = create_note
+exports.update_title  = update_title
+exports.save_note     = save_note
+exports.delete_note   = delete_note
+exports.move_note     = move_note
+exports.is_trash_node = is_trash_node
