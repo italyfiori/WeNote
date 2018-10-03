@@ -40,15 +40,18 @@ function create_note(obj) {
     var cur_node    = $('#menu-tree').jstree('get_node', obj.reference)
     var new_node_id = $('#menu-tree').jstree('create_node', cur_node, 'new note')
     var new_node    = $('#menu-tree').jstree('get_node', new_node_id)
-    $('#menu-tree').jstree('deselect_node', cur_node)
-    $('#menu-tree').jstree('select_node', new_node)
-    $('#menu-tree').jstree('edit', new_node)
     var payload = {
         'parent_id': util.isInt(new_node.parent) ? new_node.parent : 0,
         'title':     new_node.text,
     }
     message.send('create_note', payload, function (response) {
+        $('#menu-tree').jstree('deselect_node', cur_node)
         $('#menu-tree').jstree('set_id', new_node, response.note_id)
+        $('#menu-tree').jstree('select_node', new_node)
+        // setTimeout(function(){
+        //     $('#menu-tree').jstree('edit', new_node)
+        // }, 200)
+
     })
 }
 
@@ -89,9 +92,10 @@ function delete_note(obj) {
         if (is_trash_node(cur_node)) {
             node_ids = get_children_ids(cur_node)
             node_ids.push(cur_node.id)
-            $('#menu-tree').jstree('delete_node', cur_node)
+
             var payload = {'ids': node_ids}
             message.send('delete_note', payload, function (response) {
+                $('#menu-tree').jstree('delete_node', cur_node)
                 state.swtich2Notice()
             })
         } else {
@@ -99,6 +103,13 @@ function delete_note(obj) {
             $('#menu-tree').jstree('move_node', cur_node, recycle_node)
         }
     }
+}
+
+// 恢复笔记
+function recover_note(obj) {
+    var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
+    var doc_node = $('#menu-tree').jstree('get_node', '0')
+    $('#menu-tree').jstree('move_node', cur_node, doc_node)
 }
 
 // 获取所有子节点
@@ -142,3 +153,4 @@ exports.save_note     = save_note
 exports.delete_note   = delete_note
 exports.move_note     = move_note
 exports.is_trash_node = is_trash_node
+exports.recover_note  = recover_note

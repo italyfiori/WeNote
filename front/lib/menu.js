@@ -100,16 +100,24 @@ function customMenu(node) {
             "action": function (obj) {
                 note.delete_note(obj)
             }
-        }
+        },
+        "recover": {
+            "label": "Recover Note",
+            "action": function (obj) {
+                note.recover_note(obj)
+            }
+        },
     }
-
-    console.log(node);
 
     if (node.id == '0') {
         delete items.delete
         delete items.rename
+        delete items.recover
     } else if(node.id == '-1') {
         items = []
+    } else if (note.is_trash_node(node)) {
+        delete items.create
+        delete items.rename
     }
 
     return items

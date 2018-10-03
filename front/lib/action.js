@@ -403,7 +403,6 @@ function emphAction(text, start, offset, curNode, range) {
     range.deleteContents()
 
     // 设置光标位置
-    ele.contentEditable = "false"
     range.setStartAfter(ele)
     range.collapse(true)
     var selection = window.getSelection()
