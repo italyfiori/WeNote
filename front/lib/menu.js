@@ -4,6 +4,7 @@ var note            = require(rootpath + '/front/lib/note.js')
 var message         = require(rootpath + '/front/lib/message.js')
 var state           = require(rootpath + '/front/lib/state.js')
 var util            = require(rootpath + '/front/lib/util.js')
+var dom             = require(rootpath + '/front/lib/dom.js')
 
 // 加载左侧菜单
 function load_menu() {
@@ -19,7 +20,7 @@ function load_menu() {
                 note.load_notice()
                 return
             }
-            note.load_note(data.node.id)
+            note.load_note(data.node.id, !note.is_trash_node(data.node))
         })
 
         // 修改笔记标题事件

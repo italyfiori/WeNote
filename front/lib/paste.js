@@ -47,7 +47,6 @@ function setPasteImage() {
                 table.makeTableResizeable(this)
             })
         } else if (text !== "") {
-            console.log(text);
             text = encodedString(text)
             document.execCommand('insertHTML', false, text)
         }

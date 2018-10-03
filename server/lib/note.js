@@ -77,6 +77,18 @@ function get_note_path(note_id) {
     return path.join(data_path, 'data', 'notes', note_id + '.html')
 }
 
+function get_history_path(note_id) {
+    return path.join(data_path, 'data', 'notes', note_id + '.history')
+}
+
+function get_image_dir(note_id) {
+    return path.join(data_path, 'data', 'images', note_id)
+}
+
+function get_attachment_dir(note_id) {
+    return path.join(data_path, 'data', 'files', note_id)
+}
+
 // 获取note内容
 function get_note(note_id) {
     var file_path = get_note_path(note_id)
@@ -96,6 +108,7 @@ function save_note(note_id, file_cont) {
     }
     return fs.writeFileSync(file_path, file_cont)
 }
+
 
 
 function init() {
@@ -203,6 +216,35 @@ function init() {
             })
         }
     })
+
+    ipcMain.on('delete_note', (event, req) => {
+        if (req.data.ids.length > 0) {
+            var sql = "delete from note where id = (" + req.data.ids.join(',') + ");"
+            db.run(sql, function (err, res) {
+                for (var i = 0; i < req.data.ids.length; i++) {
+                    var note_id = req.data.ids[i]
+                    delete_note_files(note_id)
+                }
+                var payload = util.makeResult(req)
+                event.sender.send('delete_note', payload)
+            })
+        }
+    })
+}
+
+function delete_note_files(note_id) {
+    var file_paths = []
+    file_paths.push(get_note_path(note_id))
+    file_paths.push(get_history_path(note_id))
+    file_paths.push(get_image_dir(note_id))
+    file_paths.push(get_attachment_dir(note_id))
+
+    for (var i = 0; i < file_paths.length; i++) {
+        var file_path = file_paths[i]
+        if (fs.existsSync(file_path)) {
+            util.delete_path(file_path)
+        }
+    }
 }
 
 exports.init = init

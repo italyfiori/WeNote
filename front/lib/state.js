@@ -103,6 +103,7 @@ function init() {
 
 
 exports.swtich2Notice = swtich2Notice
+exports.switch2editor = switch2editor
 exports.clean         = clean
 exports.init          = init
 exports.cleanNote     = cleanNote
