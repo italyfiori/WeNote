@@ -2,6 +2,7 @@ var message = require(rootpath + '/front/lib/message.js')
 var dom     = require(rootpath + '/front/lib/dom.js')
 var state   = require(rootpath + '/front/lib/state.js')
 var util    = require(rootpath + '/front/lib/util.js')
+var undo    = require(rootpath + '/front/lib/undo.js')
 var async   = require("async");
 
 // 获取笔记内容
@@ -14,6 +15,7 @@ function load_note(note_id, editable = true) {
                 state.clean()
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
+                // undo.setContent(response.content, dom.getCaret())
                 next()
             })
         },

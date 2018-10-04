@@ -118,6 +118,8 @@ function customMenu(node) {
     } else if (note.is_trash_node(node)) {
         delete items.create
         delete items.rename
+    } else {
+        delete items.recover
     }
 
     return items
