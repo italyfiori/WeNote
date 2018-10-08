@@ -20,6 +20,7 @@ function load_note(note_id, editable = true) {
         function() {
             if (editable) {
                 state.init()
+                editor.contentEditable = "true"
             } else {
                 state.switch2editor()
                 editor.contentEditable = "false"
