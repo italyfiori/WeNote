@@ -61,6 +61,16 @@ function getTemplate(win) {
             }]
         },
         {
+            label: 'View',
+            submenu: [{
+                label: 'Hidden Side',
+                accelerator: 'CmdOrCtrl+G',
+                click: function () {
+                    win.webContents.send('hidden_side');
+                }
+            }]
+        },
+        {
             label: 'Table',
             submenu: [{
                 label: 'insert row abover',
