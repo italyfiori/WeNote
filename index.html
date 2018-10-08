@@ -70,14 +70,12 @@
 		side_resizer.addEventListener('mousedown', function (e) {
 			side_selected = true;
             side_offset = side_menu.offsetWidth - e.pageX;
-			console.log(side_menu.style.width);
         });
 
 		document.addEventListener('mousemove', function (e) {
 	        if (side_selected) {
 	            var width = side_offset + e.pageX
-				if (width <=0 || width >= 500) {
-					console.warn('width too large');
+				if (width <=150 || width >= 400) {
 					return
 				}
 				width += 'px'
