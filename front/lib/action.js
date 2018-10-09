@@ -392,8 +392,13 @@ function mathAction(text, start, offset, curNode, range) {
 function emphAction(text, start, offset, curNode, range) {
     var text = text.slice(start + 1, offset)
     var id   = 'code' + util.getRandomInt(100000)
-    var html = '<a class="code" id="' + id + '"> ' + text + '</a>';
+    var html = '<a class="code" id="' + id + '"> ' + text + '</a>&nbsp;';
     document.execCommand('insertHTML', false, html)
+
+    // 执行insertHTML后curNode会变化
+    curNode         = range.startContainer
+    var block       = dom.getBlockParent(curNode)
+    block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
 
     // 删除输入的文本
     var ele  = document.getElementById(id)
