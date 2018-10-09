@@ -382,11 +382,10 @@ function mathAction(text, start, offset, curNode, range) {
     range.deleteContents()
 
     // 渲染数学公式
-    ele.contentEditable = "false"
     katex.render(text, ele)
 
     // 设置光标位置
-    range.setStartAfter(ele)
+    range.setStart(ele.nextSibling, 1)
     range.collapse(true)
     var selection = window.getSelection()
     selection.removeAllRanges()
@@ -397,7 +396,7 @@ function mathAction(text, start, offset, curNode, range) {
 function emphAction(text, start, offset, curNode, range) {
     var text = text.slice(start + 1, offset)
     var id   = 'code' + util.getRandomInt(100000)
-    var html = '<a class="code" id="' + id + '"> ' + text + '</a>&nbsp;';
+    var html = '<a class="code" id="' + id + '">' + text + '</a>&nbsp;';
     document.execCommand('insertHTML', false, html)
 
     // 执行insertHTML后curNode会变化
@@ -407,14 +406,13 @@ function emphAction(text, start, offset, curNode, range) {
 
     // 删除输入的文本
     var ele  = document.getElementById(id)
-    var node = ele.previousSibling // 通过preivous找到文本节点，直接用curNode还有问题
+    var node = ele.previousSibling // 通过preivous找到文本节点
     range.setStart(node, start)
     range.setEnd(node, offset)
     range.deleteContents()
 
     // 设置光标位置
-    ele.contentEditable = "false"
-    range.setStartAfter(ele)
+    range.setStart(ele.nextSibling, 1)
     range.collapse(true)
     var selection = window.getSelection()
     selection.removeAllRanges()
