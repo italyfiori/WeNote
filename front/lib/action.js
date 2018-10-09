@@ -369,6 +369,11 @@ function mathAction(text, start, offset, curNode, range) {
     var html = '<a class="math" id="' + id + '"> ' + text + '</a>&nbsp;'; // 末尾增加空格，否则光标可能跑到段落最右边
     document.execCommand('insertHTML', false, html)
 
+    // 执行insertHTML后curNode会变化
+    curNode         = range.startContainer
+    var block       = dom.getBlockParent(curNode)
+    block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
+
     // 删除输入的文本
     var ele  = document.getElementById(id)
     var node = ele.previousSibling // 通过preivous找到文本节点，直接用curNode还有问题
