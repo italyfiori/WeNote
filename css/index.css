@@ -44,6 +44,15 @@ body {
 	padding-bottom: 8px;
 }
 
+#side-resize {
+	top: 0;
+	right: -2.5px;
+	bottom: 0;
+	width: 5px;
+	position: absolute;
+	cursor: col-resize;
+}
+
 #main-content {
     float: left;
     display: inline-block;

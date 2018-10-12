@@ -51,9 +51,15 @@ function getTemplate(win) {
             }]
         },
         {
-            label: 'History',
+            label: 'View',
             submenu: [{
-                label: 'History List',
+                label: 'Hidden Side',
+                accelerator: 'CmdOrCtrl+G',
+                click: function () {
+                    win.webContents.send('hidden_side');
+                },
+            }, {
+                label: 'Show History',
                 accelerator: 'CmdOrCtrl+K',
                 click: function () {
                     win.webContents.send('history_action');
