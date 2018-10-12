@@ -415,11 +415,7 @@ function emphAction(text, start, offset, curNode, range) {
     range.deleteContents()
 
     // 设置光标位置
-<<<<<<< HEAD
-    range.setStartAfter(ele)
-=======
     range.setStart(ele.nextSibling, 1)
->>>>>>> 198a6d04fa0d58938f6bf6966e5f1beee438586a
     range.collapse(true)
     var selection = window.getSelection()
     selection.removeAllRanges()
