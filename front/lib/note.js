@@ -98,12 +98,12 @@ function delete_note(obj) {
             var payload = {'ids': node_ids}
             message.send('delete_note', payload, function (response) {
                 $('#menu-tree').jstree('delete_node', cur_node)
-                state.swtich2Notice()
             })
         } else {
             var recycle_node = $('#menu-tree').jstree('get_node', '-1')
             $('#menu-tree').jstree('move_node', cur_node, recycle_node)
         }
+        state.swtich2Notice()
     }
 }
 
