@@ -369,6 +369,11 @@ function mathAction(text, start, offset, curNode, range) {
     var html = '<a class="math" id="' + id + '"> ' + text + '</a>&nbsp;'; // 末尾增加空格，否则光标可能跑到段落最右边
     document.execCommand('insertHTML', false, html)
 
+    // 执行insertHTML后curNode会变化
+    curNode         = range.startContainer
+    var block       = dom.getBlockParent(curNode)
+    block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
+
     // 删除输入的文本
     var ele  = document.getElementById(id)
     var node = ele.previousSibling // 通过preivous找到文本节点，直接用curNode还有问题
@@ -377,37 +382,51 @@ function mathAction(text, start, offset, curNode, range) {
     range.deleteContents()
 
     // 渲染数学公式
-    ele.contentEditable = "false"
     katex.render(text, ele)
 
     // 设置光标位置
-    range.setStartAfter(ele)
+    range.setStart(ele.nextSibling, 1)
     range.collapse(true)
     var selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
+
+    ele  = document.getElementById(id)
+    ele.contenteditable = "false"
 }
 
 // markdown重点标记
 function emphAction(text, start, offset, curNode, range) {
     var text = text.slice(start + 1, offset)
     var id   = 'code' + util.getRandomInt(100000)
-    var html = '<a class="code" id="' + id + '"> ' + text + '</a>';
+    var html = '<a class="code" id="' + id + '">' + text + '</a>&nbsp;';
     document.execCommand('insertHTML', false, html)
+
+    // 执行insertHTML后curNode会变化
+    curNode         = range.startContainer
+    var block       = dom.getBlockParent(curNode)
+    block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
 
     // 删除输入的文本
     var ele  = document.getElementById(id)
-    var node = ele.previousSibling // 通过preivous找到文本节点，直接用curNode还有问题
+    var node = ele.previousSibling // 通过preivous找到文本节点
     range.setStart(node, start)
     range.setEnd(node, offset)
     range.deleteContents()
 
     // 设置光标位置
+<<<<<<< HEAD
     range.setStartAfter(ele)
+=======
+    range.setStart(ele.nextSibling, 1)
+>>>>>>> 198a6d04fa0d58938f6bf6966e5f1beee438586a
     range.collapse(true)
     var selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
+
+    ele  = document.getElementById(id)
+    ele.contenteditable = "false"
 }
 
 exports.setActions = setActions

@@ -60,7 +60,7 @@ function getTemplate(win) {
                 },
             }, {
                 label: 'Show History',
-                accelerator: 'CmdOrCtrl+K',
+                accelerator: 'CmdOrCtrl+H',
                 click: function () {
                     win.webContents.send('history_action');
                 }
@@ -167,30 +167,6 @@ function getTemplate(win) {
                     }
                 },
                 {
-                    label: `About ${name}`,
-                    role: 'about'
-                }, {
-                    type: 'separator'
-                }, {
-                    label: 'Services',
-                    role: 'services',
-                    submenu: []
-                }, {
-                    type: 'separator'
-                }, {
-                    label: `Hide ${name}`,
-                    accelerator: 'Command+H',
-                    role: 'hide'
-                }, {
-                    label: 'Hide Others',
-                    accelerator: 'Command+Alt+H',
-                    role: 'hideothers'
-                }, {
-                    label: 'Show All',
-                    role: 'unhide'
-                }, {
-                    type: 'separator'
-                }, {
                     label: 'Quit',
                     accelerator: 'Command+Q',
                     click: function () {
