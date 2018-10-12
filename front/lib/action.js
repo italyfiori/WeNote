@@ -390,6 +390,9 @@ function mathAction(text, start, offset, curNode, range) {
     var selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
+
+    ele  = document.getElementById(id)
+    ele.contenteditable = "false"
 }
 
 // markdown重点标记
@@ -417,6 +420,9 @@ function emphAction(text, start, offset, curNode, range) {
     var selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
+
+    ele  = document.getElementById(id)
+    ele.contenteditable = "false"
 }
 
 exports.setActions = setActions
