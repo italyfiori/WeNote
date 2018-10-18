@@ -81,6 +81,10 @@ function enterAction(curNode, parentNode, blockNode, range) {
         }
     }
 
+    // 重置字体颜色
+    document.execCommand('forecolor',false,'#333')
+    document.execCommand('backColor',false,'white')
+
     // 表格内换行
     if (curNode.nodeName == 'TD') {
         var p = document.createElement("p")
