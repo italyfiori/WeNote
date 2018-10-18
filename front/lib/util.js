@@ -28,6 +28,16 @@ function addStringFormat() {
     }
 }
 
+function extract(arr, keys) {
+	var result = {}
+	for (var key in arr) {
+		if (keys.indexOf(key) >= 0) {
+			result[key] = arr[key]
+		}
+	}
+	return result
+}
+
 function isInt(val) {
     return /^\d+$/.test(val)
 }
@@ -47,3 +57,4 @@ exports.getRandomInt    = getRandomInt
 exports.addStringFormat = addStringFormat
 exports.ts2time         = ts2time
 exports.isInt           = isInt
+exports.extract         = extract

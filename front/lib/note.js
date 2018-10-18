@@ -107,6 +107,24 @@ function delete_note(obj) {
     }
 }
 
+// 清空回收站
+function clear_trash() {
+    var result   = confirm("are you sure to clear the trash?");
+    if (result == true){
+        var recycle_node = $('#menu-tree').jstree('get_node', '-1')
+        var node_ids = get_children_ids(recycle_node)
+
+        var payload = {'ids': node_ids}
+        message.send('delete_note', payload, function (response) {
+            for (var i = 0; i < node_ids.length; i++) {
+                var node = $('#menu-tree').jstree('get_node', node_ids[i])
+                $('#menu-tree').jstree('delete_node', node)
+            }
+            state.swtich2Notice()
+        })
+    }
+}
+
 // 恢复笔记
 function recover_note(obj) {
     var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
@@ -156,3 +174,4 @@ exports.delete_note   = delete_note
 exports.move_note     = move_note
 exports.is_trash_node = is_trash_node
 exports.recover_note  = recover_note
+exports.clear_trash   = clear_trash
