@@ -114,6 +114,12 @@ img:hover {
     text-decoration:none;
 }
 
+#editor a.link, #editor a.link:link, #editor a.link:active, #editor a.link:visited, #editor a.link:hover {
+    color: #337ab7;
+    text-decoration:none;
+	cursor: pointer;
+}
+
 #editor > :first-child {
     margin-top: 10px;
 }
