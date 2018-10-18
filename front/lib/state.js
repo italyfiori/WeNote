@@ -10,7 +10,8 @@ var highlight       = require(rootpath + '/front/lib/highlight.js')
 var image           = require(rootpath + '/front/lib/image.js')
 var undo            = require(rootpath + '/front/lib/undo.js')
 var $               = require('jquery')
-const {ipcRenderer} = require('electron')
+
+const {ipcRenderer, shell} = require('electron')
 
 // 切换到编辑器模式
 function switch2editor() {
@@ -78,6 +79,16 @@ function init() {
         message.send('open_file_link', {file_url: this.getAttribute("href")}, function (response) {
             // console.log(response);
         })
+    })
+
+    $('a.link').unbind()
+    $('a.link').click(function(event) {
+        event.preventDefault()
+        var href = $(this).attr('href')
+        if (!href.startsWith('http://') && !href.startsWith('https://')) {
+            href = 'http://' + href
+        }
+        shell.openExternal(href);
     })
 
     // 表格可拖拽

@@ -107,22 +107,23 @@ function customMenu(node) {
                 note.recover_note(obj)
             }
         },
+        "clear": {
+            "label": "Clear Trash",
+            "action": function (obj) {
+                note.clear_trash()
+            }
+        },
     }
 
     if (node.id == '0') {
-        delete items.delete
-        delete items.rename
-        delete items.recover
+        return util.extract(items, ['create'])
     } else if(node.id == '-1') {
-        items = []
+        return util.extract(items, ['clear'])
     } else if (note.is_trash_node(node)) {
-        delete items.create
-        delete items.rename
+        return util.extract(items, ['recover', 'delete'])
     } else {
-        delete items.recover
+        return util.extract(items, ['create', 'rename', 'delete'])
     }
-
-    return items
 }
 
 exports.load_menu = load_menu

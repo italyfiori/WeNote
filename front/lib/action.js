@@ -1,8 +1,12 @@
+const { shell } = require('electron')
 var dom   = require(rootpath + '/front/lib/dom.js')
 var table = require(rootpath + '/front/lib/table.js')
 var util  = require(rootpath + '/front/lib/util.js')
 var $     = require('jquery')
 var katex = require('katex')
+
+var caretPosition;
+var caretOffset;
 
 let titleMap = {
     '#': 'h1',
@@ -80,6 +84,10 @@ function enterAction(curNode, parentNode, blockNode, range) {
             document.execCommand(fontTags[parent.tagName], false, false)
         }
     }
+
+    // 重置字体颜色
+    document.execCommand('forecolor',false,'#333')
+    document.execCommand('backColor',false,'white')
 
     // 表格内换行
     if (curNode.nodeName == 'TD') {
@@ -270,6 +278,28 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         return true
     }
 
+    // 超链接
+    if (event.key == ']') {
+        var text   = curNode.nodeValue
+        var editor = dom.getEditor()
+        caretPosition  = dom.getCaret(editor)
+        linkOffset = range.startOffset
+
+        if (text && text.endsWith('![')) {
+            event.preventDefault()
+            $('#link_input').modal('show')
+            $('#link_url').focus()
+            $('#link_input_insert').click(function() {
+                var link_url  = $('#link_url').val()
+                var link_text = $('#link_text').val()
+                if (link_url && link_text) {
+                    $('#link_input').modal('hide')
+                    linkAction(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition)
+                }
+            })
+        }
+    }
+
     if (event.key == '$') {
         // 触发数学公式
         var offset = range.startOffset
@@ -361,6 +391,47 @@ function tableAction(innerHTML, parentNode) {
     dom.setCursor(secondRow.firstChild.firstChild.firstChild)
 }
 
+// 插入超链接
+function linkAction(link_url, link_text, start, offset, range, caretPosition) {
+    // 光标
+    var editor = dom.getEditor()
+    dom.setCaret(editor, caretPosition)
+
+    // 插入连接
+    var id   = 'link' + util.getRandomInt(100000)
+    var html = '<a class="link" href="{0}" id="{1}">{2}</a>&nbsp;'.format(link_url, id, link_text)
+    $('#link_url').val('')
+    $('#link_text').val('')
+    document.execCommand('insertHTML', false, html)
+
+    // 删除输入的文本
+    var ele  = document.getElementById(id)
+    var node = ele.previousSibling
+    console.log(ele);;
+    console.log(node)
+
+    range.setStart(node, start)
+    range.setEnd(node, offset)
+    range.deleteContents()
+
+    // 设置光标位置
+    range.setStart(ele.nextSibling, 1)
+    range.collapse(true)
+    var selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    $('a.link').unbind()
+    $('a.link').click(function(event) {
+        event.preventDefault()
+        var href = $(this).attr('href')
+        if (!href.startsWith('http://') && !href.startsWith('https://')) {
+            href = 'http://' + href
+        }
+        shell.openExternal(href);
+    })
+}
+
 // markdown数学公式
 function mathAction(text, start, offset, curNode, range) {
     // 插入公式标签
@@ -392,7 +463,6 @@ function mathAction(text, start, offset, curNode, range) {
     selection.addRange(range)
 
     ele  = document.getElementById(id)
-    console.log(ele);
     ele.contentEditable = "false"
 }
 

@@ -14,7 +14,7 @@ function makeResult(req, data = {}) {
 
 function getDataPath() {
     var homedir = os.homedir()
-    return path.join(homedir, 'Library/Mobile Documents/com~apple~CloudDocs', 'marknote') + '/'
+    return path.join(homedir, 'Library/Mobile Documents/com~apple~CloudDocs/marknote/') + '/'
 }
 
 // 增加路径前缀
