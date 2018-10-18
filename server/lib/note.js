@@ -219,7 +219,7 @@ function init() {
 
     ipcMain.on('delete_note', (event, req) => {
         if (req.data.ids.length > 0) {
-            var sql = "delete from note where id = (" + req.data.ids.join(',') + ");"
+            var sql = "delete from note where id in (" + req.data.ids.join(',') + ");"
             db.run(sql, function (err, res) {
                 for (var i = 0; i < req.data.ids.length; i++) {
                     var note_id = req.data.ids[i]

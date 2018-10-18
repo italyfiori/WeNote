@@ -9,6 +9,10 @@ function clear() {
     undo_history.clear()
 }
 
+function setContent(content, caret) {
+    undo_history.save({'html': content, 'caret': caret})
+}
+
 function setUndo() {
     var editor         = dom.getEditor()
     var blocked        = false;
@@ -74,5 +78,6 @@ function setUndo() {
     })
 }
 
-exports.setUndo = setUndo
-exports.clear   = clear
+exports.setUndo    = setUndo
+exports.setContent = setContent
+exports.clear      = clear
