@@ -290,8 +290,14 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
                 event.preventDefault()
 
                 $('#link_input').modal('show')
+
+                $('#link_input').unbind()
                 $('#link_input').on('shown.bs.modal', function() {
                     $('#link_url').get(0).focus()
+                    $('#link_url').unbind()
+                    $('#link_url').on('input', function() {
+                        $('#link_text').val($('#link_url').val())
+                    })
                 })
 
                 $('#link_input_insert').one('click', function() {
