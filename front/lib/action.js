@@ -280,23 +280,29 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
 
     // 超链接
     if (event.key == ']') {
-        var text   = curNode.nodeValue
-        var editor = dom.getEditor()
-        caretPosition  = dom.getCaret(editor)
-        linkOffset = range.startOffset
+        var text      = curNode.nodeValue
+        var editor    = dom.getEditor()
+        caretPosition = dom.getCaret(editor)
+        if (text) {
+            linkOffset = range.startOffset
+            var start  = text.lastIndexOf('![')
+            if (linkOffset - start == 2) {
+                event.preventDefault()
 
-        if (text && text.endsWith('![')) {
-            event.preventDefault()
-            $('#link_input').modal('show')
-            $('#link_url').focus()
-            $('#link_input_insert').click(function() {
-                var link_url  = $('#link_url').val()
-                var link_text = $('#link_text').val()
-                if (link_url && link_text) {
-                    $('#link_input').modal('hide')
-                    linkAction(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition)
-                }
-            })
+                $('#link_input').modal('show')
+                $('#link_input').on('shown.bs.modal', function() {
+                    $('#link_url').get(0).focus()
+                })
+
+                $('#link_input_insert').one('click', function() {
+                    var link_url  = $('#link_url').val()
+                    var link_text = $('#link_text').val()
+                    if (link_url && link_text) {
+                        $('#link_input').modal('hide')
+                        linkAction(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition)
+                    }
+                })
+            }
         }
     }
 
@@ -404,12 +410,14 @@ function linkAction(link_url, link_text, start, offset, range, caretPosition) {
     $('#link_text').val('')
     document.execCommand('insertHTML', false, html)
 
+    // 执行insertHTML后curNode会变化
+    curNode         = range.startContainer
+    var block       = dom.getBlockParent(curNode)
+    block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
+
     // 删除输入的文本
     var ele  = document.getElementById(id)
     var node = ele.previousSibling
-    console.log(ele);;
-    console.log(node)
-
     range.setStart(node, start)
     range.setEnd(node, offset)
     range.deleteContents()
