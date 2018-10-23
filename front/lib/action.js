@@ -88,7 +88,10 @@ function enterAction(curNode, parentNode, blockNode, range) {
 
     // 重置字体颜色
     document.execCommand('forecolor',false,'#333')
-    document.execCommand('backColor',false,'white')
+    if ($(curNode).parents('blockquote,span,b,em,i,small,strong,sub,sup,ins,del').length == 0) {
+        document.execCommand('backColor',false,'white')
+    }
+
 
     // 表格内换行
     if (curNode.nodeName == 'TD') {
@@ -277,6 +280,11 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         var language = innerHTML.substr(3)
         codeAction(parentNode, language)
         return true
+    }
+
+    // 下面都是行内元素操作， 限制在p标签下操作
+    if ($(curNode).parents('blockquote,h1,h2,h3,h4,h5,h6,span,b,em,i,small,strong,sub,sup,ins,del').length > 0) {
+        return
     }
 
     // 超链接
