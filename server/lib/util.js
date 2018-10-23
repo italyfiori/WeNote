@@ -12,6 +12,16 @@ function makeResult(req, data = {}) {
     return payload
 }
 
+function makeCommonResult(req, code, msg, data = null) {
+    var payload = {
+        code: code,
+        msg: msg,
+        message_id: req.message_id,
+        data: data,
+    }
+    return payload
+}
+
 function getDataPath() {
     var homedir = os.homedir()
     return path.join(homedir, 'Library/Mobile Documents/com~apple~CloudDocs/marknote/') + '/'
@@ -66,15 +76,15 @@ function delete_path(file_path) {
         fs.readdirSync(file_path).forEach(function (name, index) {
             delete_path(path.join(file_path, name));
         })
-        console.log('rm dir' + file_path);
         fs.rmdirSync(file_path);
     }
 };
 
 
-exports.makeResult    = makeResult
-exports.addImgPrefix  = addImgPrefix
-exports.trimImgPrefix = trimImgPrefix
-exports.getDataPath   = getDataPath
-exports.mkdirs        = mkdirs
-exports.delete_path   = delete_path
+exports.makeResult       = makeResult
+exports.addImgPrefix     = addImgPrefix
+exports.trimImgPrefix    = trimImgPrefix
+exports.getDataPath      = getDataPath
+exports.mkdirs           = mkdirs
+exports.delete_path      = delete_path
+exports.makeCommonResult = makeCommonResult

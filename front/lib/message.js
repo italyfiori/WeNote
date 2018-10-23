@@ -19,9 +19,14 @@ function send(message_type, data, func) {
     var payload    = {'message_id': message_id, 'data': data}
     ipcRenderer.send(message_type, payload)
 
+
     // 指定message_id的回调
-    event_emitter.once(message_id, function(data) {
-        func(data)
+    event_emitter.once(message_id, function(response) {
+        if (response.code != 0) {
+            alert(response.msg)
+        } else {
+            func(response)
+        }
     })
 
     // 超时处理
