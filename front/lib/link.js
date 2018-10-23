@@ -1,4 +1,5 @@
 var jquery = jQuery = $ = require('jquery')
+const { shell } = require('electron')
 
 function setLinkDialogEvent() {
 	$('.close-button').click(function() {
@@ -14,4 +15,17 @@ function setLinkDialogEvent() {
 	})
 }
 
+function setLinkClickEvent() {
+	$('a.link').unbind()
+	$('a.link').click(function(event) {
+        event.preventDefault()
+        var href = $(this).attr('href')
+        if (!href.startsWith('http://') && !href.startsWith('https://')) {
+            href = 'http://' + href
+        }
+        shell.openExternal(href);
+    })
+}
+
 exports.setLinkDialogEvent = setLinkDialogEvent
+exports.setLinkClickEvent = setLinkClickEvent

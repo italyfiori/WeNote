@@ -2,6 +2,7 @@ const { shell } = require('electron')
 var dom   = require(rootpath + '/front/lib/dom.js')
 var table = require(rootpath + '/front/lib/table.js')
 var util  = require(rootpath + '/front/lib/util.js')
+var link  = require(rootpath + '/front/lib/link.js')
 var $     = require('jquery')
 var katex = require('katex')
 
@@ -292,7 +293,7 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
                 $('#link_input').modal()
                 $('#link_url').val('')
                 $('#link_text').val('')
-                
+
                 $('#link_input_insert').one('click', function() {
                     var link_url  = $('#link_url').val()
                     var link_text = $('#link_text').val()
@@ -428,15 +429,8 @@ function linkAction(link_url, link_text, start, offset, range, caretPosition) {
     selection.removeAllRanges()
     selection.addRange(range)
 
-    $('a.link').unbind()
-    $('a.link').click(function(event) {
-        event.preventDefault()
-        var href = $(this).attr('href')
-        if (!href.startsWith('http://') && !href.startsWith('https://')) {
-            href = 'http://' + href
-        }
-        shell.openExternal(href);
-    })
+    // 设置链接点击
+    link.setLinkClickEvent()
 }
 
 // markdown数学公式

@@ -9,6 +9,7 @@ var history         = require(rootpath + '/front/lib/history.js')
 var highlight       = require(rootpath + '/front/lib/highlight.js')
 var image           = require(rootpath + '/front/lib/image.js')
 var undo            = require(rootpath + '/front/lib/undo.js')
+var link            = require(rootpath + '/front/lib/link.js')
 var $               = require('jquery')
 
 const {ipcRenderer, shell} = require('electron')
@@ -81,15 +82,9 @@ function init() {
         })
     })
 
+    // 点击超链接
     $('a.link').unbind()
-    $('a.link').click(function(event) {
-        event.preventDefault()
-        var href = $(this).attr('href')
-        if (!href.startsWith('http://') && !href.startsWith('https://')) {
-            href = 'http://' + href
-        }
-        shell.openExternal(href);
-    })
+    link.setLinkClickEvent()
 
     // 表格可拖拽
     $('table').each(function() {

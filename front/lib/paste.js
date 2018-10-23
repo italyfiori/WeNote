@@ -2,6 +2,7 @@ var dom     = require(rootpath + '/front/lib/dom.js')
 var image   = require(rootpath + '/front/lib/image.js')
 var message = require(rootpath + '/front/lib/message.js')
 var table   = require(rootpath + '/front/lib/table.js')
+var link    = require(rootpath + '/front/lib/link.js')
 var $       = require('jquery')
 
 // 清除html样式
@@ -46,6 +47,8 @@ function setPasteImage() {
             $('table').each(function() {
                 table.makeTableResizeable(this)
             })
+
+            link.setLinkClickEvent()
         } else if (text !== "") {
             text = encodedString(text)
             document.execCommand('insertHTML', false, text)
