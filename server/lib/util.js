@@ -28,7 +28,7 @@ function addImgPrefix(content) {
 // 去除路径前缀
 function trimImgPrefix(content) {
     var data_path = getDataPath()
-    var pattern   = new RegExp('src="' +  data_path + '(data/images/\\d+/\\w+.\\w+)"', 'g')
+    var pattern   = new RegExp('src="' +  '[^"]*?' + '(data/images/\\d+/\\w+.\\w+)"', 'g')
     var replace   = 'src="$1"'
     return content.replace(pattern, replace)
 }
