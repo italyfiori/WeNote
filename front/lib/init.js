@@ -4,6 +4,7 @@ var history = require(rootpath + '/front/lib/history.js')
 var paste   = require(rootpath + '/front/lib/paste.js')
 var undo    = require(rootpath + '/front/lib/undo.js')
 var view    = require(rootpath + '/front/lib/view.js')
+var link    = require(rootpath + '/front/lib/link.js')
 
 function init() {
     util.addStringFormat()
@@ -12,6 +13,7 @@ function init() {
     paste.setPasteImage()
     undo.setUndo()
     view.setView()
+    link.setLinkDialogEvent()
 }
 
 module.exports = init
