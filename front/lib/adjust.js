@@ -42,6 +42,12 @@ function adjustEditor() {
             range.surroundContents(p)
             dom.setCursor(p)
             return
+        } else if ($(this).nodeName == 'DIV' && dom.blockEmpty(this)) {
+            // 空的div转换成p标签
+            $(this).after('<p><br></p>')
+            dom.setCursor(this.nextSibling)
+            $(this).remove()
+            return
         }
     })
 
