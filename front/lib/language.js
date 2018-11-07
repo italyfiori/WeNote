@@ -11,7 +11,13 @@ var languages = {
 		}
 	},
 	'default': {
-
+		'side': {
+			'create': '创建文档',
+			'delete': '删除文档',
+			'rename': '重命名',
+			'recover': '恢复文档',
+			'clear': '清空回收站',
+		}
 	}
 }
 

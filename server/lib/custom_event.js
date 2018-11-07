@@ -1,4 +1,5 @@
 const {
+    app,
     ipcMain,
     shell
 }               = require('electron')
@@ -36,7 +37,7 @@ function getImgPath(note_id, file_name) {
 }
 
 function init() {
-    // 保存节点
+    // 打开文件
     ipcMain.on('open_file_link', (event, req) => {
         var file_url  = req.data.file_url
         var data_path = util.getDataPath()
@@ -50,7 +51,7 @@ function init() {
         event.sender.send('open_file_link', payload)
     })
 
-    // 保存节点
+    // 拖拽文件上传
     ipcMain.on('drag_file', (event, req) => {
         var note_id = req.data.note_id
         var save_dir = getFileSaveDir(note_id)
@@ -113,6 +114,13 @@ function init() {
             }
             event.sender.send('save_image', payload)
         })
+    })
+
+    // 获取当前所在地
+    ipcMain.on('get_locale', (event, req) => {
+        var locale = app.getLocale()
+        var payload = util.makeResult(req, {'locale': locale})
+        event.sender.send('get_locale', payload)
     })
 
 }
