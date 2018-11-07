@@ -13,6 +13,7 @@ const custom_event = require(path.join(rootpath, '/server/lib/custom_event'))
 const note         = require(path.join(rootpath, 'server/lib/note'))
 const history      = require(path.join(rootpath, 'server/lib/history'))
 const init         = require(path.join(rootpath, 'server/lib/init'))
+const language     = require(path.join(rootpath, 'server/lib/language'))
 
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
@@ -43,6 +44,7 @@ function createWindow() {
 
 app.on('ready', function () {
     createWindow()
+    language.setLocale(app.getLocale())
     const menu = Menu.buildFromTemplate(template.getTemplate(win))
     Menu.setApplicationMenu(menu)
 })

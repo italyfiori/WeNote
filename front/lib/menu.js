@@ -5,6 +5,9 @@ var message         = require(rootpath + '/front/lib/message.js')
 var state           = require(rootpath + '/front/lib/state.js')
 var util            = require(rootpath + '/front/lib/util.js')
 var dom             = require(rootpath + '/front/lib/dom.js')
+var language        = require(rootpath + '/front/lib/language.js')
+
+var side_lang = language.getLanguage().side
 
 // 加载左侧菜单
 function load_menu() {
@@ -83,32 +86,32 @@ function create_menu_object(menu_content) {
 function customMenu(node) {
     var items = {
         "create": {
-            "label": "New Note",
+            "label": side_lang.create,
             "action": function (obj) {
                 note.create_note(obj)
             }
         },
         "rename": {
-            "label": 'Rename Note',
+            "label": side_lang.rename,
             "action": function (obj) {
                 var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
                 $('#menu-tree').jstree('edit', cur_node)
             }
         },
         "delete": {
-            "label": "Delete Note",
+            "label": side_lang.delete,
             "action": function (obj) {
                 note.delete_note(obj)
             }
         },
         "recover": {
-            "label": "Recover Note",
+            "label": side_lang.recover,
             "action": function (obj) {
                 note.recover_note(obj)
             }
         },
         "clear": {
-            "label": "Clear Trash",
+            "label": side_lang.clear,
             "action": function (obj) {
                 note.clear_trash()
             }
