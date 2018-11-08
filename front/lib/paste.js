@@ -7,6 +7,13 @@ var $       = require('jquery')
 
 // 清除html样式
 function removeStyle(html) {
+    if (html.startsWith('<html')) {
+
+        html = html.replace(/[\s]+/g," ");
+        html = html.replace(/width=\d+ style='[^>]+\d+pt'>/gi, '')
+        console.log(html);
+        return html
+    }
     html = html.replace(/style="[^"]+"/gi, '')
     html = html.replace(/<meta [^>]+>/gi, '')
     html = html.replace('<br class="Apple-interchange-newline">', '')
