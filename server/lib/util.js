@@ -27,19 +27,28 @@ function getDataPath() {
     return path.join(homedir, 'Library/Mobile Documents/com~apple~CloudDocs/marknote/') + '/'
 }
 
-// 增加路径前缀
+// 读取文档时增加路径前缀
 function addImgPrefix(content) {
-    var pattern   = new RegExp('src="(data/images/\\d+/\\w+.\\w+)"', 'g')
+    var pattern   = new RegExp('src="(data/images/\\d+/[^"]*?)"', 'g')
     var data_path = getDataPath()
     var replace   = 'src="' + data_path + '$1"'
+
+    var pattern   = new RegExp('<a class="file" href="' + '[^"]*?' + '(data/files/\\d+/[^"]*?)"', 'g')
+    var data_path = getDataPath()
+    var replace   = '<a class="file" href="' + data_path + '$1"'
+
     return content.replace(pattern, replace)
 }
 
-// 去除路径前缀
+// 保存文档时去除路径前缀
 function trimImgPrefix(content) {
     var data_path = getDataPath()
     var pattern   = new RegExp('src="' +  '[^"]*?' + '(data/images/\\d+/\\w+.\\w+)"', 'g')
     var replace   = 'src="$1"'
+
+    var pattern   = new RegExp('<a class="file" href="' +  '[^"]*?' + '(data/files/\\d+/[^"]*?)"', 'g')
+    var replace   = '<a class="file" href="$1"'
+
     return content.replace(pattern, replace)
 }
 

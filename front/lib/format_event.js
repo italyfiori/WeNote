@@ -7,6 +7,7 @@ var dom             = require(rootpath + '/front/lib/dom.js')
 var state           = require(rootpath + '/front/lib/state.js')
 var util            = require(rootpath + '/front/lib/util.js')
 var table           = require(rootpath + '/front/lib/table.js')
+var image           = require(rootpath + '/front/lib/image.js')
 var $               = require('jquery')
 
 
@@ -105,7 +106,13 @@ function setEvent(){
 
         var payload = {'note_id': note_id}
         message.send('upload_image', payload, function(response) {
-            console.log(response);
+            var file_url  = response.data.file_url
+            var file_name = response.data.file_name
+            var html      = '<img src="{0}">'.format(file_url)
+            document.execCommand('insertHTML', false, html)
+            setTimeout(function() {
+                image.setImageEvent()
+            }, 100)
         })
     })
 }

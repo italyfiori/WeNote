@@ -97,7 +97,7 @@ function get_note(note_id) {
         return ''
     }
     var content = fs.readFileSync(file_path, "utf8")
-    return util.addImgPrefix(content)
+    return util.addImgPrefix(content) // 增加图像和文件路径前缀
 }
 
 // 保存note
@@ -180,7 +180,7 @@ function init() {
             // 保存文件
             var note_id = req.data.id
             var file_cont = req.data.content
-            file_cont = util.trimImgPrefix(file_cont)
+            file_cont = util.trimImgPrefix(file_cont) // 去除图像和文件前缀
             if (get_note(note_id) === file_cont) {
                 console.warn('note has no change:' + String(req.data.id))
                 return

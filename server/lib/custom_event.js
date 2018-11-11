@@ -17,13 +17,13 @@ function getFileSaveDir(note_id) {
     return path.join(data_path, 'data', 'files', String(note_id))
 }
 
-function getFilePath(note_id, file_name) {
+function getFilePath(note_id, file_name, file_type) {
     var data_path = util.getDataPath()
-    return path.join(data_path, 'data', 'files', String(note_id), file_name)
+    return path.join(data_path, 'data', file_type, String(note_id), file_name)
 }
 
-function getFileUrl(note_id, file_name) {
-    return path.join('data', 'files', String(note_id), file_name)
+function getFileUrl(note_id, file_name, file_type) {
+    return path.join('data', file_type, String(note_id), file_name)
 }
 
 function getBufferMd5(buffer) {
@@ -37,20 +37,13 @@ function getImgPath(note_id, file_name) {
     return path.join(data_path, 'data', 'images', String(note_id), file_name)
 }
 
-
-function getImgUrl(note_id, file_name) {
-    var data_path = util.getDataPath()
-    return path.join(data_path, 'data', 'images', String(note_id), file_name)
-}
-
-
-function saveFile(req, note_id, src_file) {
+function saveFile(req, note_id, src_file, file_type) {
     var file_name = path.basename(src_file)
-        var dst_file  = getFilePath(note_id, file_name)
-    var file_url  = getFileUrl(note_id, file_name)
+    var dst_file  = getFilePath(note_id, file_name, file_type)
+    var file_url  = getFileUrl(note_id, file_name, file_type)
 
     var data = {
-        file_url: file_url,
+        file_url: dst_file,
         file_name: file_name,
     }
     var response = util.makeResult(req, data)
@@ -104,10 +97,8 @@ function init() {
     // 打开文件
     ipcMain.on('open_file_link', (event, req) => {
         var file_url  = req.data.file_url
-        var data_path = util.getDataPath()
-        file_url      = path.join(data_path, file_url)
         if (!fs.existsSync(file_url)) {
-            console.warn('file not exists, ' + file_url)
+            dialog.showErrorBox('文件不存在!',  '文件不存在:' + file_url)
             return
         }
         shell.openItem(file_url);
@@ -124,7 +115,7 @@ function init() {
         }
 
         var src_file  = req.data.file_path
-        var response  = saveFile(req, note_id, src_file)
+        var response  = saveFile(req, note_id, src_file, 'files')
         event.sender.send('drag_file', response)
     })
 
@@ -169,7 +160,7 @@ function init() {
             if (filePaths && filePaths.length == 1) {
                 var src_file  = filePaths[0]
                 var note_id   = req.data.note_id
-                var response  = saveFile(req, note_id, src_file)
+                var response  = saveFile(req, note_id, src_file, 'files')
                 event.sender.send('upload_file', response)
             }
         })
@@ -181,7 +172,12 @@ function init() {
             filters: [{name: 'Images', extensions: ['jpg', 'png', 'gif']}]
         }
         dialog.showOpenDialog(options, function(filePaths) {
-
+            if (filePaths && filePaths.length == 1) {
+                var src_file  = filePaths[0]
+                var note_id   = req.data.note_id
+                var response  = saveFile(req, note_id, src_file, 'images')
+                event.sender.send('upload_image', response)
+            }
         })
     })
 
