@@ -107,12 +107,14 @@ function setEvent(){
         var payload = {'note_id': note_id}
         message.send('upload_image', payload, function(response) {
             var file_url  = response.data.file_url
-            var file_name = response.data.file_name
             var html      = '<img src="{0}">'.format(file_url)
-            document.execCommand('insertHTML', false, html)
+            setTimeout(function() {
+                document.execCommand('insertHTML', false, html)
+            }, 100)
+
             setTimeout(function() {
                 image.setImageEvent()
-            }, 100)
+            }, 200)
         })
     })
 }

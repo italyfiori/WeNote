@@ -32,24 +32,26 @@ function addImgPrefix(content) {
     var pattern   = new RegExp('src="(data/images/\\d+/[^"]*?)"', 'g')
     var data_path = getDataPath()
     var replace   = 'src="' + data_path + '$1"'
+    var result    = content.replace(pattern, replace)
 
     var pattern   = new RegExp('<a class="file" href="' + '[^"]*?' + '(data/files/\\d+/[^"]*?)"', 'g')
     var data_path = getDataPath()
     var replace   = '<a class="file" href="' + data_path + '$1"'
 
-    return content.replace(pattern, replace)
+    return result.replace(pattern, replace)
 }
 
 // 保存文档时去除路径前缀
 function trimImgPrefix(content) {
     var data_path = getDataPath()
-    var pattern   = new RegExp('src="' +  '[^"]*?' + '(data/images/\\d+/\\w+.\\w+)"', 'g')
+    var pattern   = new RegExp('src="' +  '[^"]*?' + '(data/images/\\d+/[^"]*?)"', 'g')
     var replace   = 'src="$1"'
+    var result    = content.replace(pattern, replace)
 
     var pattern   = new RegExp('<a class="file" href="' +  '[^"]*?' + '(data/files/\\d+/[^"]*?)"', 'g')
     var replace   = '<a class="file" href="$1"'
 
-    return content.replace(pattern, replace)
+    return result.replace(pattern, replace)
 }
 
 // 递归创建目录
@@ -75,7 +77,6 @@ function delete_path(file_path) {
 
     // 文件直接删除
     if (fs.statSync(file_path).isFile()) {
-        console.log('rm file ' + file_path);
         fs.unlinkSync(file_path)
         return
     }

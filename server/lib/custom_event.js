@@ -169,7 +169,7 @@ function init() {
     ipcMain.on('upload_image', (event, req) => {
         var options = {
             properties: ['openFile'],
-            filters: [{name: 'Images', extensions: ['jpg', 'png', 'gif']}]
+            filters: [{name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg']}]
         }
         dialog.showOpenDialog(options, function(filePaths) {
             if (filePaths && filePaths.length == 1) {
