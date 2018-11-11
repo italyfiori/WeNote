@@ -121,13 +121,13 @@ function getTemplate(win) {
                 }
             }, {
                 label: menu_lang.style.blockquote,
-                // accelerator: 'CmdOrCtrl+1',
+                accelerator: 'CmdOrCtrl+Alt+B',
                 click: function () {
                     win.webContents.send('format_blockquote');
                 }
             }, {
                 label: menu_lang.style.code,
-                // accelerator: 'CmdOrCtrl+1',
+                accelerator: 'CmdOrCtrl+Alt+C',
                 click: function () {
                     win.webContents.send('format_code');
                 }
@@ -135,13 +135,13 @@ function getTemplate(win) {
                 type: 'separator'
             },{
                 label: menu_lang.style.file,
-                // accelerator: 'CmdOrCtrl+1',
+                accelerator: 'CmdOrCtrl+Alt+F',
                 click: function () {
                     win.webContents.send('upload_file_action');
                 }
             }, {
                 label: menu_lang.style.image,
-                // accelerator: 'CmdOrCtrl+1',
+                accelerator: 'CmdOrCtrl+Alt+M',
                 click: function () {
                     win.webContents.send('upload_image_action');
                 }
