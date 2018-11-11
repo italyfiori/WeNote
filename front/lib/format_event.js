@@ -108,13 +108,24 @@ function setEvent(){
         message.send('upload_image', payload, function(response) {
             var file_url  = response.data.file_url
             var html      = '<img src="{0}">'.format(file_url)
-            setTimeout(function() {
+
+            var img = new Image();
+            img.onload = function(){
+                var width  = this.width
+                var height = this.height
+                delete img
+
+                width = Math.ceil(width / 1.3)
+                var html = '<img width=' + width + ' src="' + file_url + '">'
                 document.execCommand('insertHTML', false, html)
-            }, 100)
+                setTimeout(function() {
+                    image.setImageEvent()
+                }, 100)
+            };
 
             setTimeout(function() {
-                image.setImageEvent()
-            }, 200)
+                img.src = file_url
+            }, 300)
         })
     })
 }
