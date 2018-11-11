@@ -1,7 +1,8 @@
 const {
     app,
     ipcMain,
-    shell
+    shell,
+    dialog
 }               = require('electron')
 const path      = require('path')
 const fs        = require('fs')
@@ -36,6 +37,69 @@ function getImgPath(note_id, file_name) {
     return path.join(data_path, 'data', 'images', String(note_id), file_name)
 }
 
+
+function getImgUrl(note_id, file_name) {
+    var data_path = util.getDataPath()
+    return path.join(data_path, 'data', 'images', String(note_id), file_name)
+}
+
+
+function saveFile(req, note_id, src_file) {
+    var file_name = path.basename(src_file)
+        var dst_file  = getFilePath(note_id, file_name)
+    var file_url  = getFileUrl(note_id, file_name)
+
+    var data = {
+        file_url: file_url,
+        file_name: file_name,
+    }
+    var response = util.makeResult(req, data)
+
+    // 检查文件是否存在
+    if (!fs.existsSync(src_file)) {
+        response = util.makeCommonResult(req, -1, '文件不存在!')
+    } else if (fs.statSync(src_file).isDirectory()) {
+        // 文件大小超过限制
+        response = util.makeCommonResult(req, -1, '不支持文件夹或包上传!')
+    } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
+        // 文件大小超过限制
+        response = util.makeCommonResult(req, -1, '文件大小超过100M!')
+    } else if (src_file != dst_file) {
+        // 拷贝文件
+        util.mkdirs(path.dirname(dst_file))
+        fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
+    }
+
+    return response
+}
+
+function saveImageFile(req, note_id, src_file) {
+    var file_name = path.basename(src_file)
+    var dst_file  = getImgPath(note_id, file_name)
+    var file_url  = getImgU(note_id, file_name)
+
+    var data = {
+        file_url: file_url,
+        file_name: file_name,
+    }
+    var response = util.makeResult(req, data)
+
+    // 检查文件是否存在
+    if (!fs.existsSync(src_file)) {
+        response = util.makeCommonResult(req, -1, '文件不存在!')
+    } else if (fs.statSync(src_file).isDirectory()) {
+        // 文件大小超过限制
+        response = util.makeCommonResult(req, -1, '不支持文件夹或包上传!')
+    } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
+        // 文件大小超过限制
+        response = util.makeCommonResult(req, -1, '文件大小超过100M!')
+    } else if (src_file != dst_file) {
+        // 拷贝文件
+        util.mkdirs(path.dirname(dst_file))
+        fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
+    }
+}
+
 function init() {
     // 打开文件
     ipcMain.on('open_file_link', (event, req) => {
@@ -60,31 +124,7 @@ function init() {
         }
 
         var src_file  = req.data.file_path
-        var file_name = path.basename(src_file)
-        var dst_file  = getFilePath(note_id, file_name)
-        var file_url  = getFileUrl(note_id, file_name)
-
-        var data = {
-            file_url: file_url,
-            file_name: file_name,
-        }
-        var response = util.makeResult(req, data)
-
-        // 检查文件是否存在
-        if (!fs.existsSync(src_file)) {
-            response = util.makeCommonResult(req, -1, '文件不存在!')
-        } else if (fs.statSync(src_file).isDirectory()) {
-            // 文件大小超过限制
-            response = util.makeCommonResult(req, -1, '不支持文件夹或包上传!')
-        } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
-            // 文件大小超过限制
-            response = util.makeCommonResult(req, -1, '文件大小超过100M!')
-        } else if (src_file != dst_file) {
-            // 拷贝文件
-            util.mkdirs(path.dirname(dst_file))
-            fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
-        }
-
+        var response  = saveFile(req, note_id, src_file)
         event.sender.send('drag_file', response)
     })
 
@@ -122,6 +162,29 @@ function init() {
         var payload = util.makeResult(req, {'locale': locale})
         event.sender.send('get_locale', payload)
     })
+
+    // 上传文件
+    ipcMain.on('upload_file', (event, req) => {
+        dialog.showOpenDialog({properties: ['openFile']}, function(filePaths) {
+            if (filePaths && filePaths.length == 1) {
+                var src_file  = filePaths[0]
+                var note_id   = req.data.note_id
+                var response  = saveFile(req, note_id, src_file)
+                event.sender.send('upload_file', response)
+            }
+        })
+    })
+
+    ipcMain.on('upload_image', (event, req) => {
+        var options = {
+            properties: ['openFile'],
+            filters: [{name: 'Images', extensions: ['jpg', 'png', 'gif']}]
+        }
+        dialog.showOpenDialog(options, function(filePaths) {
+
+        })
+    })
+
 
 }
 

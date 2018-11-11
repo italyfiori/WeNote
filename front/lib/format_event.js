@@ -1,4 +1,7 @@
-const {ipcRenderer} = require('electron')
+const {
+    ipcRenderer,
+    dialog
+} = require('electron')
 var message         = require(rootpath + '/front/lib/message.js')
 var dom             = require(rootpath + '/front/lib/dom.js')
 var state           = require(rootpath + '/front/lib/state.js')
@@ -60,6 +63,50 @@ function setEvent(){
         // 设置光标
         var secondRow = $(tableNode).find('tr')[1]
         dom.setCursor(secondRow.firstChild.firstChild.firstChild)
+    })
+
+    // 上传文件动作
+    ipcRenderer.on('upload_file_action', function () {
+        // 检查是否选中笔记
+        var editor  = dom.getEditor()
+        var note_id = editor.getAttribute('note_id')
+        if (!note_id) {
+            console.warn("没有选中笔记!")
+            return
+        }
+
+        var payload = {'note_id': note_id}
+        message.send('upload_file', payload, function(response) {
+            var file_url  = response.data.file_url
+            var file_name = response.data.file_name
+            var file_id   = 'file' + util.getRandomInt(100000)
+            var html      = '<a class="file" href="{0}" id="{1}">{2}</a>&nbsp;'.format(file_url, file_id, file_name)
+            document.execCommand('insertHTML', false, html)
+            var ele = document.getElementById(file_id)
+            ele.contentEditable = "false"
+
+            $('a.file').unbind()
+            $('a.file').click(function(event) {
+                event.preventDefault()
+                message.send('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
+                    // do nothing
+                })
+            })
+        })
+    })
+
+    // 上传图片动作
+    ipcRenderer.on('upload_image_action', function () {
+        var note_id = editor.getAttribute('note_id')
+        if (!note_id) {
+            console.warn("没有选中笔记!")
+            return
+        }
+
+        var payload = {'note_id': note_id}
+        message.send('upload_image', payload, function(response) {
+            console.log(response);
+        })
     })
 }
 

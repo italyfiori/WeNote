@@ -137,13 +137,13 @@ function getTemplate(win) {
                 label: menu_lang.style.file,
                 // accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    win.webContents.send('format_file');
+                    win.webContents.send('upload_file_action');
                 }
             }, {
                 label: menu_lang.style.image,
                 // accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    win.webContents.send('format_image');
+                    win.webContents.send('upload_image_action');
                 }
             }]
         },

@@ -23,7 +23,7 @@ var languages = {
 				'side': '侧边栏',
 			},
 			'style': {
-				'label_name': '样式',
+				'label_name': '格式',
 				'h1': '标题1',
 				'h2': '标题2',
 				'h3': '标题3',

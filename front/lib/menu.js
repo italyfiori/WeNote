@@ -48,7 +48,6 @@ function load_menu() {
 
     ipcRenderer.on('create_note_action', function () {
         var root = $('#menu-tree').jstree('get_node', '0')
-        // console.log(root);
         note.create_note(root)
     })
 }
