@@ -54,7 +54,7 @@ function setEvent(){
         // 创建表格
         var titles    = ['col1', 'col2']
         var html      = table.createTableHtml(titles)
-        var tableNode = dom.insertHtml(html)
+        var tableNode = dom.insertHtml(html, false)
         table.makeTableResizeable(tableNode)
 
         // 设置光标
