@@ -6,6 +6,7 @@ var state           = require(rootpath + '/front/lib/state.js')
 var util            = require(rootpath + '/front/lib/util.js')
 var dom             = require(rootpath + '/front/lib/dom.js')
 var language        = require(rootpath + '/front/lib/language.js')
+var $               = require('jquery')
 
 var side_lang = language.getLanguage().side
 
@@ -41,8 +42,14 @@ function load_menu() {
     })
 
     // 接收到master请求, 保存笔记
-    ipcRenderer.on('save', function () {
+    ipcRenderer.on('save_note_action', function () {
         note.save_note()
+    })
+
+    ipcRenderer.on('create_note_action', function () {
+        var root = $('#menu-tree').jstree('get_node', '0')
+        // console.log(root);
+        note.create_note(root)
     })
 }
 
@@ -88,7 +95,8 @@ function customMenu(node) {
         "create": {
             "label": side_lang.create,
             "action": function (obj) {
-                note.create_note(obj)
+                var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
+                note.create_note(cur_node)
             }
         },
         "rename": {

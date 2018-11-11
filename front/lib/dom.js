@@ -105,7 +105,7 @@ function removeAllListeners(node) {
     return cloneNode
 }
 
-function insertHtml(html) {
+function insertHtml(html, delete_prev = true) {
     // 插入html
     var id = util.getRandomInt(10000000)
     html = html.replace(/>/, ' id="' + id + '">')
@@ -114,8 +114,10 @@ function insertHtml(html) {
     // 删除激活语法文本
     var range = document.createRange();
     var ele   = document.getElementById(id)
-    range.selectNode(ele.previousSibling)
-    range.deleteContents()
+    if (delete_prev) {
+        range.selectNode(ele.previousSibling)
+        range.deleteContents()
+    }
 
     // 恢复光标
     range.setStartAfter(ele)

@@ -38,8 +38,7 @@ function load_notice() {
 }
 
 // 创建笔记
-function create_note(obj) {
-    var cur_node    = $('#menu-tree').jstree('get_node', obj.reference)
+function create_note(cur_node) {
     var new_node_id = $('#menu-tree').jstree('create_node', cur_node, 'new note')
     var new_node    = $('#menu-tree').jstree('get_node', new_node_id)
     var payload = {
@@ -53,7 +52,6 @@ function create_note(obj) {
         // setTimeout(function(){
         //     $('#menu-tree').jstree('edit', new_node)
         // }, 200)
-
     })
 }
 

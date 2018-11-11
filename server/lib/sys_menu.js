@@ -14,10 +14,16 @@ function getTemplate(win) {
         {
             label: menu_lang.note.label_name,
             submenu: [{
+                label: menu_lang.note.create,
+                accelerator: 'CmdOrCtrl+N',
+                click: function () {
+                    win.webContents.send('create_note_action');
+                }
+            }, {
                 label: menu_lang.note.save,
                 accelerator: 'CmdOrCtrl+S',
                 click: function () {
-                    win.webContents.send('save');
+                    win.webContents.send('save_note_action');
                 }
             }]
         },
@@ -63,12 +69,6 @@ function getTemplate(win) {
                 click: function () {
                     win.webContents.send('hidden_side');
                 },
-            }, {
-                label: menu_lang.view.history,
-                accelerator: 'CmdOrCtrl+H',
-                click: function () {
-                    win.webContents.send('history_action');
-                }
             }]
         },
         {
@@ -77,59 +77,59 @@ function getTemplate(win) {
                 label: menu_lang.style.p,
                 accelerator: 'CmdOrCtrl+0',
                 click: function () {
-                    // win.webContents.send('hidden_side');
+                    win.webContents.send('format_p');
                 },
             }, {
                 label: menu_lang.style.h1,
                 accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_h1');
                 }
             }, {
                 label: menu_lang.style.h2,
                 accelerator: 'CmdOrCtrl+2',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_h2');
                 }
             }, {
                 label: menu_lang.style.h3,
                 accelerator: 'CmdOrCtrl+3',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_h3');
                 }
             },{
                 type: 'separator'
             }, {
                 label: menu_lang.style.ol,
-                // accelerator: 'CmdOrCtrl+3',
+                accelerator: 'CmdOrCtrl+O',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_ol');
                 }
             }, {
                 label: menu_lang.style.ul,
-                // accelerator: 'CmdOrCtrl+3',
+                accelerator: 'CmdOrCtrl+U',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_ul');
                 }
             } ,{
                 type: 'separator'
             }, {
                 label: menu_lang.style.line,
-                // accelerator: 'CmdOrCtrl+1',
+                accelerator: 'CmdOrCtrl+-',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_line');
                 }
             }, {
                 label: menu_lang.style.blockquote,
                 // accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_blockquote');
                 }
             }, {
                 label: menu_lang.style.code,
                 // accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_code');
                 }
             }, {
                 type: 'separator'
@@ -137,13 +137,13 @@ function getTemplate(win) {
                 label: menu_lang.style.file,
                 // accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_file');
                 }
             }, {
                 label: menu_lang.style.image,
                 // accelerator: 'CmdOrCtrl+1',
                 click: function () {
-                    // win.webContents.send('history_action');
+                    win.webContents.send('format_image');
                 }
             }]
         },
@@ -151,8 +151,9 @@ function getTemplate(win) {
             label: menu_lang.table.label_name,
             submenu: [{
                 label: menu_lang.table.table_insert,
+                accelerator: 'CmdOrCtrl+T',
                 click: function () {
-                    // win.webContents.send('add_row_before');
+                    win.webContents.send('add_table');
                 }
             },{
                 type: 'separator'
@@ -212,6 +213,15 @@ function getTemplate(win) {
                 label: menu_lang.table.table_del,
                 click: function () {
                     win.webContents.send('delete_table');
+                }
+            }]
+        },{
+            label: menu_lang.history.label_name,
+            submenu: [{
+                label: menu_lang.history.history,
+                accelerator: 'CmdOrCtrl+H',
+                click: function () {
+                    win.webContents.send('history_action');
                 }
             }]
         },

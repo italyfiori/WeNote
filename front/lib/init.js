@@ -7,6 +7,7 @@ var view    = require(rootpath + '/front/lib/view.js')
 var link    = require(rootpath + '/front/lib/link.js')
 var message = require(rootpath + '/front/lib/message.js')
 var language = require(rootpath + '/front/lib/language.js')
+var format_event = require(rootpath + '/front/lib/format_event.js')
 
 function init() {
     util.addStringFormat()
@@ -16,6 +17,7 @@ function init() {
     undo.setUndo()
     view.setView()
     link.setLinkDialogEvent()
+    format_event.setEvent()
 
     message.send('get_locale', {}, function(response) {
         language.setLocale(response.data.locale)

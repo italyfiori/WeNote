@@ -32,6 +32,8 @@ function adjustEditor() {
         return
     }
 
+    adjustList()
+
     //
     $('#editor, td').children().each(function() {
         // 空的换行变成嵌套p标签
@@ -57,6 +59,19 @@ function adjustEditor() {
             this.innerHTML = this.innerText
         }
     })
+}
+
+function adjustList() {
+    let lists = document.querySelectorAll("ol, ul");
+     for (let i = 0; i < lists.length; i++) {
+        let ele = lists[i]; // ol
+        let parentNode = ele.parentNode;
+        if (parentNode.tagName === 'P' && parentNode.lastChild === parentNode.firstChild) {
+                parentNode.insertAdjacentElement('beforebegin', ele);
+                parentNode.remove()
+                dom.setCursor(ele)
+        }
+    }
 }
 
 exports.adjustEditor = adjustEditor

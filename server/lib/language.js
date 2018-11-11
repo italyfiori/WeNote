@@ -55,7 +55,6 @@ var languages = {
 			},
 			'view': {
 				'label_name': '视图',
-				'history': '历史版本',
 				'side': '侧边栏',
 			},
 			'style': {
@@ -86,6 +85,10 @@ var languages = {
 				'col_head': '设置表头列',
 				'table_del': '删除表格',
 			},
+			'history': {
+				'label_name': '历史',
+				'history': '历史版本'
+			}
 		},
 	}
 }
