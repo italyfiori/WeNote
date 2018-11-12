@@ -45,35 +45,35 @@ function getImgPath(note_id, file_name) {
 }
 
 function saveFile(req, note_id, src_file, file_type) {
-    // 检查文件是否存在
+    var response = util.makeResult(req, {})
     if (!fs.existsSync(src_file)) {
+        // 检查文件是否存在
         response = util.makeCommonResult(req, -1, '文件不存在!')
     } else if (fs.statSync(src_file).isDirectory()) {
-        // 文件大小超过限制
+        // 不支持文件夹上传
         response = util.makeCommonResult(req, -1, '不支持文件夹或包上传!')
     } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
         // 文件大小超过限制
         response = util.makeCommonResult(req, -1, '文件大小超过100M!')
-    }
+    } else {
+        var file_name = path.basename(src_file)
+        if (file_type == FILE_TYPE_IMAGE) {
+            var md5 = getFileMd5(src_file)
+            file_name = md5 + path.extname(src_file)
+        }
+        var dst_file  = getFilePath(note_id, file_name, file_type)
+        var file_url  = getFileUrl(note_id, file_name, file_type)
+        if (src_file != dst_file) {
+            // 拷贝文件
+            util.mkdirs(path.dirname(dst_file))
+            fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
+        }
 
-    var file_name = path.basename(src_file)
-    if (file_type == FILE_TYPE_IMAGE) {
-        var md5 = getFileMd5(src_file)
-        file_name = md5 + path.extname(src_file)
-    }
-    var dst_file  = getFilePath(note_id, file_name, file_type)
-    var file_url  = getFileUrl(note_id, file_name, file_type)
-
-    var data = {
-        file_url: dst_file,
-        file_name: file_name,
-    }
-    var response = util.makeResult(req, data)
-
-    if (src_file != dst_file) {
-        // 拷贝文件
-        util.mkdirs(path.dirname(dst_file))
-        fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
+        var data = {
+            file_url: dst_file,
+            file_name: file_name,
+        }
+        response = util.makeResult(req, data)
     }
 
     return response
