@@ -19,9 +19,14 @@ function init() {
     link.setLinkDialogEvent()
     format_event.setEvent()
 
+    // 获取本地语言
     message.send('get_locale', {}, function(response) {
         language.setLocale(response.data.locale)
     })
+
+    // 禁止缩放
+    var webFrame = require('electron').webFrame
+    webFrame.setZoomLevelLimits(1, 1);
 }
 
 module.exports = init
