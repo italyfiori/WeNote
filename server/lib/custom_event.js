@@ -11,10 +11,12 @@ const rootpath  = path.dirname(path.dirname(__dirname))
 const util      = require(path.join(rootpath, 'server/lib/util'))
 const data_path = util.getDataPath()
 
-const MAX_FILE_SIZE = 1000000000;
+const FILE_TYPE_NORMAL = 'files'
+const FILE_TYPE_IMAGE  = 'images'
+const MAX_FILE_SIZE    = 1000000000;
 
 function getFileSaveDir(note_id) {
-    return path.join(data_path, 'data', 'files', String(note_id))
+    return path.join(data_path, 'data', FILE_TYPE_NORMAL, String(note_id))
 }
 
 function getFilePath(note_id, file_name, file_type) {
@@ -32,22 +34,17 @@ function getBufferMd5(buffer) {
     return hash.digest('hex');
 }
 
+function getFileMd5(file_path) {
+	var buffer = fs.readFileSync(file_path)
+    return getBufferMd5(buffer)
+}
+
 function getImgPath(note_id, file_name) {
     var data_path = util.getDataPath()
-    return path.join(data_path, 'data', 'images', String(note_id), file_name)
+    return path.join(data_path, 'data', FILE_TYPE_IMAGE, String(note_id), file_name)
 }
 
 function saveFile(req, note_id, src_file, file_type) {
-    var file_name = path.basename(src_file)
-    var dst_file  = getFilePath(note_id, file_name, file_type)
-    var file_url  = getFileUrl(note_id, file_name, file_type)
-
-    var data = {
-        file_url: dst_file,
-        file_name: file_name,
-    }
-    var response = util.makeResult(req, data)
-
     // 检查文件是否存在
     if (!fs.existsSync(src_file)) {
         response = util.makeCommonResult(req, -1, '文件不存在!')
@@ -57,7 +54,23 @@ function saveFile(req, note_id, src_file, file_type) {
     } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
         // 文件大小超过限制
         response = util.makeCommonResult(req, -1, '文件大小超过100M!')
-    } else if (src_file != dst_file) {
+    }
+
+    var file_name = path.basename(src_file)
+    if (file_type == FILE_TYPE_IMAGE) {
+        var md5 = getFileMd5(src_file)
+        file_name = md5 + path.extname(src_file)
+    }
+    var dst_file  = getFilePath(note_id, file_name, file_type)
+    var file_url  = getFileUrl(note_id, file_name, file_type)
+
+    var data = {
+        file_url: dst_file,
+        file_name: file_name,
+    }
+    var response = util.makeResult(req, data)
+
+    if (src_file != dst_file) {
         // 拷贝文件
         util.mkdirs(path.dirname(dst_file))
         fs.createReadStream(src_file).pipe(fs.createWriteStream(dst_file));
@@ -115,7 +128,7 @@ function init() {
         }
 
         var src_file  = req.data.file_path
-        var response  = saveFile(req, note_id, src_file, 'files')
+        var response  = saveFile(req, note_id, src_file, FILE_TYPE_NORMAL)
         event.sender.send('drag_file', response)
     })
 
@@ -127,7 +140,7 @@ function init() {
         }
 
         var note_id    = req.data.note_id
-        var image_dir  = path.join(data_path, 'data', 'images', String(note_id))
+        var image_dir  = path.join(data_path, 'data', FILE_TYPE_IMAGE, String(note_id))
         var buffer     = req.data.buffer
         var buffer_md5 = getBufferMd5(buffer)
         var file_name  = buffer_md5 + '.png'
@@ -160,7 +173,7 @@ function init() {
             if (filePaths && filePaths.length == 1) {
                 var src_file  = filePaths[0]
                 var note_id   = req.data.note_id
-                var response  = saveFile(req, note_id, src_file, 'files')
+                var response  = saveFile(req, note_id, src_file, FILE_TYPE_NORMAL)
                 event.sender.send('upload_file', response)
             }
         })
@@ -169,13 +182,13 @@ function init() {
     ipcMain.on('upload_image', (event, req) => {
         var options = {
             properties: ['openFile'],
-            filters: [{name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg']}]
+            filters: [{name: FILE_TYPE_IMAGE, extensions: ['jpg', 'png', 'gif', 'jpeg']}]
         }
         dialog.showOpenDialog(options, function(filePaths) {
             if (filePaths && filePaths.length == 1) {
                 var src_file  = filePaths[0]
                 var note_id   = req.data.note_id
-                var response  = saveFile(req, note_id, src_file, 'images')
+                var response  = saveFile(req, note_id, src_file, FILE_TYPE_IMAGE)
                 event.sender.send('upload_image', response)
             }
         })
