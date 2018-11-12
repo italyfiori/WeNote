@@ -46,7 +46,7 @@ function create_note(cur_node) {
         'title':     new_node.text,
     }
     message.send('create_note', payload, function (response) {
-        $('#menu-tree').jstree('deselect_node', cur_node)
+        $('#menu-tree').jstree('deselect_all')
         $('#menu-tree').jstree('set_id', new_node, response.note_id)
         $('#menu-tree').jstree('select_node', new_node)
         // setTimeout(function(){

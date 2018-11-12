@@ -155,22 +155,39 @@ function setTableAction() {
     })
 
     ipcRenderer.on('delete_col', function() {
+        // 不在表格中, 无效操作
         var curNode = dom.getCurNode()
         var row     = $(curNode).parents('tr')
         if (row.length == 0) {
             console.warn('not in table')
             return
         }
+
+        // 只有一列, 删除整个表格
         var td = $(curNode).parents('td').first()
         if (td.siblings().length ==0) {
             $(row.parents('table')[0]).remove()
             return
         }
 
+        // 查找上一列或下一列
+        if (td.next()[0]) {
+            next_cursor = td.next()[0].firstChild
+        } else if (td.prev()[0]) {
+            next_cursor = td.prev()[0].firstChild
+        }
+
+        // 删除当前列
         var index = td.index()
         $(row[0]).parent().children().each(function() {
             $(this).children().eq(index).remove()
         })
+
+        // 光标调到上一列或下一列
+        if (next_cursor) {
+            dom.setCursor(next_cursor)
+        }
+
         makeTableResizeable(row[0].parentNode)
     })
 
@@ -199,12 +216,15 @@ function setTableAction() {
     })
 
     ipcRenderer.on('delete_row', function() {
+        // 不在表格中, 无效操作
         var curNode = dom.getCurNode()
         var row = $(curNode).parents('tr')
         if (row.length == 0) {
             console.warn('not in table')
             return
         }
+
+        // 查找上一行或下一行
         row = $(row[0])
         var table = row.parents('table')[0]
         var next_cursor = null
