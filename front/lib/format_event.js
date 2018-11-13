@@ -62,8 +62,8 @@ function setEvent(){
         table.makeTableResizeable(tableNode)
 
         // 设置光标
-        var secondRow = $(tableNode).find('tr')[1]
-        dom.setCursor(secondRow.firstChild.firstChild.firstChild)
+        var firstRow = $(tableNode).find('tr')[0]
+        dom.setCursor(firstRow.firstChild.firstChild.firstChild)
     })
 
     // 上传文件动作

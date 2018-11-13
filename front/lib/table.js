@@ -24,7 +24,12 @@ function createTableHtml(titles) {
     // 插入首行
     html += '<tr class="head">'
     for (var i = 0; i < col; i++) {
-        html += '<td><p>' + titles[i] + '</p></td>'
+        if (titles[i] == '') {
+            html += '<td><p><br/></p></td>'
+        } else {
+            html += '<td><p>' + titles[i] + '</p></td>'
+        }
+
     }
     html += '</tr>'
 
