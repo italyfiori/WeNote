@@ -56,7 +56,7 @@ function setEvent(){
 
     ipcRenderer.on('add_table', function () {
         // 创建表格
-        var titles    = ['col1', 'col2']
+        var titles    = ['', '']
         var html      = table.createTableHtml(titles)
         var tableNode = dom.insertHtml(html, false)
         table.makeTableResizeable(tableNode)
