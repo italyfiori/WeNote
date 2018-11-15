@@ -118,6 +118,7 @@ function saveImage(note_id, img){
             message.send('save_image', payload, function(data) {
                 if (data.code == 0 && data.image_url) {
                     img.src = data.image_url
+                    // todo img.width /= 1.5
                     setTimeout(function() {
                         image.setImageEvent()
                     }, 100)

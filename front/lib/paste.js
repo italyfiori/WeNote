@@ -3,6 +3,7 @@ var image   = require(rootpath + '/front/lib/image.js')
 var message = require(rootpath + '/front/lib/message.js')
 var table   = require(rootpath + '/front/lib/table.js')
 var link    = require(rootpath + '/front/lib/link.js')
+var adjust  = require(rootpath + '/front/lib/adjust.js')
 var $       = require('jquery')
 
 // 清除html样式
@@ -47,6 +48,7 @@ function setPasteImage() {
         var html = clipboardData.getData("text/html") || "";
         var text = clipboardData.getData("text")
 
+        // 清除复制时的样式
         if (html !== "") {
             html = removeStyle(html) // 清除样式
             document.execCommand('insertHTML', false, html)
@@ -61,16 +63,23 @@ function setPasteImage() {
             document.execCommand('insertHTML', false, text)
         }
 
+        // 网络图像转存到本地
+        setTimeout(function() {
+            adjust.adjustImage()
+        }, 200)
+
         if (clipboardData.items) {
             var items = clipboardData.items
         }
 
+        // 获取图像blob
         for (var i = 0; i < items.length; i++) {        
             if (items[i].type.indexOf("image") !== -1) {
                 blob = items[i].getAsFile();
             }
         }
 
+        // 没有图像直接返回
         if(blob === null) {
             setTimeout(function() {
                 image.setImageEvent()
