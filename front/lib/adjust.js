@@ -1,5 +1,7 @@
-var dom = require(rootpath + '/front/lib/dom.js')
-var $   = require('jquery')
+var dom     = require(rootpath + '/front/lib/dom.js')
+var message = require(rootpath + '/front/lib/message.js')
+var image   = require(rootpath + '/front/lib/image.js')
+var $       = require('jquery')
 
 // 调整编辑区的内容格式
 function adjustEditor() {
@@ -33,6 +35,8 @@ function adjustEditor() {
     }
 
     adjustList()
+
+    adjustImage()
 
     //
     $('#editor, td').children().each(function() {
@@ -73,5 +77,64 @@ function adjustList() {
         }
     }
 }
+
+function adjustImage() {
+    var imgs = $('img')
+
+    // 判断是否选中笔记
+    var editor  = dom.getEditor()
+    var note_id = editor.getAttribute('note_id')
+    if (!note_id) {
+        console.warn('未选中笔记')
+        return
+    }
+
+    for (var i = 0; i < imgs.length; i++) {
+        var url = imgs[i].src
+        if ( url.startsWith('http://') || url.startsWith('https://') ) {
+            saveImage(note_id, imgs[i])
+            break
+        }
+    }
+}
+
+function saveImage(note_id, img){
+    if (img.processed) {
+        return
+    }
+    img.processed = true
+    console.log(img.src);
+
+    // 重新读取图像
+    var url  = img.src
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.responseType = "blob";
+
+    // 读取成功后回调
+    xhr.onload = function() {
+        var blob = xhr.response;
+        var bufferReader = new FileReader();
+        bufferReader.onload = function(event) {       
+            var buffer  = new Buffer(bufferReader.result)
+            var payload = {'buffer': buffer, 'note_id': note_id}
+            message.send('save_image', payload, function(data) {
+                if (data.code == 0 && data.image_url) {
+                    img.src = data.image_url
+                    setTimeout(function() {
+                        image.setImageEvent()
+                    }, 100)
+                }
+            })
+        }
+
+        // 读取图像blob数据
+        bufferReader.readAsArrayBuffer(blob);
+    }
+
+    // 启动读取图像
+    xhr.send();
+}
+
 
 exports.adjustEditor = adjustEditor
