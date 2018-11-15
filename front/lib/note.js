@@ -15,7 +15,7 @@ function load_note(note_id, editable = true) {
                 var content = response.content ? response.content : '<p><br/></p>'
                 state.clean()
                 editor.setAttribute('note_id', note_id)
-                editor.innerHTeML = content
+                editor.innerHTML = content
                 // undo.setContent(response.content, dom.getCaret())
                 next()
             })
@@ -73,9 +73,6 @@ function save_note() {
         console.warn('未选中笔记')
         return
     }
-
-    // 文件转存本地
-    adjust.adjustImage()
 
     // 清除辅助元素
     state.cleanNote()
