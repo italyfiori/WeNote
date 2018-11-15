@@ -141,6 +141,7 @@ function init() {
                     note_id: this.lastID
                 }
                 event.sender.send('create_note', payload)
+                fs.utimesSync(db_file, new Date(), new Date())
             })
         }
     })
@@ -152,6 +153,7 @@ function init() {
             db.run(sql, function (err, res) {
                 var payload = util.makeResult(req)
                 event.sender.send('delete_note', payload)
+                fs.utimesSync(db_file, new Date(), new Date())
             })
         }
     })
@@ -202,6 +204,7 @@ function init() {
             db.get(sql, function (err, res) {
                 var payload = util.makeResult(req)
                 event.sender.send('move_note', payload)
+                fs.utimesSync(db_file, new Date(), new Date())
             })
         }
     })
@@ -213,11 +216,12 @@ function init() {
             db.get(sql, function (err, res) {
                 var payload = util.makeResult(req, {})
                 event.sender.send('rename_note', payload)
+                fs.utimesSync(db_file, new Date(), new Date())
             })
         }
     })
 
-    ipcMain.on('delete_note', (event, req) => {
+    ipcMain.on('delete_trash', (event, req) => {
         if (req.data.ids.length > 0) {
             var sql = "delete from note where id in (" + req.data.ids.join(',') + ");"
             db.run(sql, function (err, res) {
@@ -226,7 +230,8 @@ function init() {
                     delete_note_files(note_id)
                 }
                 var payload = util.makeResult(req)
-                event.sender.send('delete_note', payload)
+                event.sender.send('delete_trash', payload)
+                fs.utimesSync(db_file, new Date(), new Date())
             })
         }
     })

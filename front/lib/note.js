@@ -113,7 +113,7 @@ function clear_trash() {
         var node_ids = get_children_ids(recycle_node)
 
         var payload = {'ids': node_ids}
-        message.send('delete_note', payload, function (response) {
+        message.send('delete_trash', payload, function (response) {
             for (var i = 0; i < node_ids.length; i++) {
                 var node = $('#menu-tree').jstree('get_node', node_ids[i])
                 $('#menu-tree').jstree('delete_node', node)
