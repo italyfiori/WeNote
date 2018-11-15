@@ -76,6 +76,7 @@ function save_note() {
 
     // 清除辅助元素
     state.cleanNote()
+    adjust.adjustImage()
 
     // 保存笔记
     var content = editor.innerHTML
