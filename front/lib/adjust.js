@@ -36,9 +36,7 @@ function adjustEditor() {
 
     adjustList()
 
-    adjustImage()
-
-    //
+    // 空标签处理
     $('#editor, td').children().each(function() {
         // 空的换行变成嵌套p标签
         if (this.nodeName == 'BR') {
@@ -93,17 +91,16 @@ function adjustImage() {
         var url = imgs[i].src
         if ( url.startsWith('http://') || url.startsWith('https://') ) {
             saveImage(note_id, imgs[i])
-            break
         }
     }
 }
 
 function saveImage(note_id, img){
+    // 处理过的图像不再处理
     if (img.processed) {
         return
     }
     img.processed = true
-    console.log(img.src);
 
     // 重新读取图像
     var url  = img.src
@@ -136,5 +133,5 @@ function saveImage(note_id, img){
     xhr.send();
 }
 
-
 exports.adjustEditor = adjustEditor
+exports.adjustImage  = adjustImage

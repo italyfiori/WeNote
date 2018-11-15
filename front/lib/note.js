@@ -3,6 +3,7 @@ var dom     = require(rootpath + '/front/lib/dom.js')
 var state   = require(rootpath + '/front/lib/state.js')
 var util    = require(rootpath + '/front/lib/util.js')
 var undo    = require(rootpath + '/front/lib/undo.js')
+var adjust  = require(rootpath + '/front/lib/adjust.js')
 var async   = require("async");
 
 // 获取笔记内容
@@ -14,7 +15,7 @@ function load_note(note_id, editable = true) {
                 var content = response.content ? response.content : '<p><br/></p>'
                 state.clean()
                 editor.setAttribute('note_id', note_id)
-                editor.innerHTML = content
+                editor.innerHTeML = content
                 // undo.setContent(response.content, dom.getCaret())
                 next()
             })
@@ -72,6 +73,9 @@ function save_note() {
         console.warn('未选中笔记')
         return
     }
+
+    // 文件转存本地
+    adjust.adjustImage()
 
     // 清除辅助元素
     state.cleanNote()
