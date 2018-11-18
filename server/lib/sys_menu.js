@@ -145,6 +145,26 @@ function getTemplate(win) {
                 click: function () {
                     win.webContents.send('upload_image_action');
                 }
+            }, {
+                type: 'separator'
+            },{
+                label: menu_lang.style.justify_left,
+                accelerator: 'CmdOrCtrl+Shift+L',
+                click: function () {
+                    win.webContents.send('justify_left');
+                }
+            },{
+                label: menu_lang.style.justify_right,
+                accelerator: 'CmdOrCtrl+Shift+R',
+                click: function () {
+                    win.webContents.send('justify_right');
+                }
+            },{
+                label: menu_lang.style.justify_center,
+                accelerator: 'CmdOrCtrl+Shift+C',
+                click: function () {
+                    win.webContents.send('justify_center');
+                }
             }]
         },
         {

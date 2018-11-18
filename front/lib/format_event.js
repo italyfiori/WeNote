@@ -54,6 +54,19 @@ function setEvent(){
         dom.setCursor(node.firstChild)
     })
 
+    ipcRenderer.on('justify_left', function () {
+        document.execCommand('justifyLeft')
+    })
+
+    ipcRenderer.on('justify_right', function () {
+        document.execCommand('justifyRight')
+    })
+
+    ipcRenderer.on('justify_center', function () {
+        console.log('come');
+        document.execCommand('justifyCenter')
+    })
+
     ipcRenderer.on('add_table', function () {
         // 创建表格
         var titles    = ['', '']
