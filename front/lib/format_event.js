@@ -68,13 +68,16 @@ function setEvent(){
 
     ipcRenderer.on('backup_notes_action', function () {
         message.send('backup_notes', {}, function(response) {
-            new window.Notification('备份成功', {body: '已备份到:' + response.data.file_path})
+            let notification = new window.Notification('备份成功', {body: '已备份到:' + response.data.file_path})
+            notification.onclick = () => {
+                
+            }
         }, 300000)
     })
 
     ipcRenderer.on('recover_notes_action', function () {
         message.send('recover_notes', {}, function(response) {
-            
+
         })
     })
 
@@ -114,7 +117,7 @@ function setEvent(){
             $('a.file').click(function(event) {
                 event.preventDefault()
                 message.send('open_file_link', {file_url: this.getAttribute("href")}, function(response) {
-                    // do nothing
+
                 })
             })
         })
