@@ -207,6 +207,7 @@ function init() {
         }
         backup_running = true
         var tar_file = path.join(data_path, 'backup', (new Date()).Format("yyyyMMddhhmmss") + '.tar.gz')
+        util.initDir()
         tar.c({
             gzip: true,
             file: tar_file,

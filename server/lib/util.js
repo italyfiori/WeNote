@@ -90,6 +90,21 @@ function delete_path(file_path) {
     }
 };
 
+// 初始化需要的文件夹
+function initDir() {
+    var dirs = ['backup']
+    for (var i = 0; i < dirs.length; i++) {
+        var sub_dir = path.join(getDataPath(), dirs[i])
+        if (!fs.existsSync(sub_dir)) {
+            // 创建备份文件夹
+            if(!mkdirs(sub_dir)) {
+                console.error('create ' + sub_dir + ' failed!');
+                return
+            }
+        }
+    }
+}
+
 
 exports.makeResult       = makeResult
 exports.addImgPrefix     = addImgPrefix
@@ -98,3 +113,4 @@ exports.getDataPath      = getDataPath
 exports.mkdirs           = mkdirs
 exports.delete_path      = delete_path
 exports.makeCommonResult = makeCommonResult
+exports.initDir          = initDir
