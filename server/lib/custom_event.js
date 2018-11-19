@@ -206,14 +206,12 @@ function init() {
             return
         }
         backup_running = true
-
-        var source_folder = path.join(data_path, 'data')
-        var tar_file      = path.join(data_path, 'backup', (new Date()).Format("yyyyMMddhhmmss") + '.tar.gz')
+        var tar_file = path.join(data_path, 'backup', (new Date()).Format("yyyyMMddhhmmss") + '.tar.gz')
         tar.c({
             gzip: true,
             file: tar_file,
-            preservePaths: false,
-        }, [source_folder]).then(_ => {
+            cwd: data_path,
+        }, ['data']).then(_ => {
             backup_running = false
             var response   = util.makeResult(req, {file_path : tar_file})
             event.sender.send('backup_notes', response)
