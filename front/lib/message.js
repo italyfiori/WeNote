@@ -17,7 +17,6 @@ function send(message_type, data, func, timeout=5000) {
     // 发送消息到主进程
     var message_id = message_type + ':' +  util.getRandomInt(1000000)
     var payload    = {'message_id': message_id, 'data': data}
-    console.log(payload);
     ipcRenderer.send(message_type, payload)
 
 
@@ -32,7 +31,6 @@ function send(message_type, data, func, timeout=5000) {
 
     // 超时处理
     setTimeout(function() {
-        console.log(message_type);
         event_emitter.removeAllListeners(message_id)
     }, timeout);
 }
