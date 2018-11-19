@@ -7,7 +7,7 @@ let util            = require(rootpath + '/front/lib/util.js')
 let listen_messages = {}
 
 // 发送消息到主进程
-function send(message_type, data, func) {
+function send(message_type, data, func, timeout=5000) {
     if(!listen_messages.hasOwnProperty(message_type)) {
         // 首次发送消息时, 监听指定类型的回调
         listenIpc(message_type)
@@ -17,6 +17,7 @@ function send(message_type, data, func) {
     // 发送消息到主进程
     var message_id = message_type + ':' +  util.getRandomInt(1000000)
     var payload    = {'message_id': message_id, 'data': data}
+    console.log(payload);
     ipcRenderer.send(message_type, payload)
 
 
@@ -31,8 +32,9 @@ function send(message_type, data, func) {
 
     // 超时处理
     setTimeout(function() {
+        console.log(message_type);
         event_emitter.removeAllListeners(message_id)
-    }, 5000);
+    }, timeout);
 }
 
 // 监听主进程消息

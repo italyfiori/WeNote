@@ -25,6 +25,20 @@ function getTemplate(win) {
                 click: function () {
                     win.webContents.send('save_note_action');
                 }
+            }, {
+                type: 'separator'
+            }, {
+                label: menu_lang.note.backup,
+                // accelerator: 'CmdOrCtrl+N',
+                click: function () {
+                    win.webContents.send('backup_notes_action');
+                }
+            }, {
+                label: menu_lang.note.recover,
+                // accelerator: 'CmdOrCtrl+S',
+                click: function () {
+                    win.webContents.send('recover_notes_action');
+                }
             }]
         },
         {

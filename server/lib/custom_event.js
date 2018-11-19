@@ -7,6 +7,7 @@ const {
 const path      = require('path')
 const fs        = require('fs')
 const crypto    = require('crypto');
+const tar       = require('tar')
 const rootpath  = path.dirname(path.dirname(__dirname))
 const util      = require(path.join(rootpath, 'server/lib/util'))
 const data_path = util.getDataPath()
@@ -14,6 +15,8 @@ const data_path = util.getDataPath()
 const FILE_TYPE_NORMAL = 'files'
 const FILE_TYPE_IMAGE  = 'images'
 const MAX_FILE_SIZE    = 1000000000;
+
+var backup_running = false;
 
 function getFileSaveDir(note_id) {
     return path.join(data_path, 'data', FILE_TYPE_NORMAL, String(note_id))
@@ -194,6 +197,29 @@ function init() {
         })
     })
 
+    // 获取当前所在地
+    ipcMain.on('backup_notes', (event, req) => {
+        // 正在备份中
+        if (backup_running) {
+            response = util.makeCommonResult(req, -1, '系统正在备份中!')
+            event.sender.send('backup_notes', response)
+            return
+        }
+        backup_running = true
+
+        var source_folder = path.join(data_path, 'data')
+        var tar_file      = path.join(data_path, 'backup', (new Date()).Format("yyyyMMdd_hhmmss") + '.tar.gz')
+        tar.c({
+            gzip: true,
+            file: tar_file,
+            preservePaths: false,
+        }, [source_folder]).then(_ => {
+            backup_running = false
+            var response   = util.makeResult(req, {file_path : tar_file})
+            console.log('done');
+            event.sender.send('backup_notes', response)
+        })
+    })
 
 }
 

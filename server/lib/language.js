@@ -7,6 +7,8 @@ var languages = {
 				'label_name': '笔记',
 				'create': '创建文档',
 				'save': '保存文档',
+				'backup': '备份',
+				'recover': '恢复',
 			},
 			'edit': {
 				'label_name': '编辑',
@@ -61,6 +63,8 @@ var languages = {
 				'label_name': '笔记',
 				'create': '创建文档',
 				'save': '保存文档',
+				'backup': '备份',
+				'recover': '恢复',
 			},
 			'edit': {
 				'label_name': '编辑',

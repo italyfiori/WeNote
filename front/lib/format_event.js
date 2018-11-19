@@ -63,8 +63,19 @@ function setEvent(){
     })
 
     ipcRenderer.on('justify_center', function () {
-        console.log('come');
         document.execCommand('justifyCenter')
+    })
+
+    ipcRenderer.on('backup_notes_action', function () {
+        message.send('backup_notes', {}, function(response) {
+            new window.Notification('备份成功', {body: '已备份到:' + response.data.file_path})
+        }, 300000)
+    })
+
+    ipcRenderer.on('recover_notes_action', function () {
+        message.send('recover_notes', {}, function(response) {
+            
+        })
     })
 
     ipcRenderer.on('add_table', function () {
