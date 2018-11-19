@@ -67,8 +67,9 @@ function setEvent(){
         document.execCommand('justifyCenter')
     })
 
+    // 备份所有文档
     ipcRenderer.on('backup_notes_action', function () {
-        new window.Notification('开始备份', {body: '开始备份所有文档,备份中请勿关闭软件!'})
+        new window.Notification('开始备份', {body: '开始备份所有文档,备份过程中请勿关闭软件!'})
         message.send('backup_notes', {}, function(response) {
             let notification = new window.Notification('备份成功', {body: '已备份到:' + response.data.file_path})
             notification.onclick = () => {

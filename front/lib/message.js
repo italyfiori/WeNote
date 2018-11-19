@@ -1,4 +1,6 @@
-const {ipcRenderer} = require('electron')
+const {
+    ipcRenderer,
+} = require('electron')
 let EventEmitter    = require('events').EventEmitter;
 let event_emitter   = new EventEmitter();
 let util            = require(rootpath + '/front/lib/util.js')
@@ -18,7 +20,6 @@ function send(message_type, data, func, timeout=5000) {
     var message_id = message_type + ':' +  util.getRandomInt(1000000)
     var payload    = {'message_id': message_id, 'data': data}
     ipcRenderer.send(message_type, payload)
-
 
     // 指定message_id的回调
     event_emitter.once(message_id, function(response) {
