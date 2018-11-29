@@ -87,11 +87,9 @@ function enterAction(curNode, parentNode, blockNode, range) {
     }
 
     // 重置字体颜色
-    document.execCommand('forecolor',false,'#333')
     if ($(curNode).parents('blockquote,span,b,em,i,small,strong,sub,sup,ins,del').length == 0) {
-        document.execCommand('backColor',false,'white')
+        document.execCommand('backColor', false, $(blockNode).css("background-color"))
     }
-
 
     // 表格内换行
     if (curNode.nodeName == 'TD') {
@@ -158,6 +156,12 @@ function backAction(curNode, parentNode, blockNode, range) {
         dom.setCursor(parentNode.nextSibling)
         $(parentNode).remove()
         return true
+    }
+
+    // 段落回退时重置字体颜色和背景颜色
+    if (curNode.nodeName == 'P') {
+        document.execCommand('forecolor', false, $('body').css('color'))
+        document.execCommand('backColor', false, $('body').css("background-color"))
     }
 
     // 代码块回退删除
