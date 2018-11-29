@@ -24,6 +24,8 @@ function createDB() {
                 console.error(err);
             }
         })
+
+        // todo插入使用手册文档
     }
 }
 
