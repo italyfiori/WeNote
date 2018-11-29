@@ -234,6 +234,11 @@ function jumpBack(blockNode) {
     }
 
     if (previousNode) {
+        if (dom.blockEmpty(previousNode)) {
+            $(previousNode).remove()
+            return shouldPrevent
+        }
+
         var cursorNode = dom.findLastChild(previousNode)
         var offset     = 0
         if (cursorNode.lastChild && cursorNode.lastChild.nodeName == '#text') {
