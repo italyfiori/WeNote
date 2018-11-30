@@ -37,6 +37,10 @@ var languages = {
 				'table': '表格',
 				'file': '上传文件',
 				'image': '上传图片',
+				'link': '插入链接',
+				'justify_left': '左对齐',
+				'justify_right': '右对齐',
+				'justify_center': '居中对齐',
 			},
 			'table': {
 				'label_name': '表格',
@@ -54,7 +58,7 @@ var languages = {
 			'history': {
 				'label_name': '历史',
 				'history': '历史版本'
-			}
+			},
 		},
 	},
 	'default': {
@@ -93,6 +97,7 @@ var languages = {
 				'table': '表格',
 				'file': '上传文件',
 				'image': '上传图片',
+				'link': '插入链接',
 				'justify_left': '左对齐',
 				'justify_right': '右对齐',
 				'justify_center': '居中对齐',
@@ -115,7 +120,7 @@ var languages = {
 				'history': '历史版本'
 			},
 		},
-	}
+	},
 }
 
 function setLocale(locale) {

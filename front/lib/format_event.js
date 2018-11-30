@@ -9,6 +9,7 @@ var state           = require(rootpath + '/front/lib/state.js')
 var util            = require(rootpath + '/front/lib/util.js')
 var table           = require(rootpath + '/front/lib/table.js')
 var image           = require(rootpath + '/front/lib/image.js')
+var link            = require(rootpath + '/front/lib/link.js')
 var $               = require('jquery')
 
 
@@ -53,6 +54,35 @@ function setEvent(){
         var html = '<pre class="source hljs"><br/></pre>';
         var node = dom.insertHtml(html, false)
         dom.setCursor(node.firstChild)
+    })
+
+    ipcRenderer.on('link_action', function () {
+        // 有光标
+        var selection  = window.getSelection()
+        if (selection.rangeCount <= 0) {
+            return false
+        }
+
+        // 插入2个字符，保证可以获取到光标
+        document.execCommand('insertHTML', false, '![')
+        var range         = selection.getRangeAt(0)
+        var caretPosition = dom.getCaret(editor)
+
+        if (range && null !== caretPosition) {
+            $('#link_input').modal()
+            $('#link_url').val('')
+            $('#link_text').val('')
+
+            $('#link_input_insert').one('click', function() {
+                var link_url  = $('#link_url').val()
+                var link_text = $('#link_text').val()
+                if (link_url && link_text) {
+                    $('#link_input').modal('hide')
+                    linkOffset = range.startOffset
+                    link.insertLink(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition, true)
+                }
+            })
+        }
     })
 
     ipcRenderer.on('justify_left', function () {

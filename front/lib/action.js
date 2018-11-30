@@ -316,7 +316,7 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
                     var link_text = $('#link_text').val()
                     if (link_url && link_text) {
                         $('#link_input').modal('hide')
-                        linkAction(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition)
+                        link.insertLink(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition, true)
                     }
                 })
             }
@@ -412,42 +412,6 @@ function tableAction(innerHTML, parentNode) {
     // 设置光标
     var secondRow = $(tableNode).find('tr')[1]
     dom.setCursor(secondRow.firstChild.firstChild.firstChild)
-}
-
-// 插入超链接
-function linkAction(link_url, link_text, start, offset, range, caretPosition) {
-    // 光标
-    var editor = dom.getEditor()
-    dom.setCaret(editor, caretPosition)
-
-    // 插入连接
-    var id   = 'link' + util.getRandomInt(100000)
-    var html = '<a class="link" href="{0}" id="{1}">{2}</a>&nbsp;'.format(link_url, id, link_text)
-    $('#link_url').val('')
-    $('#link_text').val('')
-    document.execCommand('insertHTML', false, html)
-
-    // 执行insertHTML后curNode会变化
-    curNode         = range.startContainer
-    var block       = dom.getBlockParent(curNode)
-    block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
-
-    // 删除输入的文本
-    var ele  = document.getElementById(id)
-    var node = ele.previousSibling
-    range.setStart(node, start)
-    range.setEnd(node, offset)
-    range.deleteContents()
-
-    // 设置光标位置
-    range.setStart(ele.nextSibling, 1)
-    range.collapse(true)
-    var selection = window.getSelection()
-    selection.removeAllRanges()
-    selection.addRange(range)
-
-    // 设置链接点击
-    link.setLinkClickEvent()
 }
 
 // markdown数学公式

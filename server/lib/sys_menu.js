@@ -160,6 +160,12 @@ function getTemplate(win) {
                     win.webContents.send('upload_image_action');
                 }
             }, {
+                label: menu_lang.style.link,
+                accelerator: 'CmdOrCtrl+L',
+                click: function () {
+                    win.webContents.send('link_action');
+                }
+            }, {
                 type: 'separator'
             },{
                 label: menu_lang.style.justify_left,
