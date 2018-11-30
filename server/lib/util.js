@@ -92,7 +92,7 @@ function delete_path(file_path) {
 
 // 初始化需要的文件夹
 function initDir() {
-    var dirs = ['backup']
+    var dirs = ['backup', 'data/db', 'data/files', 'data/images', 'data/notes']
     for (var i = 0; i < dirs.length; i++) {
         var sub_dir = path.join(getDataPath(), dirs[i])
         if (!fs.existsSync(sub_dir)) {
