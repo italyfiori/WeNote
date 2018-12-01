@@ -14,7 +14,6 @@ var language        = require(rootpath + '/front/lib/language.js')
 var $               = require('jquery')
 
 var ALERTS = language.getLanguage().alerts
-console.log(ALERTS);
 
 function setEvent(){
     ipcRenderer.on('format_p', function () {
