@@ -104,10 +104,10 @@ function setPasteImage() {
             bufferReader.onload = function(event) {       
                 var buffer  = new Buffer(bufferReader.result)
                 var payload = {'buffer': buffer, 'note_id': note_id}
-                message.send('save_image', payload, function(data) {
-                    if (data.code == 0 && data.image_url) {
+                message.send('save_image', payload, function(response) {
+                    if (response.code == 0 && response.data.image_url) {
                         width = width / 2
-                        var html = '<img width=' + width + ' src="' + data.image_url + '">'
+                        var html = '<img width=' + width + ' src="' + response.data.image_url + '">'
                         document.execCommand('insertHTML', false, html)
                         setTimeout(function() {
                             image.setImageEvent()

@@ -8,6 +8,12 @@ var languages = {
 			'rename': '重命名',
 			'recover': '恢复文档',
 			'clear': '清空回收站',
+		},
+		'alerts': {
+			START_BACKUP_TITLE: '开始备份',
+			START_BACKUP_BODY: '开始备份, 备份过程中请勿关闭软件!',
+			BACKUP_SUCCEED: '备份成功',
+			BACKUP_DONE: '备份到',
 		}
 	},
 	'default': {
@@ -17,6 +23,12 @@ var languages = {
 			'rename': '重命名',
 			'recover': '恢复文档',
 			'clear': '清空回收站',
+		},
+		'alerts': {
+			START_BACKUP_TITLE: '开始备份',
+			START_BACKUP_BODY: '开始备份, 备份过程中请勿关闭软件!',
+			BACKUP_SUCCEED: '备份成功',
+			BACKUP_DONE: '备份到',
 		}
 	}
 }

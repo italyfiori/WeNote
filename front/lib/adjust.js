@@ -115,9 +115,9 @@ function saveImage(note_id, img){
         bufferReader.onload = function(event) {       
             var buffer  = new Buffer(bufferReader.result)
             var payload = {'buffer': buffer, 'note_id': note_id}
-            message.send('save_image', payload, function(data) {
-                if (data.code == 0 && data.image_url) {
-                    img.src = data.image_url
+            message.send('save_image', payload, function(response) {
+                if (response.code == 0 && response.data.image_url) {
+                    img.src = response.data.image_url
                     img.width /= 1.5
                     setTimeout(function() {
                         image.setImageEvent()

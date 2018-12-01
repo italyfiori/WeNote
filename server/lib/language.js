@@ -60,6 +60,18 @@ var languages = {
 				'history': '历史版本'
 			},
 		},
+		'alerts': {
+			'FILE_NOT_EXISTS': '文件不存在!',
+			'NOT_SUPPORT_FOLDER_UPLOAD': '不支持上传文件夹!',
+			'FILE_OVER_SIZE': '文件大小超过限制!',
+
+			'START_BACKUP_TITLE': '开始备份!',
+			'START_BACKUP_BODY': '开始备份,完成之前请勿关闭软件!',
+			'SYS_SAVING_BACKUP': '系统正在备份!',
+
+			'UPLOAD_NOT_BUFFER': '上传内容错误!',
+			'SAVE_IMAGE_FAILED': '保存图片失败!',
+		}
 	},
 	'default': {
 		'menu': {
@@ -120,6 +132,18 @@ var languages = {
 				'history': '历史版本'
 			},
 		},
+		'alerts': {
+			'FILE_NOT_EXISTS': '文件不存在!',
+			'NOT_SUPPORT_FOLDER_UPLOAD': '不支持上传文件夹!',
+			'FILE_OVER_SIZE': '文件大小超过限制!',
+
+			'START_BACKUP_TITLE': '开始备份!',
+			'START_BACKUP_BODY': '开始备份,完成之前请勿关闭软件!',
+			'SYS_SAVING_BACKUP': '系统正在备份!',
+
+			'UPLOAD_NOT_BUFFER': '上传内容错误!',
+			'SAVE_IMAGE_FAILED': '保存图片失败!',
+		}
 	},
 }
 
@@ -128,7 +152,6 @@ function setLocale(locale) {
 }
 
 function getLanguage() {
-	console.log(_locale);
 	if (!(_locale in languages)) {
 		_locale = 'default'
 	}

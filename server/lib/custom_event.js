@@ -8,13 +8,17 @@ const path      = require('path')
 const fs        = require('fs')
 const crypto    = require('crypto');
 const tar       = require('tar')
+
 const rootpath  = path.dirname(path.dirname(__dirname))
 const util      = require(path.join(rootpath, 'server/lib/util'))
+const language  = require(path.join(rootpath, 'server/lib/language'))
+
 const data_path = util.getDataPath()
 
 const FILE_TYPE_NORMAL = 'files'
 const FILE_TYPE_IMAGE  = 'images'
-const MAX_FILE_SIZE    = 1000000000;
+const MAX_FILE_SIZE    = 100000000;
+const ALERTS   = language.getLanguage().alerts
 
 var backup_running = false;
 
@@ -51,13 +55,13 @@ function saveFile(req, note_id, src_file, file_type) {
     var response = util.makeResult(req, {})
     if (!fs.existsSync(src_file)) {
         // 检查文件是否存在
-        response = util.makeCommonResult(req, -1, '文件不存在!')
+        return util.makeCommonResult(req, -1, ALERTS.FILE_NOT_EXISTS)
     } else if (fs.statSync(src_file).isDirectory()) {
         // 不支持文件夹上传
-        response = util.makeCommonResult(req, -1, '不支持文件夹或包上传!')
+        return util.makeCommonResult(req, -1, ALERTS.NOT_SUPPORT_FOLDER_UPLOAD )
     } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
         // 文件大小超过限制
-        response = util.makeCommonResult(req, -1, '文件大小超过100M!')
+        return util.makeCommonResult(req, -1, ALERTS.FILE_OVER_SIZE)
     } else {
         var file_name = path.basename(src_file)
         if (file_type == FILE_TYPE_IMAGE) {
@@ -76,7 +80,7 @@ function saveFile(req, note_id, src_file, file_type) {
             file_url: dst_file,
             file_name: file_name,
         }
-        response = util.makeResult(req, data)
+        return util.makeResult(req, data)
     }
 
     return response
@@ -95,13 +99,13 @@ function saveImageFile(req, note_id, src_file) {
 
     // 检查文件是否存在
     if (!fs.existsSync(src_file)) {
-        response = util.makeCommonResult(req, -1, '文件不存在!')
+        response = util.makeCommonResult(req, -1, ALERTS.FILE_NOT_EXISTS)
     } else if (fs.statSync(src_file).isDirectory()) {
-        // 文件大小超过限制
-        response = util.makeCommonResult(req, -1, '不支持文件夹或包上传!')
+        // 不支持文件夹上传
+        response = util.makeCommonResult(req, -1, ALERTS.NOT_SUPPORT_FOLDER_UPLOAD)
     } else if (fs.statSync(src_file).size > MAX_FILE_SIZE) {
         // 文件大小超过限制
-        response = util.makeCommonResult(req, -1, '文件大小超过100M!')
+        response = util.makeCommonResult(req, -1, ALERTS.FILE_OVER_SIZE)
     } else if (src_file != dst_file) {
         // 拷贝文件
         util.mkdirs(path.dirname(dst_file))
@@ -114,12 +118,13 @@ function init() {
     ipcMain.on('open_file_link', (event, req) => {
         var file_url  = req.data.file_url
         if (!fs.existsSync(file_url)) {
-            dialog.showErrorBox('文件不存在!',  '文件不存在:' + file_url)
-            return
+            var response = util.makeCommonResult(req, -1, ALERTS.FILE_NOT_EXISTS)
+            return event.sender.send('open_file_link', response)
         }
+
         shell.openItem(file_url);
-        var payload = util.makeResult(req)
-        event.sender.send('open_file_link', payload)
+        var response = util.makeResult(req)
+        event.sender.send('open_file_link', response)
     })
 
     // 拖拽文件上传
@@ -138,8 +143,8 @@ function init() {
     // 接收文件数据
     ipcMain.on('save_image', (event, req) => {
         if (!Buffer.isBuffer(req.data.buffer)) {
-            console.error('data is not buffer, ' + req.message_id)
-            return
+            var response = util.makeCommonResult(req, -1, ALERTS.UPLOAD_NOT_BUFFER)
+            return event.sender.send('save_image', response)
         }
 
         var note_id    = req.data.note_id
@@ -151,23 +156,20 @@ function init() {
         util.mkdirs(path.dirname(file_path))
         fs.writeFile(file_path, buffer, {}, (err, res) => {
             if (err) {
-                console.error('write file error:' + err);
-                return
+                var response = util.makeCommonResult(req, -1, ALERTS.SAVE_IMAGE_FAILED)
+                return event.sender.send('save_image', response)
             }
-            var payload = {
-                'code': 0,
-                'message_id': req.message_id,
-                'image_url': getImgPath(note_id, file_name),
-            }
-            event.sender.send('save_image', payload)
+
+            var response = util.makeResult(req, {'image_url': getImgPath(note_id, file_name)})
+            event.sender.send('save_image', response)
         })
     })
 
     // 获取当前所在地
     ipcMain.on('get_locale', (event, req) => {
         var locale = app.getLocale()
-        var payload = util.makeResult(req, {'locale': locale})
-        event.sender.send('get_locale', payload)
+        var response = util.makeResult(req, {'locale': locale})
+        event.sender.send('get_locale', response)
     })
 
     // 上传文件
@@ -201,13 +203,15 @@ function init() {
     ipcMain.on('backup_notes', (event, req) => {
         // 正在备份中
         if (backup_running) {
-            response = util.makeCommonResult(req, -1, '系统正在备份中!')
-            event.sender.send('backup_notes', response)
-            return
+            response = util.makeCommonResult(req, -1, ALERTS.SYS_SAVING_BACKUP)
+            return event.sender.send('backup_notes', response)
         }
+
+        util.initDir()
+
         backup_running = true
         var tar_file = path.join(data_path, 'backup', (new Date()).Format("yyyyMMddhhmmss") + '.tar.gz')
-        util.initDir()
+
         tar.c({
             gzip: true,
             file: tar_file,

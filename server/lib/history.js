@@ -25,6 +25,7 @@ function parse_history_content(history_content) {
         }
     } catch (err) {
         console.error('parse history error:' + err)
+        return false
     }
 
     return history
@@ -46,9 +47,9 @@ function get_history(note_id) {
 function append_history(note_id, new_cont) {
     var history = get_history(note_id)
     var patches = history.getPatches(new_cont)
+    // 和上一次的版本相同
     if (patches.length == 0) {
-        console.warn('note has not change:' + String(note_id))
-        return
+        return false
     }
 
     var file_path = get_history_path(note_id)

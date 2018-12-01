@@ -14,7 +14,7 @@ var side_lang = language.getLanguage().side
 function load_menu() {
     message.send('get_menu', {}, function (response) {
         // 加载菜单
-        var menu = create_menu_object(response.menu)
+        var menu = create_menu_object(response.data.menu)
         $('#menu-tree').jstree(menu)
 
         // 获取笔记

@@ -116,16 +116,12 @@ function init() {
     var db = new sqlite3.Database(db_file);
 
     // 获取列表
-    ipcMain.on('get_menu', (event, data) => {
+    ipcMain.on('get_menu', (event, req) => {
         var sql = "select title as text, id, parent_id from note where is_del = 0 order by title;"
         db.all(sql, function (err, rows) {
             var menu = buildTree(rows)
-            var payload = {
-                'code': 0,
-                'message_id': data.message_id,
-                'menu': menu,
-            }
-            event.sender.send('get_menu', payload)
+            var response = util.makeResult(req, {'menu': menu})
+            event.sender.send('get_menu', response)
         })
     })
 
@@ -134,13 +130,8 @@ function init() {
         if (req.data.parent_id >= 0) {
             var sql = "insert into note(title, parent_id) values('" + req.data.title + "'," + req.data.parent_id + ")"
             db.run(sql, function (err, res) {
-                var payload = {
-                    code: 0,
-                    message_id: req.message_id,
-                    msg: 'success',
-                    note_id: this.lastID
-                }
-                event.sender.send('create_note', payload)
+                var response = util.makeResult(req, {note_id: this.lastID})
+                event.sender.send('create_note', response)
                 fs.utimesSync(db_file, new Date(), new Date())
             })
         }
@@ -151,8 +142,8 @@ function init() {
         if (req.data.id >= 0) {
             var sql = "update note set parent_id = -1 where id = " + req.data.id + ";"
             db.run(sql, function (err, res) {
-                var payload = util.makeResult(req)
-                event.sender.send('delete_note', payload)
+                var response = util.makeResult(req)
+                event.sender.send('delete_note', response)
                 fs.utimesSync(db_file, new Date(), new Date())
             })
         }
@@ -165,13 +156,11 @@ function init() {
             var content = get_note(req.data.id)
             db.get(sql, function (err, res) {
                 var payload = {
-                    code: 0,
-                    message_id: req.message_id,
-                    msg: 'success',
                     content: content,
                     title: res.title,
                 }
-                event.sender.send('get_note', payload)
+                var response = util.makeResult(req, payload)
+                event.sender.send('get_note', response)
             })
         }
     })
@@ -183,17 +172,18 @@ function init() {
             var note_id = req.data.id
             var file_cont = req.data.content
             file_cont = util.trimImgPrefix(file_cont) // 去除图像和文件前缀
+            // 文件内容没有变化
             if (get_note(note_id) === file_cont) {
-                console.warn('note has no change:' + String(req.data.id))
                 return
             }
-            save_note(note_id, file_cont)
 
+            // 保存文件
+            save_note(note_id, file_cont)
             // 保存历史
             history.append_history(note_id, file_cont)
 
-            var payload = util.makeResult(req)
-            event.sender.send('save_note', payload)
+            var response = util.makeResult(req)
+            event.sender.send('save_note', response)
         }
     })
 
@@ -202,8 +192,8 @@ function init() {
         if (req.data.id >= -1) {
             var sql = "update note set parent_id = '" + req.data.parent + "'  where id = " + req.data.id + ";"
             db.get(sql, function (err, res) {
-                var payload = util.makeResult(req)
-                event.sender.send('move_note', payload)
+                var response = util.makeResult(req)
+                event.sender.send('move_note', response)
                 fs.utimesSync(db_file, new Date(), new Date())
             })
         }
@@ -214,8 +204,8 @@ function init() {
         if (req.data.id >= 0) {
             var sql = "update note set title = '" + req.data.title + "'  where id = " + req.data.id + ";"
             db.get(sql, function (err, res) {
-                var payload = util.makeResult(req, {})
-                event.sender.send('rename_note', payload)
+                var response = util.makeResult(req, {})
+                event.sender.send('rename_note', response)
                 fs.utimesSync(db_file, new Date(), new Date())
             })
         }
@@ -229,8 +219,8 @@ function init() {
                     var note_id = req.data.ids[i]
                     delete_note_files(note_id)
                 }
-                var payload = util.makeResult(req)
-                event.sender.send('delete_trash', payload)
+                var response = util.makeResult(req)
+                event.sender.send('delete_trash', response)
                 fs.utimesSync(db_file, new Date(), new Date())
             })
         }

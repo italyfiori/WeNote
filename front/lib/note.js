@@ -12,7 +12,7 @@ function load_note(note_id, editable = true) {
         function(next) {
             message.send('get_note', {'id': note_id}, function (response) {
                 var editor  = dom.getEditor()
-                var content = response.content ? response.content : '<p><br/></p>'
+                var content = response.data.content ? response.data.content : '<p><br/></p>'
                 state.clean()
                 editor.setAttribute('note_id', note_id)
                 editor.innerHTML = content
@@ -48,7 +48,7 @@ function create_note(cur_node) {
     }
     message.send('create_note', payload, function (response) {
         $('#menu-tree').jstree('deselect_all')
-        $('#menu-tree').jstree('set_id', new_node, response.note_id)
+        $('#menu-tree').jstree('set_id', new_node, response.data.note_id)
         $('#menu-tree').jstree('select_node', new_node)
         // setTimeout(function(){
         //     $('#menu-tree').jstree('edit', new_node)

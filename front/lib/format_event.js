@@ -10,8 +10,11 @@ var util            = require(rootpath + '/front/lib/util.js')
 var table           = require(rootpath + '/front/lib/table.js')
 var image           = require(rootpath + '/front/lib/image.js')
 var link            = require(rootpath + '/front/lib/link.js')
+var language        = require(rootpath + '/front/lib/language.js')
 var $               = require('jquery')
 
+var ALERTS = language.getLanguage().alerts
+console.log(ALERTS);
 
 function setEvent(){
     ipcRenderer.on('format_p', function () {
@@ -99,9 +102,9 @@ function setEvent(){
 
     // 备份所有文档
     ipcRenderer.on('backup_notes_action', function () {
-        new window.Notification('开始备份', {body: '开始备份所有文档,备份过程中请勿关闭软件!'})
+        new window.Notification(ALERTS.START_BACKUP_TITLE, {body: ALERTS.START_BACKUP_BODY})
         message.send('backup_notes', {}, function(response) {
-            let notification = new window.Notification('备份成功', {body: '已备份到:' + response.data.file_path})
+            let notification = new window.Notification(ALERTS.BACKUP_SUCCEED, {body: ALERTS.BACKUP_DONE + ':' + response.data.file_path})
             notification.onclick = () => {
                 shell.showItemInFolder(response.data.file_path)
             }
