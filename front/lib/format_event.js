@@ -2,16 +2,16 @@ const {
     shell,
     ipcRenderer,
     dialog
-} = require('electron')
-var message         = require(rootpath + '/front/lib/message.js')
-var dom             = require(rootpath + '/front/lib/dom.js')
-var state           = require(rootpath + '/front/lib/state.js')
-var util            = require(rootpath + '/front/lib/util.js')
-var table           = require(rootpath + '/front/lib/table.js')
-var image           = require(rootpath + '/front/lib/image.js')
-var link            = require(rootpath + '/front/lib/link.js')
-var language        = require(rootpath + '/front/lib/language.js')
-var $               = require('jquery')
+}            = require('electron')
+var message  = require(rootpath + '/front/lib/message.js')
+var dom      = require(rootpath + '/front/lib/dom.js')
+var state    = require(rootpath + '/front/lib/state.js')
+var util     = require(rootpath + '/front/lib/util.js')
+var table    = require(rootpath + '/front/lib/table.js')
+var image    = require(rootpath + '/front/lib/image.js')
+var link     = require(rootpath + '/front/lib/link.js')
+var language = require(rootpath + '/front/lib/language.js')
+var $        = require('jquery')
 
 var ALERTS = language.getLanguage().alerts
 

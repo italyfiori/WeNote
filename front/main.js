@@ -1,39 +1,52 @@
 // 设置根目录
 const rootpath = __dirname
 
-var jquery = jQuery = $ = require('jquery')
-var menu   = require(rootpath + '/front/lib/menu.js')
-var init   = require(rootpath + '/front/lib/init.js')
+var jquery   = jQuery = $ = require('jquery')
+var language = require(rootpath + '/front/lib/language.js')
+var util     = require(rootpath + '/front/lib/util.js')
+var table    = require(rootpath + '/front/lib/table.js')
+var message  = require(rootpath + '/front/lib/message.js')
+var link     = require(rootpath + '/front/lib/link.js')
+var view     = require(rootpath + '/front/lib/view.js')
 
-$(document).ready(function() {
-    init()
-    menu.load_menu()
+message.send('get_locale', {}, function(response) {
+    // 文案初始化
+    language.setLocale(response.data.locale)
+    const MODAL_TEXT = language.getLanguage().modal
+
+    // 加载其他库
+    var undo         = require(rootpath + '/front/lib/undo.js')
+    var menu         = require(rootpath + '/front/lib/menu.js')
+    var history      = require(rootpath + '/front/lib/history.js')
+    var paste        = require(rootpath + '/front/lib/paste.js')
+    var format_event = require(rootpath + '/front/lib/format_event.js')
+
+    // 初始化功能
+    util.addStringFormat()
+    table.setTableAction()
+    history.setHistoryAction()
+    paste.setPasteImage()
+    undo.setUndo()
+    view.setView()
+    link.setLinkDialogEvent()
+    format_event.setEvent()
+
+    // 禁止缩放
+    var webFrame = require('electron').webFrame
+    webFrame.setZoomLevelLimits(1, 1);
+
+
+    $(document).ready(function() {
+        // 加载菜单
+        menu.load_menu()
+
+        // 弹窗文案
+        for (var id in MODAL_TEXT) {
+            if ($('#' + id).is("input")) {
+                $('#' + id).attr('placeholder', MODAL_TEXT[id])
+            } else {
+                $('#' + id).text(MODAL_TEXT[id])
+            }
+        }
+    })
 })
-
-
-// TODO: 快捷键功能(表格 done、历史版本 done)
-// TODO: 文件拖拽 done
-// TODO: 复制图片 done
-// TODO: data路径可配置 done
-// TODO: range选择多个范围回退问题修复 done
-// TODO: 菜单栏优化: 增加删除提示、增加全部文件和回收站分类 done
-// TODO: 菜单栏优化: 增加静止拖拽节点和区域 done
-// TODO: 菜单栏图标优化: done
-// TODO: 修复不能拖拽的bug done (原因是清除编辑器绑定事件时, 解绑了document对象的事件，从而引起bug)
-// TODO: 增加回收站功能 done
-
-// TODO: 增加数据初始化功能 4小时
-// TODO: 增加基本设置功能(文档路径) 4小时
-// TODO: 增加教学文档 预计2小时
-// TODO: 移除所有event事件
-// TODO: 增加回收站删除和回收站禁止编辑功能 预计3小时
-// TODO: 增加快捷键(标题等) 预计2小时
-// TODO: 增加撤销功能 预计1天
-// TODO: 增加导出和打印功能 预计2小时
-// TODO: 分享功能 预计2天
-// TODO: 样式优化 预计2天
-// TODO: 增加对话框上传文件和图片 2小时
-// TODO: 菜单栏状态动态变化 4小时
-// TODO: 所有文案使用使用常量获取
-// TODO: 表格增加排序功能
-// TODO:

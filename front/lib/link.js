@@ -1,6 +1,6 @@
-var dom             = require(rootpath + '/front/lib/dom.js')
-var util            = require(rootpath + '/front/lib/util.js')
-var jquery = jQuery = $ = require('jquery')
+var dom         = require(rootpath + '/front/lib/dom.js')
+var util        = require(rootpath + '/front/lib/util.js')
+var jquery      = jQuery = $ = require('jquery')
 const { shell } = require('electron')
 
 function setLinkDialogEvent() {

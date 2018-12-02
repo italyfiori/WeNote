@@ -120,21 +120,5 @@
 		document.addEventListener('mouseup', function () {
 	        side_selected = false;
 	    });
-
-
-		var language = require(rootpath + '/front/lib/language.js')
-		var MODAL_TEXT = language.getLanguage().modal
-
-		// 弹窗文案
-		$(document).ready(function() {
-			for (var id in MODAL_TEXT) {
-				if ($('#' + id).is("input")) {
-					$('#' + id).attr('placeholder', MODAL_TEXT[id])
-				} else {
-					$('#' + id).text(MODAL_TEXT[id])
-				}
-			}
-		})
-
 	</script>
 </html>

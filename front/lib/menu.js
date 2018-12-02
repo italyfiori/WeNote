@@ -8,7 +8,8 @@ var dom             = require(rootpath + '/front/lib/dom.js')
 var language        = require(rootpath + '/front/lib/language.js')
 var $               = require('jquery')
 
-var side_lang = language.getLanguage().side
+// 侧边栏文案
+var SIDE_TEXTS = language.getLanguage().side
 
 // 加载左侧菜单
 function load_menu() {
@@ -92,33 +93,33 @@ function create_menu_object(menu_content) {
 function customMenu(node) {
     var items = {
         "create": {
-            "label": side_lang.create,
+            "label": SIDE_TEXTS.create,
             "action": function (obj) {
                 var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
                 note.create_note(cur_node)
             }
         },
         "rename": {
-            "label": side_lang.rename,
+            "label": SIDE_TEXTS.rename,
             "action": function (obj) {
                 var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
                 $('#menu-tree').jstree('edit', cur_node)
             }
         },
         "delete": {
-            "label": side_lang.delete,
+            "label": SIDE_TEXTS.delete,
             "action": function (obj) {
                 note.delete_note(obj)
             }
         },
         "recover": {
-            "label": side_lang.recover,
+            "label": SIDE_TEXTS.recover,
             "action": function (obj) {
                 note.recover_note(obj)
             }
         },
         "clear": {
-            "label": side_lang.clear,
+            "label": SIDE_TEXTS.clear,
             "action": function (obj) {
                 note.clear_trash()
             }
