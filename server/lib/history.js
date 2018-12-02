@@ -80,7 +80,7 @@ function get_version(note_id, version_id) {
 }
 
 function get_history_path(note_id) {
-    return path.join(data_path, 'data', 'notes', note_id + '.history')
+    return path.join(data_path, 'data', 'history', note_id + '.history')
 }
 
 
