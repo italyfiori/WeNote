@@ -151,22 +151,22 @@ var languages = {
 	},
 }
 
-// 设置所在地语言
-function setLocale(locale) {
+function setLocale(locale, func) {
 	_locale = locale
+	func()
 }
 
-// 获取所在地语言
 function getLocale() {
-	return _locale in languages ? _locale : 'default'
+	return _locale
 }
 
-// 获取语言文案
 function getLanguage() {
-	return languages[getLocale()]
+	if (!(_locale in languages)) {
+		_locale = 'default'
+	}
+	return languages[_locale]
 }
 
-
-exports.getLocale   = getLocale
 exports.setLocale   = setLocale
+exports.getLocale   = getLocale
 exports.getLanguage = getLanguage

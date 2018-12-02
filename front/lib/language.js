@@ -73,7 +73,6 @@ var languages = {
 
 function setLocale(locale) {
 	_locale = locale
-	console.log('set');
 }
 
 function getLanguage() {
