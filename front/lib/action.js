@@ -311,7 +311,7 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
                 $('#link_url').val('')
                 $('#link_text').val('')
 
-                $('#link_input_insert').one('click', function() {
+                $('#link_insert_button').one('click', function() {
                     var link_url  = $('#link_url').val()
                     var link_text = $('#link_text').val()
                     if (link_url && link_text) {

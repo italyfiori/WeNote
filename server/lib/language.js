@@ -4,7 +4,7 @@ var languages = {
 	'zh-CN': {
 		'menu': {
 			'note': {
-				'label_name': '笔记',
+				'label_name': '文档',
 				'create': '创建文档',
 				'save': '保存文档',
 				'backup': '备份所有文档',
@@ -76,7 +76,7 @@ var languages = {
 	'default': {
 		'menu': {
 			'note': {
-				'label_name': '笔记',
+				'label_name': '文档',
 				'create': '创建文档',
 				'save': '保存文档',
 				'backup': '备份所有文档',

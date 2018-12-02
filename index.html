@@ -38,49 +38,51 @@
 						<p><br/></p>
 					</div>
 				</div>
-				<div class="modal fade" id="version_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<!-- 历史版本模态框 -->
+				<div class="modal fade" id="version_list" tabindex="-1" role="dialog" aria-labelledby="version_title">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title" id="myModalLabel">历史版本</h4>
+								<h4 class="modal-title" id="version_title">历史版本</h4>
 							</div>
 							<div id="version_list_body" class="modal-body">
 
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal" id="version_close_button">Close</button>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="modal fade" id="link_input" tabindex="-1" role="dialog" aria-labelledby="link_input_lable">
+				<!-- 超链接模态框 -->
+				<div class="modal fade" id="link_input" tabindex="-1" role="dialog" aria-labelledby="link_title">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close close-button" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title" id="link_input_lable">插入超链接</h4>
+								<h4 class="modal-title" id="link_title">插入链接</h4>
 							</div>
 							<div id="link_body" class="modal-body">
 								<form class="form-horizontal" role="form">
 								    <div class="form-group">
-								        <label for="link_url" class="col-sm-2 control-label">连接</label>
+								        <label for="link_url" class="col-sm-2 control-label" id="link_label_url">连接</label>
 								        <div class="col-sm-10">
-								            <input type="text" class="form-control" id="link_url" placeholder="连接地址">
+								            <input type="text" class="form-control" id="link_url" placeholder="">
 								        </div>
 								    </div>
 								    <div class="form-group">
-								        <label for="link_text" class="col-sm-2 control-label">文字</label>
+								        <label for="link_text" class="col-sm-2 control-label" id="link_label_text">文字</label>
 								        <div class="col-sm-10">
-								            <input type="text" class="form-control" id="link_text" placeholder="请输入连接描述">
+									    	<input type="text" class="form-control" id="link_text" placeholder="">
 								        </div>
 								    </div>
 								</form>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary class"  id="link_input_insert">插入</button>
-								<button type="button" class="btn btn-default close-button">关闭</button>
+								<button type="button" class="btn btn-primary class"  id="link_insert_button">插入</button>
+								<button type="button" class="btn btn-default close-button" id="link_close_button">关闭</button>
 							</div>
 						</div>
 					</div>
@@ -118,6 +120,21 @@
 		document.addEventListener('mouseup', function () {
 	        side_selected = false;
 	    });
+
+
+		var language = require(rootpath + '/front/lib/language.js')
+		var MODAL_TEXT = language.getLanguage().modal
+
+		// 弹窗文案
+		$(document).ready(function() {
+			for (var id in MODAL_TEXT) {
+				if ($('#' + id).is("input")) {
+					$('#' + id).attr('placeholder', MODAL_TEXT[id])
+				} else {
+					$('#' + id).text(MODAL_TEXT[id])
+				}
+			}
+		})
 
 	</script>
 </html>
