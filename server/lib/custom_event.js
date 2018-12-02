@@ -3,22 +3,21 @@ const {
     ipcMain,
     shell,
     dialog
-}               = require('electron')
+} = require('electron')
+
 const path      = require('path')
 const fs        = require('fs')
 const crypto    = require('crypto');
 const tar       = require('tar')
-
 const rootpath  = path.dirname(path.dirname(__dirname))
 const util      = require(path.join(rootpath, 'server/lib/util'))
 const language  = require(path.join(rootpath, 'server/lib/language'))
-
 const data_path = util.getDataPath()
 
 const FILE_TYPE_NORMAL = 'files'
 const FILE_TYPE_IMAGE  = 'images'
 const MAX_FILE_SIZE    = 100000000;
-const ALERTS   = language.getLanguage().alerts
+const ALERTS           = language.getLanguage().alerts
 
 var backup_running = false;
 
@@ -165,9 +164,9 @@ function init() {
         })
     })
 
-    // 获取当前所在地
+    // 获取当前所在地语言标志
     ipcMain.on('get_locale', (event, req) => {
-        var locale = app.getLocale()
+        var locale   = language.getLocale()
         var response = util.makeResult(req, {'locale': locale})
         event.sender.send('get_locale', response)
     })
