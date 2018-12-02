@@ -1,4 +1,4 @@
-var util  = require(rootpath + '/front/lib/util.js')
+var util = require(rootpath + '/front/lib/util.js')
 
 // 获取编辑区
 function getEditor() {

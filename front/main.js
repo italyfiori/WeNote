@@ -1,6 +1,7 @@
 // 设置根目录
 const rootpath = __dirname
 
+// 加载基础库
 var jquery   = jQuery = $ = require('jquery')
 var language = require(rootpath + '/front/lib/language.js')
 var util     = require(rootpath + '/front/lib/util.js')

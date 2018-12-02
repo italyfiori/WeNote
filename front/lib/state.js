@@ -1,18 +1,21 @@
-var dom             = require(rootpath + '/front/lib/dom.js')
-var table           = require(rootpath + '/front/lib/table.js')
-var message         = require(rootpath + '/front/lib/message.js')
-var action          = require(rootpath + '/front/lib/action.js')
-var adjust          = require(rootpath + '/front/lib/adjust.js')
-var drag            = require(rootpath + '/front/lib/drag.js')
-var paste           = require(rootpath + '/front/lib/paste.js')
-var history         = require(rootpath + '/front/lib/history.js')
-var highlight       = require(rootpath + '/front/lib/highlight.js')
-var image           = require(rootpath + '/front/lib/image.js')
-var undo            = require(rootpath + '/front/lib/undo.js')
-var link            = require(rootpath + '/front/lib/link.js')
-var $               = require('jquery')
+var dom       = require(rootpath + '/front/lib/dom.js')
+var table     = require(rootpath + '/front/lib/table.js')
+var message   = require(rootpath + '/front/lib/message.js')
+var action    = require(rootpath + '/front/lib/action.js')
+var adjust    = require(rootpath + '/front/lib/adjust.js')
+var drag      = require(rootpath + '/front/lib/drag.js')
+var paste     = require(rootpath + '/front/lib/paste.js')
+var history   = require(rootpath + '/front/lib/history.js')
+var highlight = require(rootpath + '/front/lib/highlight.js')
+var image     = require(rootpath + '/front/lib/image.js')
+var undo      = require(rootpath + '/front/lib/undo.js')
+var link      = require(rootpath + '/front/lib/link.js')
+var $         = require('jquery')
 
-const {ipcRenderer, shell} = require('electron')
+const {
+    ipcRenderer,
+    shell
+} = require('electron')
 
 // 切换到编辑器模式
 function switch2editor() {

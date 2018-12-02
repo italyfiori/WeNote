@@ -1,11 +1,11 @@
-var message = require(rootpath + '/front/lib/message.js')
-var dom     = require(rootpath + '/front/lib/dom.js')
-var state   = require(rootpath + '/front/lib/state.js')
-var util    = require(rootpath + '/front/lib/util.js')
-var undo    = require(rootpath + '/front/lib/undo.js')
-var adjust  = require(rootpath + '/front/lib/adjust.js')
+var message  = require(rootpath + '/front/lib/message.js')
+var dom      = require(rootpath + '/front/lib/dom.js')
+var state    = require(rootpath + '/front/lib/state.js')
+var util     = require(rootpath + '/front/lib/util.js')
+var undo     = require(rootpath + '/front/lib/undo.js')
+var adjust   = require(rootpath + '/front/lib/adjust.js')
 var language = require(rootpath + '/front/lib/language.js')
-var async   = require("async");
+var async    = require("async");
 
 var ALERTS = language.getLanguage().alerts
 

@@ -1,4 +1,5 @@
 const { shell } = require('electron')
+
 var dom   = require(rootpath + '/front/lib/dom.js')
 var table = require(rootpath + '/front/lib/table.js')
 var util  = require(rootpath + '/front/lib/util.js')
