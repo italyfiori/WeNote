@@ -24,7 +24,7 @@ function makeCommonResult(req, code, msg, data = null) {
 
 function getDataPath() {
     var homedir = os.homedir()
-    return path.join(homedir, 'Documents/marknote/') + '/'
+    return path.join(homedir, 'Documents/WeNote/') + '/'
 }
 
 // 读取文档时增加路径前缀
