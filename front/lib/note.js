@@ -4,7 +4,10 @@ var state   = require(rootpath + '/front/lib/state.js')
 var util    = require(rootpath + '/front/lib/util.js')
 var undo    = require(rootpath + '/front/lib/undo.js')
 var adjust  = require(rootpath + '/front/lib/adjust.js')
+var language = require(rootpath + '/front/lib/language.js')
 var async   = require("async");
+
+var ALERTS = language.getLanguage().alerts
 
 // 获取笔记内容
 function load_note(note_id, editable = true) {
@@ -89,9 +92,11 @@ function save_note() {
 // 删除笔记
 function delete_note(obj) {
     var cur_node = $('#menu-tree').jstree('get_node', obj.reference)
-    var result   = confirm("are you sure delte the note?");
+    var is_trash = is_trash_node(cur_node)
+    var confirm_text = is_trash ? ALERTS.DELETE_NOTE_CONFIRM : ALERTS.DELETE_TRASH_CONFIRM
+    var result       = confirm(confirm_text);
     if (result == true){
-        if (is_trash_node(cur_node)) {
+        if (is_trash) {
             node_ids = get_children_ids(cur_node)
             node_ids.push(cur_node.id)
 
@@ -109,7 +114,7 @@ function delete_note(obj) {
 
 // 清空回收站
 function clear_trash() {
-    var result   = confirm("are you sure to clear the trash?");
+    var result   = confirm(ALERTS.CLEAN_TRASH_CONFIRM);
     if (result == true){
         var recycle_node = $('#menu-tree').jstree('get_node', '-1')
         var node_ids = get_children_ids(recycle_node)

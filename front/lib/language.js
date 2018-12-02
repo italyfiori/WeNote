@@ -10,10 +10,13 @@ var languages = {
 			'clear': '清空回收站',
 		},
 		'alerts': {
-			START_BACKUP_TITLE: '开始备份',
+			START_BACKUP_TITLE: '开始备份！',
 			START_BACKUP_BODY: '开始备份, 备份过程中请勿关闭软件!',
 			BACKUP_SUCCEED: '备份成功',
 			BACKUP_DONE: '备份到',
+			DELETE_NOTE_CONFIRM: '确认要删除文档?',
+			DELETE_TRASH_CONFIRM: '确认要彻底删除文档?',
+			CLEAN_TRASH_CONFIRM: '确认清空回收站?',
 		}
 	},
 	'default': {
@@ -25,10 +28,13 @@ var languages = {
 			'clear': '清空回收站',
 		},
 		'alerts': {
-			START_BACKUP_TITLE: '开始备份',
+			START_BACKUP_TITLE: '开始备份！',
 			START_BACKUP_BODY: '开始备份, 备份过程中请勿关闭软件!',
 			BACKUP_SUCCEED: '备份成功',
 			BACKUP_DONE: '备份到',
+			DELETE_NOTE_CONFIRM: '确认要删除文档?',
+			DELETE_TRASH_CONFIRM: '确认要彻底删除文档?',
+			CLEAN_TRASH_CONFIRM: '确认清空回收站?',
 		}
 	}
 }
