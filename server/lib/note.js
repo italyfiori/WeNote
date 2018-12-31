@@ -29,6 +29,7 @@ function buildTree(rows) {
     var all_menu        = _buildTree('0', parent_set, node_list)
     var recycle_menu    = _buildTree('-1', parent_set, node_list)
     base[0]['children'] = all_menu['children']
+    base[0]['state']    = {"opened" : true}
     base[1]['children'] = recycle_menu['children']
     return base
 }
