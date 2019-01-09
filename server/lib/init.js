@@ -41,6 +41,7 @@ function initDB() {
         }]
 
         var db  = new sqlite3.Database(db_file)
+<<<<<<< HEAD
         async.waterfall([
             // 创建数据库
             function(cb) {
@@ -75,6 +76,16 @@ function initDB() {
                 })
             },
         ])
+=======
+        var sql = "CREATE TABLE note(id INTEGER PRIMARY KEY AUTOINCREMENT,parent_id INT NOT NULL DEFAULT 0,title TEXT NOT NULL DEFAULT '' ,is_del TINYINT NOT NULL DEFAULT 0 ,create_time INT NOT NULL DEFAULT 0,update_time INT NOT NULL DEFAULT 0);"
+        db.run(sql, function(err) {
+            if (err) {
+                console.error(err);
+            }
+        })
+
+        // todo插入使用手册文档
+>>>>>>> 7d4e5746026e708e99c1a551e582d7857596528a
     }
 }
 
