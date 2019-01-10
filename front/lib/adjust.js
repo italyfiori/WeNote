@@ -16,7 +16,7 @@ function adjustEditor() {
 
     // 表格单元内容被全部删除时，增加一个段落标签
     $('#editor td').each(function() {
-        if ($(this).children(':not(div.resize)').length == 0) {
+        if ($(this).children(':not(div.resize)').length == 0 && $(this).text() == '') {
             $(this).prepend('<p><br/></p>')
         }
     })
