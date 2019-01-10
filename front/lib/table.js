@@ -243,7 +243,7 @@ function setTableAction() {
             row.remove()
             dom.setCursor(next_cursor)
         } else {
-            $(table).remove()
+            $(row).remove()
         }
     })
 
