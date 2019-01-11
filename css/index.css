@@ -163,6 +163,7 @@ img:hover {
 
 #editor table td {
     /* width: 120px; */
+	min-width: 60px;
     border: 1px solid rgb(221, 221, 221);
     padding: 7px 10px;
     vertical-align: top;
