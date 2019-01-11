@@ -146,6 +146,7 @@ img:hover {
     border: 1px;
     border-collapse: collapse;
     margin: 10px 0;
+	display: block;
 }
 
 #editor table tr{
@@ -167,6 +168,9 @@ img:hover {
     vertical-align: top;
     text-align: left;
     position: relative;
+	white-space:pre-line;
+	word-wrap: break-word;
+    word-break: break-all;
 }
 
 #editor table div.resize {
