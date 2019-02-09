@@ -81,7 +81,7 @@ function setEvent(){
                 if (link_url && link_text) {
                     $('#link_input').modal('hide')
                     linkOffset = range.startOffset
-                    link.insertLink(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition, true)
+                    link.insertLink(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition, false)
                 }
             })
         }

@@ -297,33 +297,6 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         return
     }
 
-    // 超链接
-    if (event.key == ']') {
-        var text      = curNode.nodeValue
-        var editor    = dom.getEditor()
-        caretPosition = dom.getCaret(editor)
-        if (text) {
-            linkOffset = range.startOffset
-            var start  = text.lastIndexOf('![')
-            if (linkOffset - start == 2) {
-                event.preventDefault()
-
-                $('#link_input').modal()
-                $('#link_url').val('')
-                $('#link_text').val('')
-
-                $('#link_insert_button').one('click', function() {
-                    var link_url  = $('#link_url').val()
-                    var link_text = $('#link_text').val()
-                    if (link_url && link_text) {
-                        $('#link_input').modal('hide')
-                        link.insertLink(link_url, link_text, linkOffset - 2, linkOffset, range, caretPosition, true)
-                    }
-                })
-            }
-        }
-    }
-
     if (event.key == '$') {
         // 触发数学公式
         var offset = range.startOffset

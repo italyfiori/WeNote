@@ -48,19 +48,16 @@ function insertLink(link_url, link_text, start, offset, range, caretPosition, de
     var block       = dom.getBlockParent(curNode)
     block.innerHTML = block.innerHTML.replace(/<span style="background-color: transparent;">(.*?)<\/span>/g, '$1')
 
+	// 删除 '![' 关键字
+	var tag = '<a class="link" href="{0}" id="{1}"'.format(link_url, id)
+    block.innerHTML = block.innerHTML.replace('![' + tag, tag)
+
 	var ele = document.getElementById(id)
 	if (!ele) {
 		console.error('插入链接失败!');
 		return false
 	}
-	if (deleteInput) {
-		// 删除输入的文本
-	    var node = ele.previousSibling
-	    range.setStart(node, start)
-	    range.setEnd(node, offset)
-	    range.deleteContents()
-	}
-
+	
     // 设置光标位置
 	if (ele.nextSibling) {
 		range.setStart(ele.nextSibling, 1)
