@@ -9,7 +9,6 @@ const path         = require('path')
 const language     = require(path.join(rootpath, 'server/lib/language'))
 const url          = require('url')
 const fs           = require('fs')
-const custom_event = require(path.join(rootpath, '/server/lib/custom_event'))
 const note         = require(path.join(rootpath, 'server/lib/note'))
 const history      = require(path.join(rootpath, 'server/lib/history'))
 const init         = require(path.join(rootpath, 'server/lib/init'))
@@ -48,7 +47,14 @@ app.on('ready', function () {
         const template = require(path.join(rootpath, '/server/lib/sys_menu'))
         const menu     = Menu.buildFromTemplate(template.getTemplate(win))
         Menu.setApplicationMenu(menu)
+
+        const custom_event = require(path.join(rootpath, '/server/lib/custom_event'))
+        init()
+        note.init()
+        custom_event.init()
+        history.init()
     })
+
 
 })
 
@@ -68,8 +74,3 @@ app.on('activate', () => {
         createWindow()
     }
 })
-
-init()
-note.init()
-custom_event.init()
-history.init()
