@@ -3,7 +3,7 @@ const path      = require('path')
 const async     = require('async')
 const rootpath  = path.dirname(path.dirname(__dirname))
 const util      = require(path.join(rootpath, 'server/lib/util'))
-const sqlite3   = require('sqlite3-offline-darwin')
+const sqlite3   = require('sqlite3')
 const data_path = util.getDataPath()
 const db_file   = path.join(data_path, 'data/db/wiki.db')
 

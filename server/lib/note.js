@@ -4,7 +4,7 @@ const fs        = require('fs')
 const rootpath  = path.dirname(path.dirname(__dirname))
 const util      = require(path.join(rootpath, 'server/lib/util'))
 const history   = require(path.join(rootpath, 'server/lib/history'))
-const sqlite3   = require('sqlite3-offline').verbose();
+const sqlite3   = require('sqlite3')
 const data_path = util.getDataPath()
 const db_file   = path.join(data_path, 'data/db/wiki.db')
 

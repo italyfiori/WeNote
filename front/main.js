@@ -22,22 +22,24 @@ message.send('get_locale', {}, function(response) {
     var paste        = require(rootpath + '/front/lib/paste.js')
     var format_event = require(rootpath + '/front/lib/format_event.js')
 
-    // 初始化功能
-    util.addStringFormat()
-    table.setTableAction()
-    history.setHistoryAction()
-    paste.setPasteImage()
-    undo.setUndo()
-    view.setView()
-    link.setLinkDialogEvent()
-    format_event.setEvent()
+
 
     // 禁止缩放
-    var webFrame = require('electron').webFrame
-    webFrame.setZoomLevelLimits(1, 1);
+    // var webFrame = require('electron').webFrame
+    // webFrame.setZoomLevelLimits(1, 1);
 
 
     $(document).ready(function() {
+
+        // 初始化功能
+        util.addStringFormat()
+        table.setTableAction()
+        history.setHistoryAction()
+        paste.setPasteImage()
+        undo.setUndo()
+        view.setView()
+        link.setLinkDialogEvent()
+        format_event.setEvent()
         // 加载菜单
         menu.load_menu()
 
