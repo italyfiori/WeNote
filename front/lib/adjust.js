@@ -56,11 +56,11 @@ function adjustEditor() {
     })
 
     // 标题标签清除非字符元素
-    $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6").each(function() {
-        if (this.innerHTML != this.innerText && this.innerHTML != '<br>') {
-            this.innerHTML = this.innerText
-        }
-    })
+    // $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6").each(function() {
+    //     if (this.innerHTML != this.innerText && this.innerHTML != '<br>') {
+    //         this.innerHTML = this.innerText
+    //     }
+    // })
 }
 
 function adjustList() {
