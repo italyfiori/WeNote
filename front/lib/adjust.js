@@ -55,12 +55,65 @@ function adjustEditor() {
         }
     })
 
-    // 标题标签清除非字符元素
-    // $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6").each(function() {
-    //     if (this.innerHTML != this.innerText && this.innerHTML != '<br>') {
-    //         this.innerHTML = this.innerText
-    //     }
-    // })
+    // 给标题增加序号
+    adjustTitles()
+
+    
+
+}
+
+var processingTitles = false
+function adjustTitles() {
+    if (processingTitles) {
+        return false
+    }
+
+    // 100毫秒更新一次
+    processingTitles = true
+    setTimeout(function() {
+        processingTitles = false
+    }, 100)
+    
+
+    // 获取所有标题类型
+    var titles = $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6")
+    var nodeNames = []
+    titles.each(function() {
+        if (nodeNames.indexOf(this.nodeName) == -1) {
+            nodeNames.push(this.nodeName)
+        }
+    });
+    nodeNames.sort()
+
+    $('head style').remove()
+    var titleSerials = []
+    var prevSerial = []
+    titles.each(function() {
+        var serialsLen = nodeNames.indexOf(this.nodeName) + 1
+        
+        if (prevSerial.length == 0) {
+            // 第一个标题
+            var curSerial  = new Array(serialsLen).fill(1)
+        }else if (serialsLen > prevSerial.length) {
+            // 是上一个标题的子标题
+            var curSerial = prevSerial.concat(new Array(serialsLen - prevSerial.length).fill(1))
+        } else { 
+            // 与上一个标题同级或更高级
+            var lastNum = prevSerial[serialsLen - 1]  + 1
+            var curSerial = prevSerial.slice(0, serialsLen - 1)
+            curSerial.push(lastNum)
+        }
+        prevSerial = curSerial
+        titleSerials.push(curSerial)
+
+        var title_id = 'title_' + curSerial.join('_')
+        var title_serial = curSerial.join('.') + ' '
+        this.id = title_id
+        var style = '<style>#{0}:before{content:"{1}"}</style>'.format(title_id, title_serial)
+        $('head').append(style)
+    })
+
+    console.log(titleSerials)
 }
 
 function adjustList() {
