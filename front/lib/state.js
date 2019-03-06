@@ -29,6 +29,8 @@ function switch2editor() {
         notice.style.display = "none";
     }
     dom.setCursor(editor)
+
+    adjust.adjustEditor()
 }
 
 function swtich2Notice() {

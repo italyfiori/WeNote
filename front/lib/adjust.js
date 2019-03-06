@@ -57,9 +57,6 @@ function adjustEditor() {
 
     // 给标题增加序号
     adjustTitles()
-
-    
-
 }
 
 var processingTitles = false
@@ -112,8 +109,6 @@ function adjustTitles() {
         var style = '<style>#{0}:before{content:"{1}"}</style>'.format(title_id, title_serial)
         $('head').append(style)
     })
-
-    console.log(titleSerials)
 }
 
 function adjustList() {
@@ -189,3 +184,4 @@ function saveImage(note_id, img){
 
 exports.adjustEditor = adjustEditor
 exports.adjustImage  = adjustImage
+exports.adjustTitles = adjustTitles
