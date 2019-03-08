@@ -73,7 +73,7 @@ function adjustTitles() {
     
 
     // 获取所有标题类型
-    var titles = $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6")
+    var titles = $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6").not('.popover-title')
     var nodeNames = []
     titles.each(function() {
         if (nodeNames.indexOf(this.nodeName) == -1) {
