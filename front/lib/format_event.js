@@ -32,6 +32,10 @@ function setEvent(){
         document.execCommand('formatBlock', false, '<h3>')
     })
 
+    ipcRenderer.on('format_h4', function () {
+        document.execCommand('formatBlock', false, '<h4>')
+    })
+
     ipcRenderer.on('format_ol', function () {
         document.execCommand('insertorderedlist', false, '<h3>')
     })

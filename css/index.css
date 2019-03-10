@@ -210,8 +210,12 @@ body #editor-container #editor h1, h2, h3, h4, h5, h6{
 	margin: 16px 0;
 }
 
-#editor h3, h4, h5, h6{
+#editor h3{
     font-size: 16px;
+}
+
+#editor h4, h5, h6{
+    font-size: 14px;
 }
 
 #editor blockquote {
