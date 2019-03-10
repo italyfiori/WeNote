@@ -112,7 +112,7 @@ function getTemplate(win) {
                     win.webContents.send('format_h3');
                 }
             },{
-                label: menu_lang.style.h3,
+                label: menu_lang.style.h4,
                 accelerator: 'CmdOrCtrl+4',
                 click: function () {
                     win.webContents.send('format_h4');
