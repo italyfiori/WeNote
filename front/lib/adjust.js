@@ -70,7 +70,7 @@ function adjustTitles() {
     setTimeout(function() {
         processingTitles = false
     }, 100)
-    
+
 
     // 获取所有标题类型
     var titles = $("#editor h1, #editor h2, #editor h3, #editor h4, #editor h5, #editor h6").not('.popover-title')
@@ -87,14 +87,14 @@ function adjustTitles() {
     var prevSerial = []
     titles.each(function() {
         var serialsLen = nodeNames.indexOf(this.nodeName) + 1
-        
+
         if (prevSerial.length == 0) {
             // 第一个标题
             var curSerial  = new Array(serialsLen).fill(1)
         }else if (serialsLen > prevSerial.length) {
             // 是上一个标题的子标题
             var curSerial = prevSerial.concat(new Array(serialsLen - prevSerial.length).fill(1))
-        } else { 
+        } else {
             // 与上一个标题同级或更高级
             var lastNum = prevSerial[serialsLen - 1]  + 1
             var curSerial = prevSerial.slice(0, serialsLen - 1)
@@ -137,7 +137,7 @@ function adjustImage() {
 
     for (var i = 0; i < imgs.length; i++) {
         var url = imgs[i].src
-        if ( url.startsWith('http://') || url.startsWith('https://') ) {
+        if ( url.indexOf('images/' + note_id) == -1 ) {
             saveImage(note_id, imgs[i])
         }
     }
