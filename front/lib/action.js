@@ -301,12 +301,23 @@ function markdownAction(key, range, curNode, parentNode, innerHTML) {
         // 触发数学公式
         var offset = range.startOffset
         var text   = curNode.nodeValue
-        if (text) {
-            var start = text.lastIndexOf('$$')
-            if (start >= 0 && offset - start >= 4 && text.charAt(offset - 1) == '$') {
-                mathAction(text, start, offset, curNode, range)
+        if (!text) {
+            return false;
+        }
+
+        var start = text.lastIndexOf('$$')
+        if (innerHTML.startsWith('$$')) {
+            if (offset - start >= 4 && text.charAt(offset - 1) == '$') {
+                mathAction(text, start, offset, curNode, range, false)
                 return true
             }
+            return false;
+        }
+
+        var start = text.lastIndexOf('$')
+        if (start >= 0 && offset - start >= 2) {
+            mathAction(text, start, offset, curNode, range, true)
+            return true
         }
     }
 
@@ -389,9 +400,14 @@ function tableAction(innerHTML, parentNode) {
 }
 
 // markdown数学公式
-function mathAction(text, start, offset, curNode, range) {
+function mathAction(text, start, offset, curNode, range, inline) {
     // 插入公式标签
-    var text = text.slice(start + 2, offset - 1)
+    if (inline) {
+        var text = text.slice(start + 1, offset)
+    } else {
+        var text = text.slice(start + 2, offset - 1)
+    }
+
     var id   = 'math' + util.getRandomInt(100000)
     var html = '<a class="math" id="' + id + '"> ' + text + '</a>&nbsp;'; // 末尾增加空格，否则光标可能跑到段落最右边
     document.execCommand('insertHTML', false, html)
@@ -409,7 +425,15 @@ function mathAction(text, start, offset, curNode, range) {
     range.deleteContents()
 
     // 渲染数学公式
-    katex.render(text, ele)
+    if (inline) {
+        katex.render(text, ele, {
+            displayMode: false,
+        })
+    } else {
+        katex.render(text, ele, {
+            displayMode: true,
+        })
+    }
 
     // 设置光标位置
     range.setStart(ele.nextSibling, 1)
